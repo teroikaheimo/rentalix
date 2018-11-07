@@ -5,9 +5,13 @@ const con = require('../connection');
 const mysql = require('mysql');
 const db = new Database(con);
 
-router.get('/', function(req, res, next) {
 
-        res.send("<p>Rentalix API<br>Items search with filter options. POST -> /items<br>User search with POST -> ID -> /user</p>");
+router.get('/', function(req, res, next) {
+    db.query("SELECT username FROM user;")
+        .then(rows =>{
+            res.send(rows);
+        })
+        .then(db.close());
 });
 
 module.exports = router;
