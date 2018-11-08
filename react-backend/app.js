@@ -8,6 +8,7 @@ var indexRouter = require('./routes/index');
 var itemRouter = require('./routes/item');
 var itemsRouter = require('./routes/items');
 var userRouter = require('./routes/user');
+var registerRouter = require('./routes/register');
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use('/', indexRouter); // Instructions to use API
 app.use('/item', itemsRouter); // Item search
 app.use('/items', itemsRouter); // Items search
 app.use('/user', userRouter);
+app.use('/register',registerRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
