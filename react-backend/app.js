@@ -7,7 +7,7 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var itemRouter = require('./routes/item');
 var itemsRouter = require('./routes/items');
-var usersRouter = require('./routes/user');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter); // Instructions to use API
 app.use('/item', itemsRouter); // Item search
 app.use('/items', itemsRouter); // Items search
-app.use('/users', usersRouter);
+app.use('/user', userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
