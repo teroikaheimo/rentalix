@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const Database = require('../database');
 const con = require('../connection');
-const mysql = require('mysql');
 const db = new Database(con);
 
 router.get('/', function(req, res, next) {
@@ -11,5 +10,4 @@ router.get('/', function(req, res, next) {
             "User search with POST -> ID -> /user res -> rows OR message:bool<br>" +
             "Registration username available check. /register/available res ->message:bool</p>");
 });
-
 module.exports = router;

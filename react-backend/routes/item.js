@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 const Database = require('../database');
 const con = require('../connection');
-const mysql = require('mysql');
 const db = new Database(con);
 
 
