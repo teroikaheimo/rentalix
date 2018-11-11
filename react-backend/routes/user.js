@@ -9,7 +9,8 @@ router.post('/', function(req, res, next) { // Returns username and info does th
 
     if(req.body.username != null && req.body.password != null){
         db.query("SELECT username,admin FROM user WHERE password='"+req.body.password+"' AND username='"+req.body.username+"';")
-            .then(rows =>{res.send(rows);});
+            .then(rows =>{res.send(rows);})
+            .catch(err =>{ if(err) {res.send({message:false})} });
     }else{
         res.send({message:false});
     }

@@ -41,5 +41,4 @@ function isAvailable(req, res) { // Returns true IF username available
 router.post('/',returnUser);
 router.post('/available',isAvailable );
 
-module.exports.ru = returnUser;
 module.exports = router;

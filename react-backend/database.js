@@ -1,5 +1,5 @@
 const mysql = require('mysql');
-module.exports = class Database{ // Wrapper for mysql to get promices.
+module.exports = class Database{ // Wrapper for mysql to get promises.
     constructor(config){
         this.connection = mysql.createConnection(config);
     }
@@ -22,4 +22,4 @@ module.exports = class Database{ // Wrapper for mysql to get promices.
             })
         });
     }
-}
+};
