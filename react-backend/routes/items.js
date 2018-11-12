@@ -10,7 +10,6 @@ router.get('/', function(req, res, next) {
         .then(rows =>{
             res.send(rows);
         })
-        .then(db.close());
 });
 
 module.exports = router;

@@ -28,7 +28,6 @@ app.use((req)=>{ // Set login to false if session is not found.
     if(!req.session.login){
         req.session.login = false;
     }
-    next();
 });
 
 
