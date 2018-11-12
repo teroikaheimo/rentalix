@@ -7,9 +7,9 @@ var expressValidator = require('express-validator');
 var expressSession = require('express-session');
 
 var indexRouter = require('./routes/index');
-var itemRouter = require('./routes/item');
 var itemsRouter = require('./routes/items');
-var userRouter = require('./routes/user');
+var loginRouter = require('./routes/login');
+var logoutRouter = require('./routes/logout');
 var registerRouter = require('./routes/register');
 
 var app = express();
@@ -21,21 +21,21 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser({secret:"klk2j72lk6gSFGHSh4YJHZHAD"}));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(expressSession({secret:"klk2j72lk6gSFGHSh4YJHZHAD",saveUninitialized:false,resave:false}));
-app.use((req)=>{ // Set login to false if session is not found.
-    if(!req.session.login){
-        req.session.login = false;
-    }
-});
+app.use(expressSession({
+    secret: 'oipgaFHGKJfjJH¤%/reh!¤%Y!Haryj322ahrA',
+    resave: false,
+    saveUninitialized: true
+}));
 
 
 app.use('/', indexRouter); // Instructions to use API
 app.use('/item', itemsRouter); // Item search
 app.use('/items', itemsRouter); // Items search
-app.use('/user', userRouter);
-app.use('/register',registerRouter)
+app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
+app.use('/register',registerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
