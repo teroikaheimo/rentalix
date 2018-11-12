@@ -5,7 +5,7 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('react-backend:server');
+var debug = require('debug')('react-backend:www');
 var http = require('http');
 
 /**
@@ -16,18 +16,18 @@ var port = normalizePort(process.env.PORT || '3210');
 app.set('port', port);
 
 /**
- * Create HTTP server.
+ * Create HTTP www.
  */
 
-var server = http.createServer(app);
+var www = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+www.listen(port);
+www.on('error', onError);
+www.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.
@@ -50,7 +50,7 @@ function normalizePort(val) {
 }
 
 /**
- * Event listener for HTTP server "error" event.
+ * Event listener for HTTP www "error" event.
  */
 
 function onError(error) {
@@ -78,11 +78,11 @@ function onError(error) {
 }
 
 /**
- * Event listener for HTTP server "listening" event.
+ * Event listener for HTTP www "listening" event.
  */
 
 function onListening() {
-  var addr = server.address();
+  var addr = www.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
