@@ -14,15 +14,15 @@ router.post('/', function(req, res, next) {
             .catch((err)=>{
                 console.log(err);
                 res.header(503);
-                res.send({message:'Server not responding.'});
+                res.send({success:false,message:'Server not responding.'});
             })
     } else{
         if(typeof req.session.isSet === "undefined"){
             res.header(404);
-            res.send({message:'Error. Not logged in!'});
+            res.send({success:false,message:'Error. Not logged in!'});
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
     }
 });
@@ -56,20 +56,20 @@ router.post('/insert', function(req, res, next) {
                 .catch((err)=>{
                     console.log(err);
                     res.header(503);
-                    res.send({message:'Server error'});
+                    res.send({success:false,message:'Server error'});
                 })
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
 
     } else{
         if(typeof req.session.isSet === "undefined"){
             res.header(404);
-            res.send({message:'Error. Not logged in!'});
+            res.send({success:false,message:'Error. Not logged in!'});
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
     }
 });
@@ -102,19 +102,19 @@ router.post('/modify', function(req, res, next) {
                 .catch((err)=>{
                     console.log(err);
                     res.header(503);
-                    res.send({message:'Server error'});
+                    res.send({success:false,message:'Server error'});
                 })
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
     } else{
         if(typeof req.session.isSet === "undefined"){
             res.header(404);
-            res.send({message:'Error. Not logged in!'});
+            res.send({success:false,message:'Error. Not logged in!'});
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
     }
 });
@@ -128,15 +128,15 @@ router.post('/delete', function(req, res, next) {
             .catch((err)=>{
                 console.log(err);
                 res.header(503);
-                res.send({message:'Server not responding.'});
+                res.send({success:false,message:'Server not responding.'});
             })
     } else{
         if(typeof req.session.isSet === "undefined"){
             res.header(404);
-            res.send({message:'Error. Not logged in!'});
+            res.send({success:false,message:'Error. Not logged in!'});
         }else{
             res.header(400);
-            res.send({message:'Bad request'});
+            res.send({success:false,message:'Bad request'});
         }
     }
 });

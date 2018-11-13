@@ -5,7 +5,7 @@ const con = require('../connection');
 const db = new Database(con);
 
 
-router.post('/', function(req, res, next) { // Destroy session on logout and terminates DB connection.
+router.post('/', function(req, res,next) { // Destroy session on logout and terminates DB connection.
 
     if(typeof req.session.isSet !== "undefined" || req.session.isSet === true){
         req.session.destroy(err =>{

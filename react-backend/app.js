@@ -11,6 +11,7 @@ var itemsRouter = require('./routes/items');
 var loginRouter = require('./routes/login');
 var logoutRouter = require('./routes/logout');
 var registerRouter = require('./routes/register');
+var userRouter = require('./routes/user');
 
 var app = express();
 
@@ -36,6 +37,7 @@ app.use('/items', itemsRouter); // Items search
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/register',registerRouter);
+app.use('/user',userRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
