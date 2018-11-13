@@ -11,7 +11,7 @@ router.post('/modify', function(req, res, next) { //
         db.query("SELECT username,admin FROM user WHERE password='"+req.body.password+"' AND username='"+req.body.username+"';")
             .then((rows) =>{
                 if(rows.length > 0 && rows.length < 2){
-                    db.query(`UPDATE user SET password='${req.body.newPassword}' WHERE id='5';`)
+                    db.query(`UPDATE user SET password='${req.body.newPassword}' WHERE username='${req.body.username}' AND password='${req.body.password}';`)
                         .then(() =>{
                                 res.send({success:true,message:"User password changed"});
                         })
