@@ -4,42 +4,51 @@ const Database = require('../database');
 const con = require('../connection');
 const db = new Database(con);
 
-function returnUser(req, res, err) { // Returns username and info does this account have admin access. IF password found
+function returnUser(req, res, err) { // INSERTs new user to database.
 
-
-    if(req.body.username != null && req.body.password != null) {
-        db.query("SELECT username,admin FROM user WHERE username='"+req.body.username+"';")
-            .then(rows =>{
-                if(rows === "") {
-                    db.query("INSERT INTO user (username,password) values ('" + req.body.username + "','" + req.body.password + "');")
-                        .then( res.send({message:true}));
-                }else{res.send({success:false,message:false})}
-            }).catch(err =>{ if(err)
-            {
-                res.header(503).send({success:false,message:"Error"})
-            }});
-    }else{res.header(400).send({success:false,message:"No username or password found."});}
+    if (req.body.username != null && req.body.password != null) {
+        db.query(`SELECT username,admin FROM user WHERE username='${req.body.username}';`)
+            .then(rows => {
+                console.log(rows);
+                if (rows == "") {
+                    db.query(`INSERT INTO user (username,password) VALUES ('${req.body.username}','${req.body.password}');`)
+                        .then(res.send({message: true}));
+                } else {
+                    res.status(503).send({success: false, message: "Server error #1"})
+                }
+            }).catch(err => {
+            if (err) {
+                res.status(503).send({success: false, message: "Server error #2"})
+            }
+        });
+    } else {
+        res.status(400).send({success: false, message: "Bad request"});
+    }
 }
 
 function isAvailable(req, res) { // Returns true IF username available
-
-    if(req.body.username != null && req.body.password != null){
-        db.query("SELECT username,admin FROM user WHERE username='"+req.body.username+"';")
-            .then(rows =>{
-                if(rows === "") {
-                    res.send({success:true,message:"Username available."})
-                }else{res.send({success:false,message:"Username not available!"})}
-            }).catch(err =>{ if(err)
-        {
-            res.header(503).send({success:false,message:"Bad request!"})
-        }});
-    }else{
-        res.header(400).send({success:false,message:"Bad request!"});
+    console.log(req.body.username);
+    if (req.body.username != null) {
+        db.query(`SELECT username,admin FROM user WHERE username='${req.body.username}'; `)
+            .then(rows => {
+                if (rows.length > 0) {
+                    res.status(403).json({success: false, message: "Username not available."})
+                } else {
+                    res.json({success: true, message: "Username available!"})
+                }
+            }).catch(err => {
+            if (err) {
+                console.log(err);
+                res.status(503).send({success: false, message: "Bad request!"})
+            }
+        });
+    } else {
+        res.status(400).send({success: false, message: "Bad request!"});
     }
 
 }
 
-router.post('/',returnUser);
-router.post('/available',isAvailable );
+router.post('/', returnUser);
+router.post('/available', isAvailable);
 
 module.exports = router;

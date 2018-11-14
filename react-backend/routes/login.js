@@ -19,22 +19,22 @@ router.post('/', function(req, res, next) { // Returns username and info does th
                         req.session.isAdmin = rows[0].admin; // sets admin status if user has one.
                         res.send(rows);
                     } else{
-                        res.header(503);
+                        res.status(503);
                         res.send({success:false,message:"Login error"})
                     }
                 })
                 .catch(err =>{
                     console.log(err);
                     if(err) {
-                        res.header(503);
+                        res.status(503);
                         res.send({success:false,message:"Server error"})
                     }
                 });
         }else{
-            res.header(400);
+            res.status(400);
             res.send({success:false,message:"Bad request"});
         }
-    } else {res.header(400).send({success:false,message:"All ready logged in!"});}
+    } else {res.status(400).send({success:false,message:"All ready logged in!"});}
 });
 
 module.exports = router;

@@ -10,7 +10,7 @@ router.post('/', function(req, res,next) { // Destroy session on logout and term
     if(typeof req.session.isSet !== "undefined" || req.session.isSet === true){
         req.session.destroy(err =>{
             if(err){
-                res.header(500).send({message:"Session failed to destroy"});
+                res.status(500).send({message:"Session failed to destroy"});
             }else{
                 res.send({success:true,message:"Session destroyed"});
             }
@@ -21,7 +21,7 @@ router.post('/', function(req, res,next) { // Destroy session on logout and term
             }
         });
     }else{
-        res.header(400);
+        res.status(400);
         res.send({success:false,message:"Bad request"});
     }
 

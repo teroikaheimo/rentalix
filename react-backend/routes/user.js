@@ -18,25 +18,25 @@ router.post('/modify', function(req, res, next) { //
                         .catch(err =>{
                             console.log(err);
                             if(err) {
-                                res.header(503);
+                                res.status(503);
                                 res.send({success:false,message:"Server error #1"})
                             }
                         });
 
                 } else{
-                    res.header(503);
+                    res.status(503);
                     res.send({success:false,message:"Wrong password!"})
                 }
             })
             .catch(err =>{
                 console.log(err);
                 if(err) {
-                    res.header(503);
+                    res.status(503);
                     res.send({success:false,message:"Server error #2"})
                 }
             });
     }else{
-        res.header(400);
+        res.status(400);
         res.send({success:false,message:"Bad request"});
     }
 });
