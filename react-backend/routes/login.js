@@ -10,6 +10,7 @@ router.post('/', function(req, res, next) { // Returns username and info does th
         req.session.isSet = true;
         req.session.login = false;
 
+        console.log(req.body.username+" "+req.body.password);
         if(req.body.username != null && req.body.password != null){
             db.query("SELECT username,admin FROM user WHERE password='"+req.body.password+"' AND username='"+req.body.username+"';")
                 .then(rows =>{

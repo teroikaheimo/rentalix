@@ -9,7 +9,6 @@ function returnUser(req, res, err) { // INSERTs new user to database.
     if (req.body.username != null && req.body.password != null) {
         db.query(`SELECT username,admin FROM user WHERE username='${req.body.username}';`)
             .then(rows => {
-                console.log(rows);
                 if (rows == "") {
                     db.query(`INSERT INTO user (username,password) VALUES ('${req.body.username}','${req.body.password}');`)
                         .then(res.send({message: true}));
@@ -27,7 +26,6 @@ function returnUser(req, res, err) { // INSERTs new user to database.
 }
 
 function isAvailable(req, res) { // Returns true IF username available
-    console.log(req.body.username);
     if (req.body.username != null) {
         db.query(`SELECT username,admin FROM user WHERE username='${req.body.username}'; `)
             .then(rows => {
