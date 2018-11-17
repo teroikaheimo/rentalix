@@ -32,7 +32,6 @@ app.use(expressSession({
 
 
 app.use('/', indexRouter); // Instructions to use API
-app.use('/item', itemsRouter); // Item search
 app.use('/items', itemsRouter); // Items search
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);

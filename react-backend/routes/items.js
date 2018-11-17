@@ -12,7 +12,7 @@ router.post('/', function (req, res, next) { // Search items from database. All 
             typeof req.body.name !== "undefined" ||
             typeof req.body.model !== "undefined" ||
             typeof req.body.brand !== "undefined" ||
-            typeof req.body.info !== "undefined" ||
+            typeof req.body.itemInfo !== "undefined" ||
             typeof req.body.address !== "undefined" ||
             typeof req.body.owner !== "undefined" ||
             typeof req.body.category !== "undefined") {
@@ -46,14 +46,14 @@ router.post('/', function (req, res, next) { // Search items from database. All 
 
 router.post('/insert', function (req, res, next) {
     if (req.session.login === true && req.session.isAdmin === 1) {
-
+        console.log(req.body);
         if (
-            typeof req.body.name !== "undefined" ||
+            (typeof req.body.name !== "undefined"  && req.body.name.length > 0) ||
             typeof req.body.model !== "undefined" ||
             typeof req.body.brand !== "undefined" ||
-            typeof req.body.info !== "undefined" ||
-            typeof req.body.address !== "undefined" ||
-            typeof req.body.owner !== "undefined" ||
+            typeof req.body.itemInfo !== "undefined" ||
+            (typeof req.body.address !== "undefined" && req.body.name.length > 0) ||
+            (typeof req.body.owner !== "undefined" && req.body.name.owner > 0)  ||
             typeof req.body.category !== "undefined") {
             db.query(`INSERT INTO item 
         (name,model,brand,info,address,owner,category) 
@@ -61,7 +61,7 @@ router.post('/insert', function (req, res, next) {
         ('${req.body.name}'
         ,'${req.body.model}'
         ,'${req.body.brand}'
-        ,'${req.body.info}'
+        ,'${req.body.itemInfo}'
         ,'${req.body.address}'
         ,'${req.body.owner}'
         ,'${req.body.category}');`)
@@ -95,7 +95,7 @@ router.post('/modify', function (req, res, next) {
         if (typeof req.body.name !== "undefined" ||
             typeof req.body.model !== "undefined" ||
             typeof req.body.brand !== "undefined" ||
-            typeof req.body.info !== "undefined" ||
+            typeof req.body.itemInfo !== "undefined" ||
             typeof req.body.address !== "undefined" ||
             typeof req.body.owner !== "undefined" ||
             typeof req.body.category !== "undefined") {
@@ -103,7 +103,7 @@ router.post('/modify', function (req, res, next) {
         name='${req.body.name}'
         ,model='${req.body.model}'
         ,brand='${req.body.brand}'
-        ,info='${req.body.info}'
+        ,info='${req.body.itemInfo}'
         ,address='${req.body.address}'
         ,owner='${req.body.owner}'
         ,category='${req.body.category}'

@@ -2,15 +2,27 @@ import React, {Component} from 'react';
 import auth from '../Auth'
 import {Redirect} from "react-router-dom";
 
+// Components
+import ItemTable from './ItemTable';
+import ItemModal from './ItemModal';
+
 class MainPage extends Component {
     constructor(props) {
         super(props);
-        this.state={authenticated:false}
+        this.state={authenticated:false,showModal:false};
 
+        this.showModal = this.showModal.bind(this);
+    }
+
+    componentWillUnmount(){
+        auth.logout();
+    }
+
+    showModal() {
+        this.setState({showModal: !this.state.showModal});
     }
 
     render() {
-        console.log(auth.isAuthenticatedBool());
         if (!auth.isAuthenticatedBool()) {
             return (
                 <Redirect
@@ -37,6 +49,8 @@ class MainPage extends Component {
                     }
                     }>Logout
                     </button>
+                    <ItemTable/>
+                    {this.state.showModal?<ItemModal title={"Modify"} />:""}
                 </div>
             );
         }

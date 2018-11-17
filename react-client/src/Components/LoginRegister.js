@@ -2,13 +2,9 @@ import {Component} from "react";
 import React from "react";
 import auth from '../Auth';
 
-// Components
-import RegSuccces, {RegSuccess} from './RegSuccess'
-
 export class LoginRegister extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
         this.state = {
             inputUsernameLog: "",
             inputPasswordLog: "",
@@ -186,34 +182,6 @@ const UsernameLength = () => {
     );
 };
 
-class UsernameTip extends Component { // Is shown IF username is not available or does not meet the requirements.
-    constructor(props) {
-        super(props);
-        this.state = {available: props.available, lok: props.lok, userMessage: ""}
-    }
-
-    ChooseMessage() {
-        if (!this.state.available && !this.state.lok) {
-            return "Username is all ready taken and is too short(>3)!";
-        } else if (!this.state.available) {
-            return "Username is all ready taken!";
-        } else if (!this.state.lok) {
-            return "Username is too short(>3)!";
-        } else {
-            return (null);
-        }
-    }
-
-    render() {
-        return (
-            <div id="usernameTip" className="">
-                <small id="usernameHelp" className="text-danger">
-                    {this.ChooseMessage()}
-                </small>
-            </div>
-        );
-    }
-}
 
 class PwdTip extends Component { // Is shown IF password does not meet the minimum requirements.
     render() {

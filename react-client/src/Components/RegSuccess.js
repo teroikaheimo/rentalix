@@ -1,10 +1,6 @@
 import React, {Component} from 'react';
 
 export class RegSuccess extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
 
         return (

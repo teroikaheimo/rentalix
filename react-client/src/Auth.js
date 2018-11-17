@@ -1,3 +1,4 @@
+import settings from './Components/Settings';
 class Auth { // Class to control user access to main page.
     constructor() {
         this.authenticated = false;
@@ -5,9 +6,8 @@ class Auth { // Class to control user access to main page.
     }
 
     usernameAvailable(username) {
-        console.log(username);
         return new Promise((resolve,reject)=>{
-            fetch("/register/available", {
+            fetch(settings.usernameAvailable, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',
@@ -27,7 +27,7 @@ class Auth { // Class to control user access to main page.
     register(username, pwd, pwdCheck) {
         return new Promise((resolve,reject)=>{
             if (this.usernameAvailable(username) && username.length > 3 && (pwd === pwdCheck)) {
-                fetch("/register/", {
+                fetch(settings.register, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -51,7 +51,7 @@ class Auth { // Class to control user access to main page.
     login(username, password) {
         return new Promise((resolve, reject) => {
             if (username.length > 3 && password.length > 3) {
-                fetch("/login", {
+                fetch(settings.login, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -78,7 +78,7 @@ class Auth { // Class to control user access to main page.
 
     logout() {
         return new Promise((resolve, reject) => {
-            fetch("/logout", {
+            fetch(settings.logout, {
                 method: 'POST',
                 headers: {
                     Accept: 'application/json',

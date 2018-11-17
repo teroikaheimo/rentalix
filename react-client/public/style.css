@@ -1,8 +1,14 @@
 html,body{
     height:100vh;
     overflow: auto;
+    margin: 0;
+    padding: 0;
 }
 
+.container-fluid{
+    padding:0;
+    background: rgba(17,17,17,0.92);
+}
 
 .loginOther {
     height: 100vh;
