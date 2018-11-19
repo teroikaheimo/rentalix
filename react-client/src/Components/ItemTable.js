@@ -21,9 +21,7 @@ export default class ItemTable extends Component {
     render() {
 
         const result = this.state.data.map((inputRowData, index) =>
-            <ItemTableRow returnHeader={false} key={index} rowData={inputRowData}/>);
-
-        console.log(result);
+            <ItemTableRow toggleModalRemote={this.props.toggleModalRemote} returnHeader={false} key={index} rowData={inputRowData}/>);
 
         return (
             <div className="ItemTable">

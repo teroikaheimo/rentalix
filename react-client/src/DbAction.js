@@ -7,7 +7,7 @@ class DbAction { // Class to control user access to main page.
         this.itemToModifyId="";
     }
 
-    fetchItems(id, name, model, brand, info, address, owner, category) {
+    fetchItems(id, name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
             if (auth.isAuthenticated()) {
                 fetch(settings.getItems, {
@@ -25,30 +25,25 @@ class DbAction { // Class to control user access to main page.
                         "address": address || "",
                         "owner": owner || "",
                         "category": category || ""
-                    }),
-                })
-                    .then(result => result.json())
-                    .then(result => {
-                        this.itemData = result
                     })
-                    .then(() => {
-                        resolve(true);
-                        console.log(this.itemData);
+                }).then(result => result.json())
+                    .then((result) => {
+                        resolve(result);
                     })
                     .catch(() => {
-                        reject(false)
+                        reject("Fetching failed!")
                     });
             } else {
-                reject(false)
+                reject("Not authenticated to fetch!")
             }
         });
     }
 
-    getItems(id, name, model, brand, info, address, owner, category) {
+    getItems(id, name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
             this.fetchItems(id, name, model, brand, info, address, owner, category)
-                .then(() => {
-                    resolve(this.itemData)
+                .then((result) => {
+                    resolve(result)
                 })
                 .catch(() => {
                     reject(false)
@@ -56,7 +51,8 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    insertItem(name, model, brand, info, address, owner, category) {
+    insertItem(name,  brand,model, info, address, owner, category) {
+        console.log(name,address,owner);
         return new Promise((resolve, reject) => {
             if (auth.isAuthenticated()) {
                 fetch(settings.insertItem, {
@@ -91,7 +87,7 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    modifyItem(name, model, brand, info, address, owner, category) {
+    modifyItem(id,name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
             if (auth.isAuthenticated()) {
                 fetch(settings.modifyItem, {
@@ -101,6 +97,7 @@ class DbAction { // Class to control user access to main page.
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        "id": id,
                         "name": name || "",
                         "model": model || "",
                         "brand": brand || "",
@@ -112,16 +109,14 @@ class DbAction { // Class to control user access to main page.
                 })
                     .then(result => result.json())
                     .then(result => {
-                        this.itemData = result
-                    })
-                    .then(() => {
-                        resolve(true);
+                        console.log(result);
+                        resolve(result);
                     })
                     .catch(() => {
-                        reject(false)
+                        reject("Item modify failed")
                     });
             } else {
-                reject(false)
+                reject("Not authenticated!")
             }
         });
     }

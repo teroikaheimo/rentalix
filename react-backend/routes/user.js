@@ -13,31 +13,31 @@ router.post('/modify', function(req, res, next) { //
                 if(rows.length > 0 && rows.length < 2){
                     db.query(`UPDATE user SET password='${req.body.newPassword}' WHERE username='${req.body.username}' AND password='${req.body.password}';`)
                         .then(() =>{
-                                res.send({success:true,message:"User password changed"});
+                                res.json({success:true,message:"User password changed"});
                         })
                         .catch(err =>{
                             console.log(err);
                             if(err) {
                                 res.status(503);
-                                res.send({success:false,message:"Server error #1"})
+                                res.json({success:false,message:"Server error #1"})
                             }
                         });
 
                 } else{
                     res.status(503);
-                    res.send({success:false,message:"Wrong password!"})
+                    res.json({success:false,message:"Wrong password!"})
                 }
             })
             .catch(err =>{
                 console.log(err);
                 if(err) {
                     res.status(503);
-                    res.send({success:false,message:"Server error #2"})
+                    res.json({success:false,message:"Server error #2"})
                 }
             });
     }else{
         res.status(400);
-        res.send({success:false,message:"Bad request"});
+        res.json({success:false,message:"Bad request"});
     }
 });
 

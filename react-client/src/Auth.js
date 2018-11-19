@@ -1,12 +1,14 @@
 import settings from './Components/Settings';
+
 class Auth { // Class to control user access to main page.
     constructor() {
         this.authenticated = false;
         this.username = "";
+        this.admin = false;
     }
 
     usernameAvailable(username) {
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             fetch(settings.usernameAvailable, {
                 method: 'POST',
                 headers: {
@@ -16,16 +18,20 @@ class Auth { // Class to control user access to main page.
                 body: JSON.stringify({
                     username: username
                 }),
-            }).then(result => {
-                if(result.ok){
-                    resolve(result.ok);
-                }else{reject(false);}
+            }).then(result => result.json())
+                .then(result => {
+                if (result.success) {
+                    resolve(result.success);
+                } else {
+                    console.log(result);
+                    reject(false);
+                }
             }).catch(err => console.log(err));
         });
     }
 
     register(username, pwd, pwdCheck) {
-        return new Promise((resolve,reject)=>{
+        return new Promise((resolve, reject) => {
             if (this.usernameAvailable(username) && username.length > 3 && (pwd === pwdCheck)) {
                 fetch(settings.register, {
                     method: 'POST',
@@ -37,11 +43,13 @@ class Auth { // Class to control user access to main page.
                         username: username,
                         password: pwd
                     }),
-                })
+                }).then(result => result.json())
                     .then(result => {
-                        if(result.ok){
+                        if (result.success) {
                             resolve(true);
-                        }else{reject(false)}
+                        } else {
+                            reject(false)
+                        }
                     }).catch(err => console.log(err));
             }
         });
@@ -58,19 +66,18 @@ class Auth { // Class to control user access to main page.
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        username: username,
-                        password: password
-                    }),
-                }).then(result => {
-                    if (result.ok) {
-                        this.authenticated = true;
-                        this.username = username;
-                        resolve();
-
-                    } else {
-                        reject();
-                    }
-                }).catch(err => console.log(err));
+                        "username": username,
+                        "password": password
+                    })
+                }).then(result => result.json())
+                    .then(result => {
+                        if (result[0]) {
+                            this.admin = result[0].admin;
+                            this.authenticated = true;
+                            this.username = result[0].username;
+                            resolve(true);
+                        }
+                    }).catch(err => console.log(err));
             }
         });
 
@@ -84,12 +91,13 @@ class Auth { // Class to control user access to main page.
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 }
-            }).then(result => {
-                if (result.ok) {
+            }).then(result => result.json())
+                .then(result => {
+                if (result.success) {
                     this.authenticated = false;
-                    resolve();
+                    resolve(true);
                 } else {
-                    reject();
+                    reject("Logout failed");
                 }
 
             }).catch(err => console.log(err));
@@ -113,6 +121,10 @@ class Auth { // Class to control user access to main page.
         } else {
             return false
         }
+    }
+
+    isAdmin(){
+        return this.admin;
     }
 
     getUsername() {

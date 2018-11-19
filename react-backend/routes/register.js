@@ -11,17 +11,17 @@ function returnUser(req, res, err) { // INSERTs new user to database.
             .then(rows => {
                 if (rows == "") {
                     db.query(`INSERT INTO user (username,password) VALUES ('${req.body.username}','${req.body.password}');`)
-                        .then(res.send({message: true}));
+                        .then(res.json({success: true}));
                 } else {
-                    res.status(503).send({success: false, message: "Server error #1"})
+                    res.status(503).json({success: false, message: "Server error #1"})
                 }
             }).catch(err => {
             if (err) {
-                res.status(503).send({success: false, message: "Server error #2"})
+                res.status(503).json({success: false, message: "Server error #2"})
             }
         });
     } else {
-        res.status(400).send({success: false, message: "Bad request"});
+        res.status(400).json({success: false, message: "Bad request"});
     }
 }
 
@@ -37,11 +37,11 @@ function isAvailable(req, res) { // Returns true IF username available
             }).catch(err => {
             if (err) {
                 console.log(err);
-                res.status(503).send({success: false, message: "Bad request!"})
+                res.status(503).json({success: false, message: "Bad request!"})
             }
         });
     } else {
-        res.status(400).send({success: false, message: "Bad request!"});
+        res.status(400).json({success: false, message: "Bad request!"});
     }
 
 }

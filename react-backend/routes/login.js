@@ -10,7 +10,6 @@ router.post('/', function(req, res, next) { // Returns username and info does th
         req.session.isSet = true;
         req.session.login = false;
 
-        console.log(req.body.username+" "+req.body.password);
         if(req.body.username != null && req.body.password != null){
             db.query("SELECT username,admin FROM user WHERE password='"+req.body.password+"' AND username='"+req.body.username+"';")
                 .then(rows =>{
@@ -18,24 +17,24 @@ router.post('/', function(req, res, next) { // Returns username and info does th
                         req.session.login = true;
                         req.session.username = rows[0].username;
                         req.session.isAdmin = rows[0].admin; // sets admin status if user has one.
-                        res.send(rows);
+                        res.json(rows);
                     } else{
                         res.status(503);
-                        res.send({success:false,message:"Login error"})
+                        res.json({success:false,message:"Login error"})
                     }
                 })
                 .catch(err =>{
                     console.log(err);
                     if(err) {
                         res.status(503);
-                        res.send({success:false,message:"Server error"})
+                        res.json({success:false,message:"Server error"})
                     }
                 });
         }else{
             res.status(400);
-            res.send({success:false,message:"Bad request"});
+            res.json({success:false,message:"Bad request"});
         }
-    } else {res.status(400).send({success:false,message:"All ready logged in!"});}
+    } else {res.status(400).json({success:false,message:"All ready logged in!"});}
 });
 
 module.exports = router;

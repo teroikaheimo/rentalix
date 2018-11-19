@@ -11,7 +11,7 @@ export class ItemTableRow extends Component {
                     <ColData data={this.props.rowData.brand} />
                     <ColData data={this.props.rowData.address} />
                     <ColData data={this.props.rowData.owner} />
-                    <ItemTableRowMenu id={this.props.rowData.serial}/>
+                    <ItemTableRowMenu toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial}/>
                 </tr>
         )
     }

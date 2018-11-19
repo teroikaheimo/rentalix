@@ -5,9 +5,10 @@ import auth from '../Auth';
 export class LoginRegister extends Component {
     constructor(props) {
         super(props);
+        // TODO remove default username and password values
         this.state = {
-            inputUsernameLog: "",
-            inputPasswordLog: "",
+            inputUsernameLog: "admin",
+            inputPasswordLog: "admin",
             inputUsernameReg: "",
             inputPasswordReg: "",
             inputPasswordConfReg: "",

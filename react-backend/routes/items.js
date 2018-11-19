@@ -6,6 +6,7 @@ const db = new Database(con);
 
 
 router.post('/', function (req, res, next) { // Search items from database. All parameters optional.
+
     if (req.session.login === true) {
         if (
             typeof req.body.id !== "undefined" ||
@@ -46,7 +47,6 @@ router.post('/', function (req, res, next) { // Search items from database. All 
 
 router.post('/insert', function (req, res, next) {
     if (req.session.login === true && req.session.isAdmin === 1) {
-        console.log(req.body);
         if (
             (typeof req.body.name !== "undefined"  && req.body.name.length > 0) ||
             typeof req.body.model !== "undefined" ||
@@ -90,9 +90,11 @@ router.post('/insert', function (req, res, next) {
 });
 
 router.post('/modify', function (req, res, next) {
-    if (req.session.login === true && req.session.isAdmin === 1) {
 
-        if (typeof req.body.name !== "undefined" ||
+    if (req.session.login === true && req.session.isAdmin === 1) {
+        console.log(req.body);
+        if (typeof req.body.id !== "undefined" ||
+            typeof req.body.name !== "undefined" ||
             typeof req.body.model !== "undefined" ||
             typeof req.body.brand !== "undefined" ||
             typeof req.body.itemInfo !== "undefined" ||
@@ -100,7 +102,8 @@ router.post('/modify', function (req, res, next) {
             typeof req.body.owner !== "undefined" ||
             typeof req.body.category !== "undefined") {
             db.query(`UPDATE item SET 
-        name='${req.body.name}'
+         serial='${req.body.id}' 
+        ,name='${req.body.name}'
         ,model='${req.body.model}'
         ,brand='${req.body.brand}'
         ,info='${req.body.itemInfo}'

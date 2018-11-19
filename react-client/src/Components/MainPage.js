@@ -9,18 +9,26 @@ import ItemModal from './ItemModal';
 class MainPage extends Component {
     constructor(props) {
         super(props);
-        this.state={authenticated:false,showModal:false};
-
-        this.showModal = this.showModal.bind(this);
+        this.state = {
+            authenticated: false,
+            toggleModalFunc: ()=>{}
+        }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         auth.logout();
     }
 
-    showModal() {
-        this.setState({showModal: !this.state.showModal});
+    onChangeModal(toggleModalFunc){ // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
+        this.setState({
+            toggleModalFunc: toggleModalFunc
+        })
     }
+
+    OnChangeModalRemote(id,addMode) { // Passed to children that want to toggle modal.
+        this.state.toggleModalFunc(id,addMode);
+    };
+
 
     render() {
         if (!auth.isAuthenticatedBool()) {
@@ -34,10 +42,11 @@ class MainPage extends Component {
                     }}
                 />
             );
-        }else {
+        } else {
             return (
                 <div className="MainPage">
                     <p>Welcome {auth.getUsername()}</p>
+                    <button className={"btn btn-primary"} onClick={()=>{this.OnChangeModalRemote("-",true)}}>Add item</button>
                     <button type="button" onClick={() => {
                         auth.logout()
                             .then(() => {
@@ -49,8 +58,8 @@ class MainPage extends Component {
                     }
                     }>Logout
                     </button>
-                    <ItemTable/>
-                    {this.state.showModal?<ItemModal title={"Modify"} />:""}
+                    <ItemTable toggleModalRemote={this.OnChangeModalRemote.bind(this)} />
+                    <ItemModal toggleModal={this.onChangeModal.bind(this)}/>
                 </div>
             );
         }
