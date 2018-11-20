@@ -1,6 +1,5 @@
 import {Component} from "react";
 import React from "react";
-import auth from '../Auth';
 
 export class LoginRegister extends Component {
     constructor(props) {
@@ -22,6 +21,7 @@ export class LoginRegister extends Component {
         this.checkPwdMatch = this.checkPwdMatch.bind(this);
         this.checkUsername = this.checkUsername.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.Auth = this.props.Auth;
 
     }
 
@@ -36,7 +36,7 @@ export class LoginRegister extends Component {
 
     checkUsername() {
         if (this.state.inputUsernameReg.length > 3) {
-            auth.usernameAvailable(this.state.inputUsernameReg)
+            this.Auth.usernameAvailable(this.state.inputUsernameReg)
                 .then(()=>{this.setState({usernameAvailable: true})})
                 .catch(()=>{this.setState({usernameAvailable: false})});
             this.setState({usernameLength: true})
@@ -87,15 +87,9 @@ export class LoginRegister extends Component {
                                    required/>
                             <button className="btn btn-lg btn-primary btn-block" type="button"
                                     onClick={() => {
-                                        auth.login(this.state.inputUsernameLog, this.state.inputPasswordLog)
-                                            .then(() => {
-                                                    if (auth.isAuthenticated()) {
-                                                        this.props.history.push("/main");
-                                                    }
-                                                }
-                                            )
-                                    }
-                                    }>Sign in
+                                        this.Auth.login(this.state.inputUsernameLog, this.state.inputPasswordLog)
+                                            .then(() => {this.props.history.push("/main");})
+                                            .catch((err)=>console.log(err))}}>Sign in
                             </button>
 
                             <button type="button" className="btn btn-link" data-toggle="modal"
@@ -147,7 +141,7 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={()=>auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
+                                                onClick={()=>this.Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
                                                     .then(()=>{this.setState({regOk:true})})
                                                     .catch(()=>{this.setState({regOk:false})})}
                                                 data-dismiss="modal" className="btn btn-success">Register

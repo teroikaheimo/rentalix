@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import auth from '../Auth'
 import {Redirect} from "react-router-dom";
 
 // Components
@@ -12,11 +11,13 @@ class MainPage extends Component {
         this.state = {
             authenticated: false,
             toggleModalFunc: ()=>{}
-        }
+        };
+
+        this.Auth = this.props.Auth;
     }
 
     componentWillUnmount() {
-        auth.logout();
+        this.Auth.logout();
     }
 
     onChangeModal(toggleModalFunc){ // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
@@ -31,7 +32,7 @@ class MainPage extends Component {
 
 
     render() {
-        if (!auth.isAuthenticatedBool()) {
+        if (!this.Auth.isAuthenticatedBool()) {
             return (
                 <Redirect
                     to={{
@@ -45,12 +46,12 @@ class MainPage extends Component {
         } else {
             return (
                 <div className="MainPage">
-                    <p>Welcome {auth.getUsername()}</p>
+                    <p>Welcome {this.Auth.getUsername()}</p>
                     <button className={"btn btn-primary"} onClick={()=>{this.OnChangeModalRemote("-",true)}}>Add item</button>
                     <button type="button" onClick={() => {
-                        auth.logout()
+                        this.Auth.logout()
                             .then(() => {
-                                    if (auth.isAuthenticated()) {
+                                    if (this.Auth.isAuthenticated()) {
                                         this.props.history.push("/");
                                     }
                                 }
