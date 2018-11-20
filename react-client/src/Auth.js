@@ -5,6 +5,7 @@ class Auth { // Class to control user access to main page.
         this.authenticated = false;
         this.username = "";
         this.admin = false;
+        console.log("RESET");
     }
 
     usernameAvailable(username) {
@@ -76,7 +77,12 @@ class Auth { // Class to control user access to main page.
                             this.authenticated = true;
                             this.username = result[0].username;
                             resolve(true);
-                        }
+                        }else if(result.logged){ // IF all ready logged in
+                            this.admin = result.admin;
+                            this.authenticated = true;
+                            this.username = result.username;
+                            resolve(true);
+                        }else{reject(false);}
                     }).catch(err => console.log(err));
             }
         });
@@ -107,21 +113,25 @@ class Auth { // Class to control user access to main page.
 
     isAuthenticated() {
         return new Promise((resolve, reject) => {
-            if (this.authenticated) {
-                resolve(true);
-            } else {
-                reject(false);
-            }
+            fetch(settings.login, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                })
+            }).then(result => result.json())
+                .then(result => {
+                    if(result.logged){ // IF all ready logged in
+                        this.admin = result.admin;
+                        this.authenticated = true;
+                        this.username = result.username;
+                        resolve(true);
+                    }else{reject(false);}
         });
-    }
+    })}
 
-    isAuthenticatedBool() {
-        if (this.authenticated) {
-            return true
-        } else {
-            return false
-        }
-    }
 
     isAdmin(){
         return this.admin;

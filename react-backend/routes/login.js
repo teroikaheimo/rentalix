@@ -34,7 +34,16 @@ router.post('/', function(req, res, next) { // Returns username and info does th
             res.status(400);
             res.json({success:false,message:"Bad request"});
         }
-    } else {res.status(400).json({success:false,message:"All ready logged in!"});}
+    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.admin});}
 });
+
+router.post('/logged', function(req, res, next) { // Returns username and info does this account have admin access. IF password found
+    if(typeof req.session.login === "undefined" || req.session.login === false){
+        req.session.isSet = true;
+        req.session.login = false;
+
+    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.admin});} // Returns true if user is still logged in
+});
+
 
 module.exports = router;

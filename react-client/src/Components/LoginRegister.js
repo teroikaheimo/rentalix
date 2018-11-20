@@ -15,14 +15,21 @@ export class LoginRegister extends Component {
             pwdMatch: true,
             pwdCheckedOnce: false,
             usernameAvailable: true,
-            usernameLength: true
-        };
+            usernameLength: true,
+            authenticated:false
 
+        };
         this.checkPwdMatch = this.checkPwdMatch.bind(this);
         this.checkUsername = this.checkUsername.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.Auth = this.props.Auth;
 
+    }
+
+    componentWillMount(){
+        this.setState({
+            authenticated:this.Auth.isAuthenticated()
+        });
     }
 
     checkPwdMatch() {
@@ -37,11 +44,15 @@ export class LoginRegister extends Component {
     checkUsername() {
         if (this.state.inputUsernameReg.length > 3) {
             this.Auth.usernameAvailable(this.state.inputUsernameReg)
-                .then(()=>{this.setState({usernameAvailable: true})})
-                .catch(()=>{this.setState({usernameAvailable: false})});
+                .then(() => {
+                    this.setState({usernameAvailable: true})
+                })
+                .catch(() => {
+                    this.setState({usernameAvailable: false})
+                });
             this.setState({usernameLength: true})
         } else {
-            this.setState({usernameLength: false,usernameAvailable: true})
+            this.setState({usernameLength: false, usernameAvailable: true})
         }
     }
 
@@ -51,15 +62,15 @@ export class LoginRegister extends Component {
         });
     };
 
-    displayRegTip(){
-        if(typeof this.state.regOk === "undefined"){
+    displayRegTip() {
+        if (typeof this.state.regOk === "undefined") {
             return "";
-        }else if(this.state.regOk === true){
+        } else if (this.state.regOk === true) {
             return (
                 <div className="alert alert-success" role="alert">
                     Registering was <strong>successful!</strong>
                 </div>)
-        }else if(this.state.regOk === false){
+        } else if (this.state.regOk === false) {
             return (
                 <div className="alert alert-danger" role="alert">
                     Registering <strong>failed</strong>!
@@ -88,14 +99,18 @@ export class LoginRegister extends Component {
                             <button className="btn btn-lg btn-primary btn-block" type="button"
                                     onClick={() => {
                                         this.Auth.login(this.state.inputUsernameLog, this.state.inputPasswordLog)
-                                            .then(() => {this.props.history.push("/main");})
-                                            .catch((err)=>console.log(err))}}>Sign in
+                                            .then(() => {
+                                                this.props.history.push("/main");
+                                            })
+                                            .catch((err) => console.log(err))
+                                    }}>Sign in
                             </button>
 
                             <button type="button" className="btn btn-link" data-toggle="modal"
                                     data-target="#register">
                                 Register
-                            </button><br/>
+                            </button>
+                            <br/>
                             {this.displayRegTip()}
                         </div>
 
@@ -119,11 +134,12 @@ export class LoginRegister extends Component {
                                                placeholder="Username"
                                                required
                                                autoFocus/>
-                                        {this.state.usernameAvailable?"":<UsernameTaken/>}
+                                        {this.state.usernameAvailable ? "" : <UsernameTaken/>}
                                         {this.state.usernameLength ? "" : <UsernameLength/>}
 
                                         <label htmlFor="inputPasswordReg" className="sr-only">Password</label>
-                                        <input type="password" id="inputPasswordReg" onChange={this.handleChange}
+                                        <input type="password" id="inputPasswordReg"
+                                               onChange={this.handleChange}
                                                onBlur={this.state.pwdCheckedOnce ? this.checkPwdMatch : () => {
                                                }} className="form-control my-1 py-3" placeholder="Password"
                                                required/>
@@ -141,9 +157,13 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={()=>this.Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
-                                                    .then(()=>{this.setState({regOk:true})})
-                                                    .catch(()=>{this.setState({regOk:false})})}
+                                                onClick={() => this.Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
+                                                    .then(() => {
+                                                        this.setState({regOk: true})
+                                                    })
+                                                    .catch(() => {
+                                                        this.setState({regOk: false})
+                                                    })}
                                                 data-dismiss="modal" className="btn btn-success">Register
                                         </button>
                                     </div>
@@ -153,32 +173,35 @@ export class LoginRegister extends Component {
                     </div>
                 </div>
             </div>
-        );
-    }
+        )
+    };
 }
 
-const UsernameTaken = () => {
-    return (
-        <div id="usernameTaken" className="">
-            <small id="usernameHelp" className="text-danger">
-                Username is all ready taken!
-            </small>
-        </div>
-    );
-};
+const
+    UsernameTaken = () => {
+        return (
+            <div id="usernameTaken" className="">
+                <small id="usernameHelp" className="text-danger">
+                    Username is all ready taken!
+                </small>
+            </div>
+        );
+    };
 
-const UsernameLength = () => {
-    return (
-        <div id="usernameLength" className="">
-            <small id="usernameHelp" className="text-danger">
-                Username must be longer than three characters!
-            </small>
-        </div>
-    );
-};
+const
+    UsernameLength = () => {
+        return (
+            <div id="usernameLength" className="">
+                <small id="usernameHelp" className="text-danger">
+                    Username must be longer than three characters!
+                </small>
+            </div>
+        );
+    };
 
 
-class PwdTip extends Component { // Is shown IF password does not meet the minimum requirements.
+class PwdTip
+    extends Component { // Is shown IF password does not meet the minimum requirements.
     render() {
         return (
             <div id="pwdTip" className="">

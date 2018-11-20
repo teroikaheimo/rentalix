@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Route, Switch} from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import './App.css';
 // Components
 import {LoginRegister} from './Components/LoginRegister'
@@ -21,7 +21,7 @@ class App extends Component {
             <div className={"App"}>
                 <Switch>
                     <Route exact path="/" render={ props => <LoginRegister {...props} Auth={this.state.Auth} />} />}/>
-                    <Route exact path="/main" render={ props => <MainPage {...props} Auth={this.state.Auth} />} />}/>
+                    <Route exact path="/main" render={ props => <MainPage {...props} Auth={this.state.Auth} />} />}/>}
                     <Route path="*" component={() => "404 NOT FOUND"} />
                 </Switch>
             </div>

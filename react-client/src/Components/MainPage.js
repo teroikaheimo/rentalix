@@ -14,10 +14,13 @@ class MainPage extends Component {
         };
 
         this.Auth = this.props.Auth;
+        this.Logout = this.Logout.bind(this);
     }
 
-    componentWillUnmount() {
-        this.Auth.logout();
+    componentWillMount(){
+        this.setState({
+            authenticated: this.Auth.isAuthenticated()
+        })
     }
 
     onChangeModal(toggleModalFunc){ // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
@@ -30,9 +33,18 @@ class MainPage extends Component {
         this.state.toggleModalFunc(id,addMode);
     };
 
+    Logout(){
+            this.Auth.logout()
+                .then(() => {
+                        if (this.Auth.isAuthenticated()) {
+                            this.props.history.push("/");
+                        }
+                    }
+                )
+    }
 
     render() {
-        if (!this.Auth.isAuthenticatedBool()) {
+        if (!this.state.authenticated) {
             return (
                 <Redirect
                     to={{
@@ -48,16 +60,7 @@ class MainPage extends Component {
                 <div className="MainPage">
                     <p>Welcome {this.Auth.getUsername()}</p>
                     <button className={"btn btn-primary"} onClick={()=>{this.OnChangeModalRemote("-",true)}}>Add item</button>
-                    <button type="button" onClick={() => {
-                        this.Auth.logout()
-                            .then(() => {
-                                    if (this.Auth.isAuthenticated()) {
-                                        this.props.history.push("/");
-                                    }
-                                }
-                            )
-                    }
-                    }>Logout
+                    <button type="button" onClick={this.Logout}>Logout
                     </button>
                     <ItemTable toggleModalRemote={this.OnChangeModalRemote.bind(this)} />
                     <ItemModal toggleModal={this.onChangeModal.bind(this)}/>
