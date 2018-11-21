@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {Redirect} from "react-router-dom";
 
 // Components
 import ItemTable from './ItemTable';
@@ -12,15 +11,8 @@ class MainPage extends Component {
             authenticated: false,
             toggleModalFunc: ()=>{}
         };
-
         this.Auth = this.props.Auth;
         this.Logout = this.Logout.bind(this);
-    }
-
-    componentWillMount(){
-        this.setState({
-            authenticated: this.Auth.isAuthenticated()
-        })
     }
 
     onChangeModal(toggleModalFunc){ // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
@@ -34,31 +26,14 @@ class MainPage extends Component {
     };
 
     Logout(){
-            this.Auth.logout()
-                .then(() => {
-                        if (this.Auth.isAuthenticated()) {
-                            this.props.history.push("/");
-                        }
-                    }
-                )
+            this.props.Logout();
     }
-
+    //<p>Welcome {this.Auth.getUsername()}</p>
     render() {
-        if (!this.state.authenticated) {
-            return (
-                <Redirect
-                    to={{
-                        pathname: "/",
-                        state: {
-                            from: this.props.location
-                        }
-                    }}
-                />
-            );
-        } else {
+        console.log(this.props.test);
             return (
                 <div className="MainPage">
-                    <p>Welcome {this.Auth.getUsername()}</p>
+
                     <button className={"btn btn-primary"} onClick={()=>{this.OnChangeModalRemote("-",true)}}>Add item</button>
                     <button type="button" onClick={this.Logout}>Logout
                     </button>
@@ -67,7 +42,6 @@ class MainPage extends Component {
                 </div>
             );
         }
-    }
 }
 
 export default MainPage;

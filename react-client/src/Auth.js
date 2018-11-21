@@ -2,8 +2,8 @@ import settings from './Components/Settings';
 
 class Auth { // Class to control user access to main page.
     constructor() {
+        this.username = "hahdfad";
         this.authenticated = false;
-        this.username = "";
         this.admin = false;
         console.log("RESET");
     }
@@ -21,13 +21,13 @@ class Auth { // Class to control user access to main page.
                 }),
             }).then(result => result.json())
                 .then(result => {
-                if (result.success) {
-                    resolve(result.success);
-                } else {
-                    console.log(result);
-                    reject(false);
-                }
-            }).catch(err => console.log(err));
+                    if (result.success) {
+                        resolve(result.success);
+                    } else {
+                        console.log(result);
+                        reject(false);
+                    }
+                }).catch(err => console.log(err));
         });
     }
 
@@ -77,12 +77,14 @@ class Auth { // Class to control user access to main page.
                             this.authenticated = true;
                             this.username = result[0].username;
                             resolve(true);
-                        }else if(result.logged){ // IF all ready logged in
+                        } else if (result.logged) { // IF all ready logged in
                             this.admin = result.admin;
                             this.authenticated = true;
                             this.username = result.username;
                             resolve(true);
-                        }else{reject(false);}
+                        } else {
+                            reject(false);
+                        }
                     }).catch(err => console.log(err));
             }
         });
@@ -99,14 +101,14 @@ class Auth { // Class to control user access to main page.
                 }
             }).then(result => result.json())
                 .then(result => {
-                if (result.success) {
-                    this.authenticated = false;
-                    resolve(true);
-                } else {
-                    reject("Logout failed");
-                }
+                    if (result.success) {
+                        this.authenticated = false;
+                        resolve(true);
+                    } else {
+                        reject("Logout failed");
+                    }
 
-            }).catch(err => console.log(err));
+                }).catch(err => console.log(err));
         });
 
     }
@@ -119,21 +121,23 @@ class Auth { // Class to control user access to main page.
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                })
+                body: JSON.stringify({})
             }).then(result => result.json())
                 .then(result => {
-                    if(result.logged){ // IF all ready logged in
+                    if (result.logged) { // IF all ready logged in
                         this.admin = result.admin;
                         this.authenticated = true;
                         this.username = result.username;
                         resolve(true);
-                    }else{reject(false);}
-        });
-    })}
+                    } else {
+                        reject(false);
+                    }
+                });
+        })
+    }
 
 
-    isAdmin(){
+    isAdmin() {
         return this.admin;
     }
 

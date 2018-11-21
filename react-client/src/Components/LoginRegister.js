@@ -27,9 +27,7 @@ export class LoginRegister extends Component {
     }
 
     componentWillMount(){
-        this.setState({
-            authenticated:this.Auth.isAuthenticated()
-        });
+
     }
 
     checkPwdMatch() {
@@ -98,7 +96,7 @@ export class LoginRegister extends Component {
                                    required/>
                             <button className="btn btn-lg btn-primary btn-block" type="button"
                                     onClick={() => {
-                                        this.Auth.login(this.state.inputUsernameLog, this.state.inputPasswordLog)
+                                        this.props.Login(this.state.inputUsernameLog, this.state.inputPasswordLog)
                                             .then(() => {
                                                 this.props.history.push("/main");
                                             })
