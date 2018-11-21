@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import Auth from '../Auth'
 // Components
 import ItemTable from './ItemTable';
 import ItemModal from './ItemModal';
@@ -9,39 +9,55 @@ class MainPage extends Component {
         super(props);
         this.state = {
             authenticated: false,
-            toggleModalFunc: ()=>{}
+            toggleModalFunc: () => {},
+            updateRowsFunc:()=>{}
         };
-        this.Auth = this.props.Auth;
-        this.Logout = this.Logout.bind(this);
+
+        this.onChangeModalRemote=this.onChangeModalRemote.bind(this);
+        this.onChangeModal=this.onChangeModal.bind(this);
+        this.onItemChange=this.onItemChange.bind(this);
+        this.onItemChangeRemote =this.onItemChangeRemote.bind(this);
     }
 
-    onChangeModal(toggleModalFunc){ // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
+    onChangeModalRemote(id, addMode) { // Passed to children that want to toggle modal.
+        this.state.toggleModalFunc(id, addMode);
+    };
+
+    onChangeModal(toggleModalFunc) { // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
         this.setState({
             toggleModalFunc: toggleModalFunc
         })
     }
 
-    OnChangeModalRemote(id,addMode) { // Passed to children that want to toggle modal.
-        this.state.toggleModalFunc(id,addMode);
-    };
-
-    Logout(){
-            this.props.Logout();
+    onItemChangeRemote(){
+        this.state.updateRowsFunc();
     }
-    //<p>Welcome {this.Auth.getUsername()}</p>
-    render() {
-        console.log(this.props.test);
-            return (
-                <div className="MainPage">
 
-                    <button className={"btn btn-primary"} onClick={()=>{this.OnChangeModalRemote("-",true)}}>Add item</button>
-                    <button type="button" onClick={this.Logout}>Logout
-                    </button>
-                    <ItemTable toggleModalRemote={this.OnChangeModalRemote.bind(this)} />
-                    <ItemModal toggleModal={this.onChangeModal.bind(this)}/>
-                </div>
-            );
-        }
+    onItemChange(updateRowsFunc){
+        this.setState({
+            updateRowsFunc: updateRowsFunc
+        })
+    }
+
+    logout() {
+        this.props.logout();
+    }
+
+    render() {
+        return (
+            <div className="MainPage">
+                <p>Welcome {this.props.auth.username}</p>
+                <button className={"btn btn-primary"} onClick={() => {
+                    this.onChangeModalRemote("-", true)
+                }}>Add item
+                </button>
+                <button type="button" onClick={() => this.logout()}>Logout
+                </button>
+                <ItemTable toggleModalRemote={this.onChangeModalRemote} onItemChange={this.onItemChange} />
+                <ItemModal toggleModal={this.onChangeModal} auth={this.props.auth} onItemChangeRemote={this.onItemChangeRemote}/>
+            </div>
+        );
+    }
 }
 
 export default MainPage;

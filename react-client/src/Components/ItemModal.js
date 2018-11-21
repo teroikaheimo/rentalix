@@ -1,7 +1,6 @@
 import {Component} from "react";
 import React from "react";
 import DbAction from "../DbAction";
-import Auth from '../Auth'
 import {Button, Modal, ModalHeader, ModalBody} from 'reactstrap';
 
 class ItemModal extends Component {
@@ -97,6 +96,7 @@ class ItemModal extends Component {
             this.state.inputOwner,
             this.state.inputCategory)
             .then(()=>{this.toggle(this.state.id)})
+            .then(()=>{this.props.onItemChangeRemote()}) // WONT WORK?
     }
 
     addItem(){
@@ -109,6 +109,7 @@ class ItemModal extends Component {
             this.state.inputOwner,
             this.state.inputCategory)
             .then(()=>{this.toggle(this.state.id)})
+            .then(()=>{this.props.onItemChangeRemote()}) // WONT WORK?
     }
 
 adminButtons(){
@@ -117,7 +118,7 @@ adminButtons(){
         );
 }
 addNewBtn(){
-        return(
+    return(
             <Button color={"success"} onClick={this.addItem}>Add new</Button>
         );
 }
@@ -215,8 +216,9 @@ userButtons(){
                             </div>
                         </form>
                     </ModalBody>
-                    {(Auth.isAdmin()&&this.state.addNew)? this.addNewBtn() : this.adminButtons()}
-                    {!Auth.isAdmin()&&this.userButtons()}
+                    {(this.props.auth.admin&&this.state.addNew)? this.addNewBtn() :""}
+                    {(this.props.auth.admin&&!this.state.addNew)&& this.adminButtons()}
+                    {!this.props.auth.admin&&this.userButtons()}
                 </Modal>
             </div>
         )

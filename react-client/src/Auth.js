@@ -2,7 +2,7 @@ import settings from './Components/Settings';
 
 class Auth { // Class to control user access to main page.
     constructor() {
-        this.username = "hahdfad";
+        this.username = "";
         this.authenticated = false;
         this.admin = false;
         console.log("RESET");
@@ -72,16 +72,24 @@ class Auth { // Class to control user access to main page.
                     })
                 }).then(result => result.json())
                     .then(result => {
+                        let sendResult={};
                         if (result[0]) {
-                            this.admin = result[0].admin;
+                            this.admin = (result[0].admin === 1);
                             this.authenticated = true;
                             this.username = result[0].username;
-                            resolve(true);
+
+                            sendResult.username = result[0].username;
+                            sendResult.admin = (result[0].admin === 1);
+                            resolve(sendResult);
+
                         } else if (result.logged) { // IF all ready logged in
-                            this.admin = result.admin;
+                            this.admin = (result.admin === 1);
                             this.authenticated = true;
                             this.username = result.username;
-                            resolve(true);
+
+                            sendResult.username = result.username;
+                            sendResult.admin = (result.admin === 1);
+                            resolve(sendResult);
                         } else {
                             reject(false);
                         }
@@ -105,7 +113,7 @@ class Auth { // Class to control user access to main page.
                         this.authenticated = false;
                         resolve(true);
                     } else {
-                        reject("Logout failed");
+                        reject("logout failed");
                     }
 
                 }).catch(err => console.log(err));

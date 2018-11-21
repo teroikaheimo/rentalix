@@ -34,7 +34,7 @@ router.post('/', function(req, res, next) { // Returns username and info does th
             res.status(400);
             res.json({success:false,message:"Bad request"});
         }
-    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.admin});}
+    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.isAdmin});}
 });
 
 router.post('/logged', function(req, res, next) { // Returns username and info does this account have admin access. IF password found
@@ -42,7 +42,7 @@ router.post('/logged', function(req, res, next) { // Returns username and info d
         req.session.isSet = true;
         req.session.login = false;
 
-    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.admin});} // Returns true if user is still logged in
+    } else {res.status(200).json({logged:true,username:req.session.username,admin:req.session.isAdmin});} // Returns true if user is still logged in
 });
 
 

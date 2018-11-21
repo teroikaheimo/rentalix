@@ -11,8 +11,12 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
-            Auth:Auth
+            auth:{
+                username: "",
+                authenticated:false,
+                admin:false
+            }
+
         };
         this.onLogout = this.onLogout.bind(this);
         this.onLogin = this.onLogin.bind(this);
@@ -20,22 +24,21 @@ class App extends Component {
 
     onLogin(username,password){
         return new Promise((resolve,reject)=>{
-            this.state.Auth.login(username,password)
-                .then(()=>{
-                    this.setState({Auth:{authenticated:true}});
-                }).then(()=>resolve())
-                .catch(()=>reject())
+            Auth.login(username,password)
+                .then((result)=>{
+                    this.setState({auth:{authenticated:true,admin:result.admin,username:result.username}});
+                }).then(()=>resolve( ))
+                .catch((err)=>reject(console.log(err)))
         });
-
     }
 
     onLogout(){
         return new Promise((resolve,reject)=>{
-            this.state.Auth.logout()
+            Auth.logout()
                 .then(()=>{
-                    this.setState({Auth:{authenticated:false}});
+                    this.setState({auth:{authenticated:false,admin:false,username:""}});
                 }).then(()=>resolve())
-                .catch(()=>reject())
+                .catch((err)=>reject(console.log(err)))
         });
     }
 
@@ -43,10 +46,11 @@ class App extends Component {
         return (
             <div className={"App"}>
                 <Switch>
-                    <Route exact path="/" render={ props => <LoginRegister {...props} Login={this.onLogin} Auth={this.state.Auth} />} />
 
-                    {this.state.Auth.authenticated?
-                        <Route exact path="/main" render={ props => <MainPage {...props} Logout={this.onLogout} Auth={this.state.Auth} test={"HALOO"} />} />
+                    <Route exact path="/" render={ props => <LoginRegister {...props} Login={this.onLogin}/>} />
+
+                    {this.state.auth.authenticated?
+                        <Route exact path="/main" render={ props => <MainPage {...props} logout={this.onLogout} auth={this.state.auth} />} />
                         :
                         <Redirect to={{pathname: "/", state: { from: this.props.location }}}/>}
 

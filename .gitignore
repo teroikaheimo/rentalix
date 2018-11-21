@@ -6,9 +6,6 @@ react-client/node_modules
 /.pnp
 .pnp.js
 
-# IDE
-/.idea
-
 # testing
 /coverage
 

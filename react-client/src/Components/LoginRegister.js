@@ -1,5 +1,6 @@
 import {Component} from "react";
 import React from "react";
+import Auth from '../Auth';
 
 export class LoginRegister extends Component {
     constructor(props) {
@@ -22,7 +23,6 @@ export class LoginRegister extends Component {
         this.checkPwdMatch = this.checkPwdMatch.bind(this);
         this.checkUsername = this.checkUsername.bind(this);
         this.handleChange = this.handleChange.bind(this);
-        this.Auth = this.props.Auth;
 
     }
 
@@ -41,7 +41,7 @@ export class LoginRegister extends Component {
 
     checkUsername() {
         if (this.state.inputUsernameReg.length > 3) {
-            this.Auth.usernameAvailable(this.state.inputUsernameReg)
+            Auth.usernameAvailable(this.state.inputUsernameReg)
                 .then(() => {
                     this.setState({usernameAvailable: true})
                 })
@@ -155,7 +155,7 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={() => this.Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
+                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
                                                     .then(() => {
                                                         this.setState({regOk: true})
                                                     })

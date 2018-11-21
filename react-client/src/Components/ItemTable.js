@@ -6,12 +6,22 @@ export default class ItemTable extends Component {
     constructor(props) {
         super(props);
         this.state = {data: []};
+        this.onItemUpdate = this.onItemUpdate.bind(this);
     }
 
     componentDidMount() {
+        this.updateRows();
+    }
+
+    onItemUpdate(){
+        this.props.onItemChange(this.updateRows.bind(this));
+    }
+
+    updateRows(){
         dbActions.getItems()
             .then((result) => {
-                this.setState({data: result})
+                this.setState({data: result});
+                console.log("update");
             })
             .catch((err) => {
                 console.log(err)
