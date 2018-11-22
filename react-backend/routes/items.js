@@ -26,22 +26,22 @@ router.post('/', function (req, res, next) { // Search items from database. All 
                 AND owner LIKE '%${req.body.owner}%' 
                 AND category LIKE '%${req.body.category}%' LIMIT 50;`)
                 .then(rows => {
-                    res.send(rows);
+                    res.json(rows);
                 })
                 .catch((err) => {
                     console.log(err);
                     res.status(503);
-                    res.send({success: false, message: 'Server error #1'});
+                    res.json({success: false, message: 'Server error #1'});
                 })
         } else {
             if (typeof req.session.isSet === "undefined") {
-                res.status(404).send({success: false, message: 'Error. Not logged in!'});
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
             } else {
-                res.status(400).send({success: false, message: 'Bad request'});
+                res.status(400).json({success: false, message: 'Bad request'});
             }
         }
     } else {
-        res.status(400).send({success: false, message: 'Bad request'});
+        res.status(400).json({success: false, message: 'Bad request'});
     }
 });
 
@@ -66,25 +66,25 @@ router.post('/insert', function (req, res, next) {
         ,'${req.body.owner}'
         ,'${req.body.category}');`)
                 .then(() => {
-                    res.send({success: true, message: "New item added!"});
+                    res.json({success: true, message: "New item added!"});
                 })
                 .catch((err) => {
                     console.log(err);
                     res.status(503);
-                    res.send({success: false, message: 'Server error'});
+                    res.json({success: false, message: 'Server error'});
                 })
         } else {
             res.status(400);
-            res.send({success: false, message: 'Bad request'});
+            res.json({success: false, message: 'Bad request'});
         }
 
     } else {
         if (typeof req.session.isSet === "undefined") {
             res.status(404);
-            res.send({success: false, message: 'Error. Not logged in!'});
+            res.json({success: false, message: 'Error. Not logged in!'});
         } else {
             res.status(400);
-            res.send({success: false, message: 'Bad request'});
+            res.json({success: false, message: 'Bad request'});
         }
     }
 });
@@ -112,24 +112,24 @@ router.post('/modify', function (req, res, next) {
         ,category='${req.body.category}'
         WHERE serial='${req.body.id}';`)
                 .then(() => {
-                    res.send({success: true, message: "Item modified!"});
+                    res.json({success: true, message: "Item modified!"});
                 })
                 .catch((err) => {
                     console.log(err);
                     res.status(503);
-                    res.send({success: false, message: 'Server error'});
+                    res.json({success: false, message: 'Server error'});
                 })
         } else {
             res.status(400);
-            res.send({success: false, message: 'Bad request'});
+            res.json({success: false, message: 'Bad request'});
         }
     } else {
         if (typeof req.session.isSet === "undefined") {
             res.status(404);
-            res.send({success: false, message: 'Error. Not logged in!'});
+            res.json({success: false, message: 'Error. Not logged in!'});
         } else {
             res.status(400);
-            res.send({success: false, message: 'Bad request'});
+            res.json({success: false, message: 'Bad request'});
         }
     }
 });
@@ -138,21 +138,72 @@ router.post('/delete', function (req, res, next) {
     if (req.session.login === true && req.session.isAdmin === 1 && typeof req.body.id !== "undefined") {
         db.query(`DELETE FROM item WHERE serial='${req.body.id}';`)
             .then(() => {
-                res.send({success: true, message: "Item deleted!"});
+                res.json({success: true, message: "Item deleted!"});
             })
             .catch((err) => {
                 console.log(err);
                 res.status(503);
-                res.send({success: false, message: 'Server not responding.'});
+                res.json({success: false, message: 'Server not responding.'});
             })
     } else {
         if (typeof req.session.isSet === "undefined") {
             res.status(404);
-            res.send({success: false, message: 'Error. Not logged in!'});
+            res.json({success: false, message: 'Error. Not logged in!'});
         } else {
             res.status(400);
-            res.send({success: false, message: 'Bad request'});
+            res.json({success: false, message: 'Bad request'});
         }
+    }
+});
+
+router.post('/address', function (req, res, next) { // Search for DISTINCT addresses
+
+    if (req.session.login === true) {
+            db.query(`SELECT DISTINCT address FROM item;`)
+                .then(rows => {
+                    res.json(rows);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #1'});
+                })
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/owner', function (req, res, next) { // Search for DISTINCT owners
+
+    if (req.session.login === true) {
+        db.query(`SELECT DISTINCT owner FROM item;`)
+            .then(rows => {
+                res.json(rows);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(503);
+                res.json({success: false, message: 'Server error #1'});
+            })
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/category', function (req, res, next) { // Search for DISTINCT categories
+
+    if (req.session.login === true) {
+        db.query(`SELECT DISTINCT category FROM item;`)
+            .then(rows => {
+                res.json(rows);
+            })
+            .catch((err) => {
+                console.log(err);
+                res.status(503);
+                res.json({success: false, message: 'Server error #1'});
+            })
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
     }
 });
 
