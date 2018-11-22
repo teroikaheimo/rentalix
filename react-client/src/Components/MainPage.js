@@ -2,26 +2,18 @@ import React, {Component} from 'react';
 import {
     Collapse,
     Navbar,
-    NavbarToggler,
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink,
-    Form,
-    FormGroup,
-    UncontrolledDropdown,
     UncontrolledButtonDropdown,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem, Button, Dropdown
+    DropdownItem
 } from 'reactstrap';
-import Auth from '../Auth'
 // Components
 import ItemTable from './ItemTable';
 import ItemModal from './ItemModal';
-import {ItemTableRow} from "./ItemTableRow";
 import DbAction from "../DbAction";
-import ItemTableRowMenu from "./ItemRowMenu";
 
 class MainPage extends Component {
     constructor(props) {
@@ -37,8 +29,18 @@ class MainPage extends Component {
             inputName: "",
             inputBrand: "",
             inputModel: "",
-            inputInfo: "",
-            dropdownData: {}
+            inputAddressDd:"",
+            inputOwnerDd:"",
+            inputCategoryDd:"",
+            dropdownData: {},
+            searchData:{
+                name: "",
+                brand: "",
+                model: "",
+                address:"",
+                owner:"",
+                category:""
+            }
         };
 
         this.onChangeModalRemote = this.onChangeModalRemote.bind(this);
@@ -92,10 +94,11 @@ class MainPage extends Component {
     }
 
     handleChange = event => { // Writes changes in the input elements to corresponding state.
-        this.setState({
+        this.setState( {
             [event.target.id]: event.target.value
         });
     };
+
 
 
     updateDropdowns() {
@@ -147,41 +150,44 @@ class MainPage extends Component {
 
                                     <form>
                                         <div className="form-row">
+
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="inputName"
                                                        placeholder="Name" onChange={this.handleChange}
                                                        value={this.state.inputName} required/>
                                             </div>
+
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="inputBrand"
                                                        placeholder="Brand" onChange={this.handleChange}
                                                        value={this.state.inputBrand}/>
                                             </div>
+
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="inputModel"
                                                        placeholder="Model" onChange={this.handleChange}
                                                        value={this.state.inputModel}/>
                                             </div>
                                         </div>
+
                                         <div className="form-row">
                                             <div className="form-group col-md-4">
-                                                <select id="inputAddressDd" className="form-control">
-                                                    <option value={"-1"}>Location</option>
+                                                <select onChange={this.handleChange} value={this.state.inputAddressDd} id="inputAddressDd" className="form-control">
+                                                    <option value="">Location</option>
                                                     {this.state.dropdownData.address}
                                                 </select>
                                             </div>
 
-
                                             <div className="form-group col-md-4">
-                                                <select id="inputOwnerDd" className="form-control">
-                                                    <option value={"-1"}>Owner</option>
+                                                <select onChange={this.handleChange} value={this.state.inputOwnerDd} id="inputOwnerDd" className="form-control">
+                                                    <option value="">Owner</option>
                                                     {this.state.dropdownData.owner}
                                                 </select>
                                             </div>
 
                                             <div className="form-group col-md-4">
-                                                <select id="inputCategoryDd" className="form-control">
-                                                    <option value={"-1"}>Category</option>
+                                                <select onChange={this.handleChange} value={this.state.inputCategoryDd} id="inputCategoryDd" className="form-control">
+                                                    <option value="">Category</option>
                                                     {this.state.dropdownData.category}
                                                 </select>
                                             </div>
@@ -194,7 +200,14 @@ class MainPage extends Component {
                     </Navbar>
                 </div>
 
-                <ItemTable toggleModalRemote={this.onChangeModalRemote} onItemChange={this.onItemChange}
+                <ItemTable searchName={this.state.inputName}
+                           searchBrand={this.state.inputBrand}
+                           searchModel={this.state.inputModel}
+                           searchAddress={this.state.inputAddressDd}
+                           searchOwner={this.state.inputOwnerDd}
+                           searchCategory={this.state.inputCategoryDd}
+                           toggleModalRemote={this.onChangeModalRemote}
+                           onItemChange={this.onItemChange}
                            onItemChangeRemote={this.onItemChangeRemote}/>
                 <ItemModal updateDropdowns={this.updateDropdowns} dropdownData={this.state.dropdownData} toggleModal={this.onChangeModal} auth={this.props.auth}
                            onItemChangeRemote={this.onItemChangeRemote}/>
