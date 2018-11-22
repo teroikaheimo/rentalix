@@ -15,6 +15,7 @@ class ItemModal extends Component {
             inputAddress: "",
             inputOwner: "",
             inputCategory: "",
+            inputCategoryDd:[],
             inputAddressDd: [],
             inputOwnerDd: [],
             modal: false,

@@ -7,6 +7,7 @@ export default class ItemTable extends Component {
         super(props);
         this.state = {data: []};
         this.onItemUpdate = this.onItemUpdate.bind(this);
+        this.onItemUpdate();
     }
 
     componentDidMount() {
@@ -14,6 +15,7 @@ export default class ItemTable extends Component {
     }
 
     onItemUpdate(){
+        console.log("OnItemUpdate()");
         this.props.onItemChange(this.updateRows.bind(this));
     }
 
@@ -31,7 +33,7 @@ export default class ItemTable extends Component {
     render() {
 
         const result = this.state.data.map((inputRowData, index) =>
-            <ItemTableRow toggleModalRemote={this.props.toggleModalRemote} returnHeader={false} key={index} rowData={inputRowData}/>);
+            <ItemTableRow onItemChangeRemote={this.props.onItemChangeRemote} toggleModalRemote={this.props.toggleModalRemote} returnHeader={false} key={index} rowData={inputRowData}/>);
 
         return (
             <div className="ItemTable">

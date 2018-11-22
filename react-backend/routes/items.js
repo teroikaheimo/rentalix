@@ -24,7 +24,7 @@ router.post('/', function (req, res, next) { // Search items from database. All 
                 AND brand LIKE '%${req.body.brand}%' 
                 AND address LIKE '%${req.body.address}%' 
                 AND owner LIKE '%${req.body.owner}%' 
-                AND category LIKE '%${req.body.category}%';`)
+                AND category LIKE '%${req.body.category}%' LIMIT 50;`)
                 .then(rows => {
                     res.send(rows);
                 })
