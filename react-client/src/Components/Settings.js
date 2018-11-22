@@ -7,5 +7,8 @@ export default ({
     login: "/login",
     logout: "/logout",
     register: "/register/",
-    usernameAvailable: "/register/available"
+    usernameAvailable: "/register/available",
+    getCategories:"/items/category",
+    getOwner:"/items/owner",
+    getAddress:"/items/address"
 });

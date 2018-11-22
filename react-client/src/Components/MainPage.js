@@ -19,6 +19,9 @@ import Auth from '../Auth'
 // Components
 import ItemTable from './ItemTable';
 import ItemModal from './ItemModal';
+import {ItemTableRow} from "./ItemTableRow";
+import DbAction from "../DbAction";
+import ItemTableRowMenu from "./ItemRowMenu";
 
 class MainPage extends Component {
     constructor(props) {
@@ -35,9 +38,7 @@ class MainPage extends Component {
             inputBrand: "",
             inputModel: "",
             inputInfo: "",
-            inputAddressDd: [],
-            inputOwnerDd: [],
-            inputCategoryDd:[]
+            dropdownData: {}
         };
 
         this.onChangeModalRemote = this.onChangeModalRemote.bind(this);
@@ -46,6 +47,11 @@ class MainPage extends Component {
         this.onItemChangeRemote = this.onItemChangeRemote.bind(this);
         this.toggle = this.toggle.bind(this);
         this.toggleNavbar = this.toggleNavbar.bind(this);
+        this.updateDropdowns = this.updateDropdowns.bind(this);
+    }
+
+    componentWillMount() {
+        this.updateDropdowns();
     }
 
     onChangeModalRemote(id, addMode) { // Passed to children that want to toggle modal.
@@ -59,7 +65,7 @@ class MainPage extends Component {
     }
 
     onItemChangeRemote() {
-        console.log("Item change remote");
+        this.updateDropdowns();
         this.state.updateRowsFunc();
     }
 
@@ -91,13 +97,37 @@ class MainPage extends Component {
         });
     };
 
+
+    updateDropdowns() {
+        const savedResult = {};
+        DbAction.getDropdownInfo()
+            .then((result) => {
+                savedResult.owner = result.owner.map((inputRowData, index) =>
+                    <OptionRow key={index} rowData={inputRowData.owner}/>);
+
+                savedResult.address = result.address.map((inputRowData, index) =>
+                    <OptionRow key={index} rowData={inputRowData.address}/>);
+
+                savedResult.category = result.category.map((inputRowData, index) =>
+                    <OptionRow key={index} rowData={inputRowData.category}/>);
+            }).then(()=>{
+                this.setState({
+                    dropdownData: savedResult
+                })
+        })
+            .catch();
+
+
+    }
+
     render() {
         return (
             <div className="MainPage">
 
                 <div>
                     <Navbar color="" dark>
-                        <NavbarBrand href="/" className="mr-auto">Welcome to RENTALIX {this.props.auth.username}</NavbarBrand>
+                        <NavbarBrand href="/" className="mr-auto">Welcome to
+                            RENTALIX {this.props.auth.username}</NavbarBrand>
                         <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
                         <UncontrolledButtonDropdown>
                             <DropdownToggle>
@@ -105,11 +135,8 @@ class MainPage extends Component {
                             </DropdownToggle>
                             <DropdownMenu right>
                                 <DropdownItem header>Menu</DropdownItem>
-                                <DropdownItem><Button color={"primary"} onClick={() => {
-                                    this.onChangeModalRemote("-", true)
-                                }}>Add item
-                                </Button></DropdownItem>
-                                <DropdownItem><Button color={"success"} type="button" onClick={() => this.logout()}>Logout</Button></DropdownItem>
+                                <DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>
+                                <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
                         <Collapse isOpen={!this.state.collapsed} navbar>
@@ -137,10 +164,10 @@ class MainPage extends Component {
                                             </div>
                                         </div>
                                         <div className="form-row">
-                                        <div className="form-group col-md-4">
+                                            <div className="form-group col-md-4">
                                                 <select id="inputAddressDd" className="form-control">
                                                     <option value={"-1"}>Location</option>
-                                                    <option>...</option>
+                                                    {this.state.dropdownData.address}
                                                 </select>
                                             </div>
 
@@ -148,14 +175,14 @@ class MainPage extends Component {
                                             <div className="form-group col-md-4">
                                                 <select id="inputOwnerDd" className="form-control">
                                                     <option value={"-1"}>Owner</option>
-                                                    <option>...</option>
+                                                    {this.state.dropdownData.owner}
                                                 </select>
                                             </div>
 
                                             <div className="form-group col-md-4">
                                                 <select id="inputCategoryDd" className="form-control">
                                                     <option value={"-1"}>Category</option>
-                                                    <option>...</option>
+                                                    {this.state.dropdownData.category}
                                                 </select>
                                             </div>
                                         </div>
@@ -169,10 +196,19 @@ class MainPage extends Component {
 
                 <ItemTable toggleModalRemote={this.onChangeModalRemote} onItemChange={this.onItemChange}
                            onItemChangeRemote={this.onItemChangeRemote}/>
-                <ItemModal toggleModal={this.onChangeModal} auth={this.props.auth}
+                <ItemModal updateDropdowns={this.updateDropdowns} dropdownData={this.state.dropdownData} toggleModal={this.onChangeModal} auth={this.props.auth}
                            onItemChangeRemote={this.onItemChangeRemote}/>
             </div>
         );
+    }
+}
+
+
+export class OptionRow extends Component {
+    render() {
+        return (
+            <option value={this.props.rowData}>{this.props.rowData}</option>
+        )
     }
 }
 

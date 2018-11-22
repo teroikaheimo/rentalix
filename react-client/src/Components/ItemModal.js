@@ -68,22 +68,25 @@ class ItemModal extends Component {
 
 
     updateInfo() {
-        DbAction.getItems(this.state.id)
-            .then((result) => {
-                console.log(result[0]);
-                this.setState({
-                    inputName: result[0].name || "",
-                    inputBrand: result[0].brand || "",
-                    inputModel: result[0].model || "",
-                    inputInfo: result[0].info || "",
-                    inputAddress: result[0].address || "",
-                    inputOwner: result[0].owner || "",
-                    inputCategory: result[0].category || "",
-                });
-                console.log(result)
-            }).catch(() => {
-            console.log("Failed to get item information for modal")
-        });
+        if(this.state.id !== "-"){
+            DbAction.getItems(this.state.id)
+                .then((result) => {
+                    console.log(result[0]);
+                    this.setState({
+                        inputName: result[0].name || "",
+                        inputBrand: result[0].brand || "",
+                        inputModel: result[0].model || "",
+                        inputInfo: result[0].info || "",
+                        inputAddress: result[0].address || "",
+                        inputOwner: result[0].owner || "",
+                        inputCategory: result[0].category || "",
+                    });
+                    console.log(result)
+                }).catch(() => {
+                console.log("Failed to get item information for modal")
+            });
+        }
+
     }
 
     saveChanges(){
@@ -97,7 +100,9 @@ class ItemModal extends Component {
             this.state.inputOwner,
             this.state.inputCategory)
             .then(()=>{this.toggle(this.state.id)})
-            .then(()=>{this.props.onItemChangeRemote()}) // WONT WORK?
+            .then(()=>{this.props.onItemChangeRemote()})
+            .catch(()=>{console.log("Something failed in saveChanges()");})
+
     }
 
     addItem(){
@@ -110,7 +115,8 @@ class ItemModal extends Component {
             this.state.inputOwner,
             this.state.inputCategory)
             .then(()=>{this.toggle(this.state.id)})
-            .then(()=>{this.props.onItemChangeRemote()}) // WONT WORK?
+            .then(()=>{this.props.onItemChangeRemote()})
+            .catch(()=>{console.log("Something failed in addItem()");})
     }
 
 adminButtons(){
@@ -177,7 +183,7 @@ userButtons(){
                                 <label htmlFor="inputAddressDd">OR Choose address</label>
                                 <select id="inputAddressDd" className="form-control">
                                     <option>Choose...</option>
-                                    <option>...</option>
+                                    {this.props.dropdownData.address}
                                 </select>
                             </div>
 
@@ -194,7 +200,7 @@ userButtons(){
                                     <label htmlFor="inputOwnerDd">Choose owner</label>
                                     <select id="inputOwnerDd" className="form-control">
                                         <option>Choose...</option>
-                                        <option>...</option>
+                                        {this.props.dropdownData.owner}
                                     </select>
                                 </div>
                             </div>
@@ -211,7 +217,7 @@ userButtons(){
                                     <label htmlFor="inputCategoryDd">Choose category</label>
                                     <select id="inputCategoryDd" className="form-control">
                                         <option defaultValue={"Choose..."}>Choose...</option>
-                                        <option>...</option>
+                                        {this.props.dropdownData.category}
                                     </select>
                                 </div>
                             </div>

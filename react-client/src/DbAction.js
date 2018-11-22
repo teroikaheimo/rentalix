@@ -158,9 +158,57 @@ class DbAction { // Class to control user access to main page.
         return new Promise((resolve)=>{resolve(this.itemToModifyId)});
     }
 
-    // TODO GET all unique categories for dropdown
+    getDropdownInfo(){
+        const dropdownData = {};
+        return new Promise((resolve, reject) => {
+            if (auth.isAuthenticated()) {
+                fetch(settings.getAddress, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                }).then(result => result.json())
+                    .then((result) => {
+                        dropdownData.address = result;
+                    })
+                    .catch(() => {
+                        reject("Fetching addresses failed!")
+                    });
 
-    // TODO GET all unique owners for dropdown
+                fetch(settings.getCategories, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                }).then(result => result.json())
+                    .then((result) => {
+                        dropdownData.category = result;
+                    })
+                    .catch(() => {
+                        reject("Fetching categories failed!")
+                    });
+
+                fetch(settings.getOwner, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                }).then(result => result.json())
+                    .then((result) => {
+                        dropdownData.owner = result;
+                        resolve(dropdownData);
+                    })
+                    .catch(() => {
+                        reject("Fetching owners failed!")
+                    });
+            } else {
+                reject("Not authenticated to fetch!")
+            }
+        });
+    }
 }
 
 export default new DbAction();
