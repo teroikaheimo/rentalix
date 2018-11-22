@@ -121,19 +121,16 @@ class MainPage extends Component {
                                     <form>
                                         <div className="form-row">
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="inputName">Name</label>
                                                 <input type="text" className="form-control" id="inputName"
                                                        placeholder="Name" onChange={this.handleChange}
                                                        value={this.state.inputName} required/>
                                             </div>
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="inputBrand">Brand</label>
                                                 <input type="text" className="form-control" id="inputBrand"
                                                        placeholder="Brand" onChange={this.handleChange}
                                                        value={this.state.inputBrand}/>
                                             </div>
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="inputModel">Model</label>
                                                 <input type="text" className="form-control" id="inputModel"
                                                        placeholder="Model" onChange={this.handleChange}
                                                        value={this.state.inputModel}/>
@@ -141,7 +138,6 @@ class MainPage extends Component {
                                         </div>
                                         <div className="form-row">
                                         <div className="form-group col-md-4">
-                                                <label htmlFor="inputAddressDd">Choose location</label>
                                                 <select id="inputAddressDd" className="form-control">
                                                     <option value={"-1"}>Location</option>
                                                     <option>...</option>
@@ -150,7 +146,6 @@ class MainPage extends Component {
 
 
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="inputOwnerDd">Choose owner</label>
                                                 <select id="inputOwnerDd" className="form-control">
                                                     <option value={"-1"}>Owner</option>
                                                     <option>...</option>
@@ -158,7 +153,6 @@ class MainPage extends Component {
                                             </div>
 
                                             <div className="form-group col-md-4">
-                                                <label htmlFor="inputCategoryDd">Choose category</label>
                                                 <select id="inputCategoryDd" className="form-control">
                                                     <option value={"-1"}>Category</option>
                                                     <option>...</option>
