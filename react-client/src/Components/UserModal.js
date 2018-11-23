@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Form,FormGroup, Input} from 'reactstrap';
+import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Input} from 'reactstrap';
 import DbActions from '../DbAction';
 
 class UserModal extends React.Component {
@@ -31,8 +31,12 @@ class UserModal extends React.Component {
     submitChange() {
         if (!this.pwdError()) {
             DbActions.updatePassword()
-                .then(()=>{this.toggle()})
-                .catch((err)=>{console.log(err)});
+                .then(() => {
+                    this.toggle()
+                })
+                .catch((err) => {
+                    console.log(err)
+                });
         }
     }
 
