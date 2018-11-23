@@ -8,7 +8,8 @@ import {
     UncontrolledButtonDropdown,
     DropdownToggle,
     DropdownMenu,
-    DropdownItem
+    DropdownItem,
+    Label,Input
 } from 'reactstrap';
 // Components
 import ItemTable from './ItemTable';
@@ -27,6 +28,7 @@ class MainPage extends Component {
             },
             isOpen: false,
             collapsed: true,
+            inputId:"",
             inputName: "",
             inputBrand: "",
             inputModel: "",
@@ -155,6 +157,59 @@ class MainPage extends Component {
                                 <NavItem>
 
                                     <form>
+
+                                        <div className="form-row">
+
+                                            <div className="form-group col-md-4">
+                                                <input type="text" className="form-control" id="inputId"
+                                                       placeholder="Serial" onChange={this.handleChange}
+                                                       value={this.state.inputId}/>
+                                            </div>
+
+                                            <div className="form-group col-md-1 text-light">
+                                                <h4>Show</h4>
+                                            </div>
+                                            <div className="form-group col-md-1 text-light">
+                                                <div className="form-check">
+                                                    <input className="form-check-input" type="checkbox" value=""
+                                                           id="showReserved"/>
+                                                        <label className="form-check-label" htmlFor="showReserved">
+                                                            Reserved
+                                                        </label>
+                                                </div>
+                                            </div>
+                                            <div className="form-group col-md-1 text-light">
+                                                <div className="form-check">
+                                                    <input className="form-check-input" type="checkbox" value=""
+                                                           id="showRented"/>
+                                                    <label className="form-check-label" htmlFor="showRented">
+                                                        Rented
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="form-group col-md-1 text-light">
+                                                <div className="form-check">
+                                                    <input className="form-check-input" type="checkbox" value=""
+                                                           id="showMaintenance"/>
+                                                    <label className="form-check-label" htmlFor="showMaintenance">
+                                                        In Maintenance
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="form-group col-md-1 text-light">
+                                                <div className="form-check">
+                                                    <input className="form-check-input" type="checkbox" value=""
+                                                           id="showRemoved"/>
+                                                    <label className="form-check-label" htmlFor="showRemoved">
+                                                        Removed
+                                                    </label>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+
                                         <div className="form-row">
 
                                             <div className="form-group col-md-4">
