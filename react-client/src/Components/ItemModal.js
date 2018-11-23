@@ -19,7 +19,9 @@ class ItemModal extends Component {
             inputOwnerDd: "",
             modal: false,
             backdrop: true,
-            addNew: false
+            addNew: false,
+            modalHeader:"",
+            justView:false
         };
         this.onChangeState();
         this.toggle = this.toggle.bind(this);
@@ -32,12 +34,22 @@ class ItemModal extends Component {
         this.props.toggleModal(this.toggle.bind(this));
     }
 
-    toggle(id, addNew) {
+    toggle(id, addNew,justView) {
         new Promise((resolve) => {
+            let header = "";
+            if(addNew){
+                header="Add new item: ";
+            }else if(justView){
+                header="Viewing item: "
+            }else{
+                header= "Editing item: "
+            }
             this.setState({
                 id: id || "",
                 modal: !this.state.modal,
-                addNew: addNew || false
+                addNew: addNew || false,
+                justView:justView || false,
+                modalHeader:header
             });
             resolve();
         }).then(() => {
@@ -204,6 +216,8 @@ class ItemModal extends Component {
     }
 
 
+
+
     render() {
         return (
             <div>
@@ -212,7 +226,7 @@ class ItemModal extends Component {
                 }} className={this.props.className}>
                     <ModalHeader toggle={() => {
                         this.toggle()
-                    }}>{this.state.addNew ? "Add new item" : "Editing item: " + this.state.id}</ModalHeader>
+                    }}>{this.state.modalHeader}{this.state.id}</ModalHeader>
 
                     <ModalBody className="modal-body">
                         <form>
@@ -221,39 +235,39 @@ class ItemModal extends Component {
                                     <label htmlFor="inputName">Name</label>
                                     <input type="text" className="form-control" id="inputName"
                                            placeholder="Name" onChange={this.handleChange}
-                                           value={this.state.inputName} required/>
+                                           value={this.state.inputName} disabled={this.state.justView}  required={true} />
                                 </div>
                                 <div className="form-group col-md-4">
                                     <label htmlFor="inputBrand">Brand</label>
                                     <input type="text" className="form-control" id="inputBrand"
                                            placeholder="Brand" onChange={this.handleChange}
-                                           value={this.state.inputBrand}/>
+                                           value={this.state.inputBrand} disabled={this.state.justView}/>
                                 </div>
                                 <div className="form-group col-md-4">
                                     <label htmlFor="inputModel">Model</label>
                                     <input type="text" className="form-control" id="inputModel"
                                            placeholder="Model" onChange={this.handleChange}
-                                           value={this.state.inputModel}/>
+                                           value={this.state.inputModel} disabled={this.state.justView}/>
                                 </div>
                             </div>
                             <div className="form-group">
                                 <label htmlFor="inputInfo">Info</label>
                                 <textarea className="form-control" id="inputInfo"
                                           placeholder="Short description..." onChange={this.handleChange}
-                                          value={this.state.inputInfo}/>
+                                          value={this.state.inputInfo} disabled={this.state.justView}/>
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="inputAddress">Add new address</label>
                                 <input value={this.state.inputAddress} type="text" className="form-control" id="inputAddress"
                                        placeholder="Address" onChange={this.handleChange}
-                                       required/>
+                                       required disabled={this.state.justView}/>
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="inputAddressDd">OR Choose address</label>
                                 <select value={!this.props.addNew&&this.state.inputAddressDd} onChange={this.handleChange}
-                                        id="inputAddressDd" className="form-control">
+                                        id="inputAddressDd" className="form-control" disabled={this.state.justView}>
                                     <option value="">Address</option>
                                     {this.props.dropdownData.address}
                                 </select>
@@ -263,7 +277,7 @@ class ItemModal extends Component {
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwner">Add new owner</label>
                                     <input value={this.state.inputOwner} type="text" className="form-control" id="inputOwner"
-                                           onChange={this.handleChange} required/>
+                                           onChange={this.handleChange} required disabled={this.state.justView}/>
                                 </div>
                                 <div className="form-group col-md-2">
                                     <p>OR</p>
@@ -271,7 +285,7 @@ class ItemModal extends Component {
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwnerDd">Choose owner</label>
                                     <select value={!this.props.addNew?this.state.inputOwnerDd:""} onChange={this.handleChange}
-                                            id="inputOwnerDd" className="form-control">
+                                            id="inputOwnerDd" className="form-control" disabled={this.state.justView}>
                                         <option value="">Owner</option>
                                         {this.props.dropdownData.owner}
                                     </select>
@@ -281,7 +295,7 @@ class ItemModal extends Component {
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputCategory">Add new category</label>
                                     <input value={this.state.inputCategory} type="text" className="form-control" id="inputCategory"
-                                           onChange={this.handleChange}/>
+                                           onChange={this.handleChange} disabled={this.state.justView}/>
                                 </div>
                                 <div className="form-group col-md-2">
                                     <p>OR</p>
@@ -289,7 +303,7 @@ class ItemModal extends Component {
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputCategoryDd">Choose category</label>
                                     <select value={!this.props.addNew&&this.state.inputCategoryDd} onChange={this.handleChange}
-                                            id="inputCategoryDd" className="form-control">
+                                            id="inputCategoryDd" className="form-control" disabled={this.state.justView}>
                                         <option value="">Category</option>
                                         {this.props.dropdownData.category}
                                     </select>

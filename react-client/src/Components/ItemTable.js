@@ -32,7 +32,9 @@ export default class ItemTable extends Component {
 
         const result = this.state.data.map((inputRowData, index) =>
             <ItemTableRow onItemChangeRemote={this.props.onItemChangeRemote}
-                          toggleModalRemote={this.props.toggleModalRemote} returnHeader={false} key={index}
+                          admin={this.props.auth.admin}
+                          toggleModalRemote={this.props.toggleModalRemote}
+                          returnHeader={false} key={index}
                           rowData={inputRowData}/>);
 
         return (

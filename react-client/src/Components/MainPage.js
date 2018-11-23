@@ -61,8 +61,8 @@ class MainPage extends Component {
     };
 
 
-    onChangeModalRemote(id, addMode) { // Passed to children that need to toggle modal.
-        this.state.toggleModalFunc(id, addMode);
+    onChangeModalRemote(id, addMode,justView) { // Passed to children that need to toggle modal.
+        this.state.toggleModalFunc(id, addMode,justView);
     };
 
     onChangeModalGetSet(toggleModalFunc) { // GET/SET toggleModal function from ItemModal. Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
@@ -125,6 +125,8 @@ class MainPage extends Component {
         this.state.toggleUserModal();
     }
 
+
+
     render() {
         return (
             <div className="MainPage">
@@ -141,7 +143,7 @@ class MainPage extends Component {
                             <DropdownMenu right>
 
                                 <DropdownItem header>Menu</DropdownItem>
-                                <DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>
+                                {this.props.auth.admin?<DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>:""}
                                 <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>
                                 <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
                             </DropdownMenu>
@@ -215,15 +217,18 @@ class MainPage extends Component {
 
                 <ItemTable updateTableRowsGetSet={this.updateTableRowsGetSet}
                            toggleModalRemote={this.onChangeModalRemote}
-                           onItemChangeRemote={this.onItemChangeRemote}/>
-
+                           onItemChangeRemote={this.onItemChangeRemote}
+                           auth={this.props.auth}
+                />
                 <ItemModal updateDropdowns={this.updateDropdowns}
                            dropdownData={this.state.dropdownData}
                            toggleModal={this.onChangeModalGetSet}
                            auth={this.props.auth}
-                           onItemChangeRemote={this.onItemChangeRemote}/>
+                           onItemChangeRemote={this.onItemChangeRemote}
+                />
                 <UserModal toggleUserModalGetSet={this.toggleUserModalGetSet}
-                           username={this.props.auth.username}/>
+                           username={this.props.auth.username}
+                />
             </div>
         );
     }

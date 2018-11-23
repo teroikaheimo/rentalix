@@ -201,9 +201,8 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    updatePassword(password){
+    updatePassword(username,password,newPassword){
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.updatePassword, {
                     method: 'POST',
                     headers: {
@@ -211,7 +210,9 @@ class DbAction { // Class to control user access to main page.
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "password": password
+                        "username":username,
+                        "password": password,
+                        "newPassword":newPassword
                     }),
                 })
                     .then(result => result.json())
@@ -221,9 +222,7 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Password update failed")
                     });
-            } else {
-                reject("Not authenticated!")
-            }
+
         });
     }
 }

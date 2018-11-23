@@ -7,10 +7,15 @@ class UserModal extends React.Component {
         super(props);
         this.state = {
             modal: false,
+            oldPassword:"",
             userPassword: "",
-            userPasswordConf: ""
+            userPasswordConf: "",
+            wrongPassword:false,
+            areCheckedOnce:false
         };
 
+        this.pwdError = this.pwdError.bind(this);
+        this.submitChange = this.submitChange.bind(this);
         // Remote triggered functions
         this.toggle = this.toggle.bind(this);
         this.props.toggleUserModalGetSet(this.toggle);
@@ -30,9 +35,15 @@ class UserModal extends React.Component {
 
     submitChange() {
         if (!this.pwdError()) {
-            DbActions.updatePassword()
-                .then(() => {
-                    this.toggle()
+            DbActions.updatePassword(this.props.username,this.state.oldPassword,this.state.userPassword)
+                .then((result) => {
+                    if(result.success){
+                        this.toggle()
+                    }else{
+                        this.setState({
+                            wrongPassword:true
+                        })
+                    }
                 })
                 .catch((err) => {
                     console.log(err)
@@ -45,6 +56,9 @@ class UserModal extends React.Component {
         if (this.state.userPassword !== this.state.userPasswordConf) {
             error = true
         }
+        if (this.state.userPassword.length < 4 ) {
+            error = true
+        }
         return error;
     }
 
@@ -54,14 +68,25 @@ class UserModal extends React.Component {
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <ModalHeader toggle={this.toggle}>User settings</ModalHeader>
                     <ModalBody>
-                        {this.pwdError() && <div className="alert alert-success" role="alert">
-                            Registering was <strong>successful!</strong>
+                        {this.state.areCheckedOnce&&this.pwdError()? <div className="alert alert-warning" role="alert">
+                            Passwords don't match OR are shorter than four characters.
+                        </div>:""}
+                        {this.state.wrongPassword && <div className="alert alert-danger" role="alert">
+                            Wrong <strong>old</strong> password!
                         </div>}
                         <Form>
                             <FormGroup>
-                                <Input type="password" name="password" id="userPassword" placeholder="Password"/>
-                                <Input type="password" name="password" id="userPasswordConf"
-                                       placeholder="Password confirmation"/>
+                                <input type="password" id="oldPassword" onChange={this.handleChange}
+                                       className="form-control my-1 py-3" placeholder="Old Password"
+                                       required
+                                       autoFocus/>
+                                <input type="password" id="userPassword" onChange={this.handleChange}
+                                       className="form-control my-1 py-3" placeholder="New Password"
+                                       required/>
+                                <input type="password" id="userPasswordConf" onChange={this.handleChange}
+                                       className="form-control my-1 py-3" placeholder="New Password Confirmation"
+                                       onBlur={()=>this.setState({areCheckedOnce:true})}
+                                       required/>
                             </FormGroup>
                         </Form>
                     </ModalBody>
