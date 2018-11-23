@@ -41,7 +41,7 @@ class DbAction { // Class to control user access to main page.
 
     getItems(id, name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
-            this.fetchItems(id, name, model, brand, info, address, owner, category)
+            this.fetchItems(id, name, brand,model, info, address, owner, category)
                 .then((result) => {
                     resolve(result)
                 })
@@ -109,7 +109,6 @@ class DbAction { // Class to control user access to main page.
                 })
                     .then(result => result.json())
                     .then(result => {
-                        console.log(result);
                         resolve(result);
                     })
                     .catch(() => {
@@ -148,14 +147,6 @@ class DbAction { // Class to control user access to main page.
                 reject(false)
             }
         });
-    }
-
-    setItemToModify(id){
-        this.itemToModifyId = id;
-    }
-
-    getItemToModify(){
-        return new Promise((resolve)=>{resolve(this.itemToModifyId)});
     }
 
     getDropdownInfo(){
@@ -206,6 +197,32 @@ class DbAction { // Class to control user access to main page.
                     });
             } else {
                 reject("Not authenticated to fetch!")
+            }
+        });
+    }
+
+    updatePassword(password){
+        return new Promise((resolve, reject) => {
+            if (auth.isAuthenticated()) {
+                fetch(settings.updatePassword, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "password": password
+                    }),
+                })
+                    .then(result => result.json())
+                    .then(result => {
+                        resolve(result);
+                    })
+                    .catch(() => {
+                        reject("Password update failed")
+                    });
+            } else {
+                reject("Not authenticated!")
             }
         });
     }

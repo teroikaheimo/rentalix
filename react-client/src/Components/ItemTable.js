@@ -6,26 +6,19 @@ export default class ItemTable extends Component {
     constructor(props) {
         super(props);
         this.state = {data: []};
-        this.onItemUpdate = this.onItemUpdate.bind(this);
-        this.onItemUpdate();
+
+        // Remote triggered functions
+        this.updateRows = this.updateRows.bind(this);
+        this.props.updateTableRowsGetSet(this.updateRows);
     }
 
     componentDidMount() {
         this.updateRows();
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        this.updateRows();
-    }
-
-    onItemUpdate() {
-        console.log("OnItemUpdate()");
-        this.props.onItemChange(this.updateRows.bind(this));
-    }
-
-    updateRows() {
-        console.log(this.props.searchOwner+" "+this.props.searchAddress+" "+this.props.searchCategory);
-        dbActions.getItems("", this.props.searchName, this.props.searchBrand, this.props.searchModel, "", this.props.searchAddress, this.props.searchOwner, this.props.searchCategory)
+    updateRows(id, name, brand,model, info, address, owner, category) {
+        console.log(name);
+        dbActions.getItems(id, name, brand,model, info, address, owner, category)
             .then((result) => {
                 this.setState({data: result});
                 console.log("update");

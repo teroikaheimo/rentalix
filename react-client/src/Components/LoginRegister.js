@@ -32,7 +32,7 @@ export class LoginRegister extends Component {
 
     checkPwdMatch() {
         this.setState({pwdCheckedOnce: true});
-        if (this.state.inputPasswordReg === this.state.inputPasswordConfReg && this.state.inputPasswordReg.length > 3) {
+        if (this.state.inputPassword === this.state.inputPasswordConf && this.state.inputPassword.length > 3) {
             this.setState({pwdMatch: true});
         } else {
             this.setState({pwdMatch: false});
@@ -61,14 +61,14 @@ export class LoginRegister extends Component {
     };
 
     displayRegTip() {
-        if (typeof this.state.regOk === "undefined") {
+        if (typeof this.state.pwdChangeOk === "undefined") {
             return "";
-        } else if (this.state.regOk === true) {
+        } else if (this.state.pwdChangeOk === true) {
             return (
                 <div className="alert alert-success" role="alert">
                     Registering was <strong>successful!</strong>
                 </div>)
-        } else if (this.state.regOk === false) {
+        } else if (this.state.pwdChangeOk === false) {
             return (
                 <div className="alert alert-danger" role="alert">
                     Registering <strong>failed</strong>!
@@ -155,12 +155,12 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
+                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPassword, this.state.inputPasswordConf)
                                                     .then(() => {
-                                                        this.setState({regOk: true})
+                                                        this.setState({pwdChangeOk: true})
                                                     })
                                                     .catch(() => {
-                                                        this.setState({regOk: false})
+                                                        this.setState({pwdChangeOk: false})
                                                     })}
                                                 data-dismiss="modal" className="btn btn-success">Register
                                         </button>

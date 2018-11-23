@@ -13,5 +13,7 @@
     <orderEntry type="library" name="@types/express-session" level="application" />
     <orderEntry type="library" name="@types/jest" level="application" />
     <orderEntry type="library" name="@types/react" level="application" />
+    <orderEntry type="library" name="@types/reach__router" level="application" />
+    <orderEntry type="library" name="@types/reactstrap" level="application" />
   </component>
 </module>

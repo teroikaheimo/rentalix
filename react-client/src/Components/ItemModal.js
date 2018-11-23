@@ -11,12 +11,15 @@ class ItemModal extends Component {
             inputName: "",
             inputBrand: "",
             inputModel: "",
-            inputCategoryValue:"-1",
-            inputAddressValue: "-1",
-            inputOwnerDdValue: "-1",
+            inputAddress: "",
+            inputCategory: "",
+            inputOwner: "",
+            inputCategoryDd: "",
+            inputAddressDd: "",
+            inputOwnerDd: "",
             modal: false,
             backdrop: true,
-            addNew:false
+            addNew: false
         };
         this.onChangeState();
         this.toggle = this.toggle.bind(this);
@@ -29,20 +32,20 @@ class ItemModal extends Component {
         this.props.toggleModal(this.toggle.bind(this));
     }
 
-    toggle(id,addNew) {
-        new Promise((resolve)=>{
+    toggle(id, addNew) {
+        new Promise((resolve) => {
             this.setState({
                 id: id || "",
                 modal: !this.state.modal,
                 addNew: addNew || false
             });
             resolve();
-        }).then(()=>{
-            if(this.state.modal){
+        }).then(() => {
+            if (this.state.modal) {
                 this.updateInfo();
             }
-        }).then(()=>{
-            if(!this.state.addNew && this.state.inputName.length >0){ // Clear the form data IF item details are viewed between add sessions.
+        }).then(() => {
+            if (!this.state.addNew && this.state.inputName.length > 0) { // Clear the form data IF item details are viewed between add sessions.
                 this.setState({
                     inputName: "",
                     inputBrand: "",
@@ -50,10 +53,15 @@ class ItemModal extends Component {
                     inputInfo: "",
                     inputAddress: "",
                     inputOwner: "",
-                    inputCategory: ""
+                    inputCategory: "",
+                    inputAddressDd: "",
+                    inputOwnerDd: "",
+                    inputCategoryDd: ""
                 })
             }
-        }).catch((err)=>{console.log(err)});
+        }).catch((err) => {
+            console.log(err)
+        });
     }
 
     handleChange = event => { // Writes changes in the input elements to corresponding state.
@@ -64,7 +72,7 @@ class ItemModal extends Component {
 
 
     updateInfo() {
-        if(this.state.id !== "-"){
+        if (this.state.id !== "-") {
             DbAction.getItems(this.state.id)
                 .then((result) => {
                     console.log(result[0]);
@@ -73,9 +81,12 @@ class ItemModal extends Component {
                         inputBrand: result[0].brand || "",
                         inputModel: result[0].model || "",
                         inputInfo: result[0].info || "",
-                        inputAddress: result[0].address || "",
-                        inputOwner: result[0].owner || "",
-                        inputCategory: result[0].category || "",
+                        inputAddress: "",
+                        inputOwner: "",
+                        inputCategory: "",
+                        inputAddressDd: result[0].address || "",
+                        inputOwnerDd: result[0].owner || "",
+                        inputCategoryDd: result[0].category || "",
                     });
                     console.log(result)
                 }).catch(() => {
@@ -85,59 +96,123 @@ class ItemModal extends Component {
 
     }
 
-    saveChanges(){
-        DbAction.modifyItem(
-            this.state.id,
-            this.state.inputName,
-            this.state.inputBrand,
-            this.state.inputModel,
-            this.state.inputInfo,
-            this.state.inputAddress,
-            this.state.inputOwner,
-            this.state.inputCategory)
-            .then(()=>{this.toggle(this.state.id)})
-            .then(()=>{this.props.onItemChangeRemote()})
-            .catch(()=>{console.log("Something failed in saveChanges()");})
-
+    saveChanges() {
+        this.checkInput()
+            .then((inputOrDd) => {
+                DbAction.modifyItem(
+                    this.state.id,
+                    this.state.inputName,
+                    this.state.inputBrand,
+                    this.state.inputModel,
+                    this.state.inputInfo,
+                    inputOrDd.address,
+                    inputOrDd.owner,
+                    inputOrDd.category)
+                    .then(() => {
+                        this.toggle(this.state.id)
+                    })
+                    .then(() => {
+                        this.props.onItemChangeRemote()
+                    })
+                    .catch(() => {
+                        console.log("Something failed in saveChanges()");
+                    })
+            });
     }
 
-    addItem(){
-        DbAction.insertItem(
-            this.state.inputName,
-            this.state.inputBrand,
-            this.state.inputModel,
-            this.state.inputInfo,
-            this.state.inputAddress,
-            this.state.inputOwner,
-            this.state.inputCategory)
-            .then(()=>{this.toggle(this.state.id)})
-            .then(()=>{this.props.onItemChangeRemote()})
-            .catch(()=>{console.log("Something failed in addItem()");})
+    validateInput(){
+        let noErrors = true;
+        if(this.state.inputName === ""){noErrors=false}
+        if(this.state.inputOwner === "" && this.state.inputOwnerDd === ""){noErrors=false}
+        if(this.state.inputAddress === "" && this.state.inputAddressDd === ""){noErrors=false}
+        return noErrors;
     }
 
-adminButtons(){
-        return(
+    addItem() {
+        if(this.validateInput()){
+            this.checkInput()
+                .then((inputOrDd) => {
+                    DbAction.insertItem(
+                        this.state.inputName,
+                        this.state.inputBrand,
+                        this.state.inputModel,
+                        this.state.inputInfo,
+                        inputOrDd.address,
+                        inputOrDd.owner,
+                        inputOrDd.category)
+                        .then(() => {
+                            this.toggle(this.state.id)
+                        })
+                        .then(() => {
+                            this.props.onItemChangeRemote()
+                        })
+                        .catch(() => {
+                            console.log("Something failed in addItem()");
+                        })
+                });
+        }
+    }
+
+    checkInput() { // IF user has typed a value in ANY of the Add New fields. It will override the dropdown value.
+        return new Promise((resolve) => {
+            const inputOrDd = {};
+
+            if(this.state.inputAddress !== ""){
+                inputOrDd.address = this.state.inputAddress;
+            }else if(this.state.inputAddressDd !== ""){
+                inputOrDd.address = this.state.inputAddressDd;
+            }else{
+                inputOrDd.address = null;
+            }
+
+            if(this.state.inputCategory !== ""){
+                inputOrDd.category = this.state.inputCategory;
+            }else if(this.state.inputCategoryDd !== ""){
+                inputOrDd.category = this.state.inputCategoryDd;
+            }else{
+                inputOrDd.category = null;
+            }
+
+            if(this.state.inputOwner !== ""){
+                inputOrDd.owner = this.state.inputOwner;
+            }else if(this.state.inputOwnerDd !== ""){
+                inputOrDd.owner = this.state.inputOwnerDd;
+            }else{
+                inputOrDd.owner = null;
+            }
+
+            resolve(inputOrDd);
+        });
+    }
+
+    adminButtons() {
+        return (
             <Button color={"success"} onClick={this.saveChanges}>Save changes</Button>
         );
-}
-addNewBtn(){
-    return(
+    }
+
+    addNewBtn() {
+        return (
             <Button color={"success"} onClick={this.addItem}>Add new</Button>
         );
-}
+    }
 
-userButtons(){
-        return(
+    userButtons() {
+        return (
             <Button color={"secondary"} onClick={this.saveChanges}>Close</Button>
         );
-}
+    }
 
 
     render() {
         return (
             <div>
-                <Modal isOpen={this.state.modal} toggle={()=>{this.toggle()}} className={this.props.className}>
-                    <ModalHeader toggle={() => {this.toggle()}}>{this.state.addNew?"Add new item":"Editing item: "+this.state.id}</ModalHeader>
+                <Modal isOpen={this.state.modal} toggle={() => {
+                    this.toggle()
+                }} className={this.props.className}>
+                    <ModalHeader toggle={() => {
+                        this.toggle()
+                    }}>{this.state.addNew ? "Add new item" : "Editing item: " + this.state.id}</ModalHeader>
 
                     <ModalBody className="modal-body">
                         <form>
@@ -170,15 +245,16 @@ userButtons(){
 
                             <div className="form-group">
                                 <label htmlFor="inputAddress">Add new address</label>
-                                <input type="text" className="form-control" id="inputAddress"
+                                <input value={this.state.inputAddress} type="text" className="form-control" id="inputAddress"
                                        placeholder="Address" onChange={this.handleChange}
-                                       value={this.state.inputAddress} required/>
+                                       required/>
                             </div>
 
                             <div className="form-group">
                                 <label htmlFor="inputAddressDd">OR Choose address</label>
-                                <select id="inputAddressDd" className="form-control">
-                                    <option>Choose...</option>
+                                <select value={!this.props.addNew&&this.state.inputAddressDd} onChange={this.handleChange}
+                                        id="inputAddressDd" className="form-control">
+                                    <option value="">Address</option>
                                     {this.props.dropdownData.address}
                                 </select>
                             </div>
@@ -186,16 +262,17 @@ userButtons(){
                             <div className="form-row">
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwner">Add new owner</label>
-                                    <input type="text" className="form-control" id="inputOwner"
-                                           onChange={this.handleChange} value={this.state.inputOwner} required/>
+                                    <input value={this.state.inputOwner} type="text" className="form-control" id="inputOwner"
+                                           onChange={this.handleChange} required/>
                                 </div>
                                 <div className="form-group col-md-2">
                                     <p>OR</p>
                                 </div>
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwnerDd">Choose owner</label>
-                                    <select id="inputOwnerDd" className="form-control">
-                                        <option>Choose...</option>
+                                    <select value={!this.props.addNew?this.state.inputOwnerDd:""} onChange={this.handleChange}
+                                            id="inputOwnerDd" className="form-control">
+                                        <option value="">Owner</option>
                                         {this.props.dropdownData.owner}
                                     </select>
                                 </div>
@@ -203,25 +280,26 @@ userButtons(){
                             <div className="form-row">
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputCategory">Add new category</label>
-                                    <input type="text" className="form-control" id="inputCategory"
-                                           onChange={this.handleChange} value={this.state.inputCategory}/>
+                                    <input value={this.state.inputCategory} type="text" className="form-control" id="inputCategory"
+                                           onChange={this.handleChange}/>
                                 </div>
                                 <div className="form-group col-md-2">
                                     <p>OR</p>
                                 </div>
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputCategoryDd">Choose category</label>
-                                    <select id="inputCategoryDd" className="form-control">
-                                        <option defaultValue={"Choose..."}>Choose...</option>
+                                    <select value={!this.props.addNew&&this.state.inputCategoryDd} onChange={this.handleChange}
+                                            id="inputCategoryDd" className="form-control">
+                                        <option value="">Category</option>
                                         {this.props.dropdownData.category}
                                     </select>
                                 </div>
                             </div>
                         </form>
                     </ModalBody>
-                    {(this.props.auth.admin&&this.state.addNew)? this.addNewBtn() :""}
-                    {(this.props.auth.admin&&!this.state.addNew)&& this.adminButtons()}
-                    {!this.props.auth.admin&&this.userButtons()}
+                    {(this.props.auth.admin && this.state.addNew) ? this.addNewBtn() : ""}
+                    {(this.props.auth.admin && !this.state.addNew) && this.adminButtons()}
+                    {!this.props.auth.admin && this.userButtons()}
                 </Modal>
             </div>
         )

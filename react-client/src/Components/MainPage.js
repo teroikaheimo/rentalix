@@ -14,6 +14,7 @@ import {
 import ItemTable from './ItemTable';
 import ItemModal from './ItemModal';
 import DbAction from "../DbAction";
+import UserModal from './UserModal'
 
 class MainPage extends Component {
     constructor(props) {
@@ -33,58 +34,51 @@ class MainPage extends Component {
             inputOwnerDd:"",
             inputCategoryDd:"",
             dropdownData: {},
-            searchData:{
-                name: "",
-                brand: "",
-                model: "",
-                address:"",
-                owner:"",
-                category:""
-            }
+            updateTableRows:()=>{},
+            toggleUserModal:()=>{}
         };
 
-        this.onChangeModalRemote = this.onChangeModalRemote.bind(this);
-        this.onChangeModal = this.onChangeModal.bind(this);
-        this.onItemChange = this.onItemChange.bind(this);
-        this.onItemChangeRemote = this.onItemChangeRemote.bind(this);
-        this.toggle = this.toggle.bind(this);
         this.toggleNavbar = this.toggleNavbar.bind(this);
         this.updateDropdowns = this.updateDropdowns.bind(this);
+
+        // Remote triggered functions
+        this.onChangeModalGetSet = this.onChangeModalGetSet.bind(this);
+        this.onChangeModalRemote = this.onChangeModalRemote.bind(this);
+        this.updateTableRowsGetSet = this.updateTableRowsGetSet.bind(this);
+        this.onItemChangeRemote = this.onItemChangeRemote.bind(this);
+        this.toggleUserModalGetSet = this.toggleUserModalGetSet.bind(this);
+        this.toggleUserModalRemote = this.toggleUserModalRemote.bind(this);
     }
 
     componentWillMount() {
         this.updateDropdowns();
     }
 
-    onChangeModalRemote(id, addMode) { // Passed to children that want to toggle modal.
+    handleChange = event => { // Writes changes in the input elements to corresponding state.
+        this.setState( { // Callback version. Fixes normal setState "lag" that is's basic behaviour!
+            [event.target.id]: event.target.value
+        },()=>{this.updateTableRowsRemote()});
+    };
+
+
+    onChangeModalRemote(id, addMode) { // Passed to children that need to toggle modal.
         this.state.toggleModalFunc(id, addMode);
     };
 
-    onChangeModal(toggleModalFunc) { // Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
+    onChangeModalGetSet(toggleModalFunc) { // GET/SET toggleModal function from ItemModal. Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
         this.setState({
             toggleModalFunc: toggleModalFunc
         })
     }
 
-    onItemChangeRemote() {
+    onItemChangeRemote() { // Passed to children that need to Update dropdowns and table rows.
         this.updateDropdowns();
-        this.state.updateRowsFunc();
+        this.state.updateTableRows();
     }
 
-    onItemChange(updateRowsFunc) {
-        this.setState({
-            updateRowsFunc: updateRowsFunc
-        })
-    }
 
     logout() {
         this.props.logout();
-    }
-
-    toggle() {
-        this.setState({
-            isOpen: !this.state.isOpen
-        });
     }
 
     toggleNavbar() {
@@ -93,13 +87,13 @@ class MainPage extends Component {
         });
     }
 
-    handleChange = event => { // Writes changes in the input elements to corresponding state.
-        this.setState( {
-            [event.target.id]: event.target.value
-        });
-    };
+    updateTableRowsGetSet(updateTableRowsFunc){ // GET/SET updateTableRowsRemote from ItemTable
+       this.setState({updateTableRows:updateTableRowsFunc});
+    }
 
-
+    updateTableRowsRemote(){ // Update table rows remotely, according to latest search parameters.
+        this.state.updateTableRows("", this.state.inputName, this.state.inputBrand,this.state.inputModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
+    }
 
     updateDropdowns() {
         const savedResult = {};
@@ -119,8 +113,16 @@ class MainPage extends Component {
                 })
         })
             .catch();
+    }
 
+    toggleUserModalGetSet(func){
+        this.setState({
+            toggleUserModal:func
+        })
+    }
 
+    toggleUserModalRemote(){
+        this.state.toggleUserModal();
     }
 
     render() {
@@ -137,8 +139,10 @@ class MainPage extends Component {
                                 <img src="./menu32.png" alt="Menu"/>
                             </DropdownToggle>
                             <DropdownMenu right>
+
                                 <DropdownItem header>Menu</DropdownItem>
                                 <DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>
+                                <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>
                                 <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
@@ -172,21 +176,30 @@ class MainPage extends Component {
 
                                         <div className="form-row">
                                             <div className="form-group col-md-4">
-                                                <select onChange={this.handleChange} value={this.state.inputAddressDd} id="inputAddressDd" className="form-control">
+                                                <select onChange={this.handleChange}
+                                                        value={this.state.inputAddressDd}
+                                                        id="inputAddressDd"
+                                                        className="form-control">
                                                     <option value="">Location</option>
                                                     {this.state.dropdownData.address}
                                                 </select>
                                             </div>
 
                                             <div className="form-group col-md-4">
-                                                <select onChange={this.handleChange} value={this.state.inputOwnerDd} id="inputOwnerDd" className="form-control">
+                                                <select onChange={this.handleChange}
+                                                        value={this.state.inputOwnerDd}
+                                                        id="inputOwnerDd"
+                                                        className="form-control">
                                                     <option value="">Owner</option>
                                                     {this.state.dropdownData.owner}
                                                 </select>
                                             </div>
 
                                             <div className="form-group col-md-4">
-                                                <select onChange={this.handleChange} value={this.state.inputCategoryDd} id="inputCategoryDd" className="form-control">
+                                                <select onChange={this.handleChange}
+                                                        value={this.state.inputCategoryDd}
+                                                        id="inputCategoryDd"
+                                                        className="form-control">
                                                     <option value="">Category</option>
                                                     {this.state.dropdownData.category}
                                                 </select>
@@ -200,17 +213,17 @@ class MainPage extends Component {
                     </Navbar>
                 </div>
 
-                <ItemTable searchName={this.state.inputName}
-                           searchBrand={this.state.inputBrand}
-                           searchModel={this.state.inputModel}
-                           searchAddress={this.state.inputAddressDd}
-                           searchOwner={this.state.inputOwnerDd}
-                           searchCategory={this.state.inputCategoryDd}
+                <ItemTable updateTableRowsGetSet={this.updateTableRowsGetSet}
                            toggleModalRemote={this.onChangeModalRemote}
-                           onItemChange={this.onItemChange}
                            onItemChangeRemote={this.onItemChangeRemote}/>
-                <ItemModal updateDropdowns={this.updateDropdowns} dropdownData={this.state.dropdownData} toggleModal={this.onChangeModal} auth={this.props.auth}
+
+                <ItemModal updateDropdowns={this.updateDropdowns}
+                           dropdownData={this.state.dropdownData}
+                           toggleModal={this.onChangeModalGetSet}
+                           auth={this.props.auth}
                            onItemChangeRemote={this.onItemChangeRemote}/>
+                <UserModal toggleUserModalGetSet={this.toggleUserModalGetSet}
+                           username={this.props.auth.username}/>
             </div>
         );
     }

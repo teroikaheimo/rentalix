@@ -10,5 +10,6 @@ export default ({
     usernameAvailable: "/register/available",
     getCategories:"/items/category",
     getOwner:"/items/owner",
-    getAddress:"/items/address"
+    getAddress:"/items/address",
+    updatePassword:"/user/update"
 });
