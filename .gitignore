@@ -10,7 +10,7 @@ react-client/node_modules
 /coverage
 
 #IDE
-/.idea/
+.idea/
 
 # production
 /build
