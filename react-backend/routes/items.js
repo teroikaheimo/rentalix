@@ -26,6 +26,10 @@ router.post('/', function (req, res, next) { // Search items from database. All 
                 AND owner LIKE '%${req.body.owner}%' 
                 AND category LIKE '%${req.body.category}%' 
                 AND category LIKE '%${req.body.category}%'
+                AND reserved='0' 
+                AND rented='0' 
+                AND maintenance='0' 
+                AND removed='0'
                 LIMIT 50;`)
                 .then(rows => {
                     res.json(rows);
@@ -243,7 +247,6 @@ router.post('/category', function (req, res, next) { // Search for DISTINCT cate
 
 
 router.post('/rent', function (req, res, next) { // Returns rent and reservations of single user.
-
     if (req.session.login === true) {
         if (
             typeof req.body.username !== "undefined"){
@@ -293,6 +296,72 @@ router.post('/rent/all', function (req, res, next) { // Returns all rents and re
                 res.status(400).json({success: false, message: 'Bad request'});
             }
         }
+});
+
+router.post('/return', function (req, res, next) { // Returns item to stock.
+    if (req.session.login === true && req.session.isAdmin === 1) {
+        if (typeof req.body.item_id !== "undefined" ||
+            typeof req.body.id !== "undefined"){
+            db.query(`UPDATE reservation_rent SET end_date=current_date() WHERE id='${req.body.id}'`)
+                .then(() => {
+                    db.query(`UPDATE item SET rented=b'0' WHERE serial='${req.body.item_id}'`)
+                        .then(()=>{
+                            res.json({success: true, message: 'Item returned to stock!'});
+                        })
+                        .catch((err)=>{
+                            console.log(err);
+                            res.status(503);
+                            res.json({success: false, message: 'Server error #1'});
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #2'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/return/rent', function (req, res, next) { // Returns item to state reserved.
+    if (req.session.login === true && req.session.isAdmin === 1) {
+        if (typeof req.body.item_id !== "undefined" ||
+            typeof req.body.id !== "undefined"){
+            db.query(`UPDATE item SET rented=b'0', reserved=b'1' WHERE serial='${req.body.item_id}'`)
+                .then(() => {
+                    db.query(`UPDATE reservation_rent SET start_date=null, end_date=null WHERE id='${req.body.id}'`)
+                        .then(()=>{
+                            res.json({success: true, message: 'Item returned to reserved!'});
+                        })
+                        .catch((err)=>{
+                            console.log(err);
+                            res.status(503);
+                            res.json({success: false, message: 'Server error #1'});
+                        });
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #2'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
 });
 
 module.exports = router;
