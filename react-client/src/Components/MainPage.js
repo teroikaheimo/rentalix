@@ -37,11 +37,13 @@ class MainPage extends Component {
             inputCategoryDd:"",
             dropdownData: {},
             updateTableRows:()=>{},
-            toggleUserModal:()=>{}
+            toggleUserModal:()=>{},
+            rentView:true
         };
 
         this.toggleNavbar = this.toggleNavbar.bind(this);
         this.updateDropdowns = this.updateDropdowns.bind(this);
+        this.toggleRentView = this.toggleRentView.bind(this);
 
         // Remote triggered functions
         this.onChangeModalGetSet = this.onChangeModalGetSet.bind(this);
@@ -51,6 +53,7 @@ class MainPage extends Component {
         this.toggleUserModalGetSet = this.toggleUserModalGetSet.bind(this);
         this.toggleUserModalRemote = this.toggleUserModalRemote.bind(this);
     }
+
 
     componentWillMount() {
         this.updateDropdowns();
@@ -120,13 +123,16 @@ class MainPage extends Component {
     toggleUserModalGetSet(func){
         this.setState({
             toggleUserModal:func
-        })
+        });
     }
 
     toggleUserModalRemote(){
         this.state.toggleUserModal();
     }
 
+    toggleRentView(){
+        this.setState({rentView:!this.state.rentView});
+    }
 
 
     render() {
@@ -137,7 +143,18 @@ class MainPage extends Component {
                     <Navbar color="" dark>
                         <NavbarBrand href="/" className="mr-auto">Welcome to
                             RENTALIX {this.props.auth.username}</NavbarBrand>
-                        <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
+                        <img5 src="./search.png" alt="" onClick={this.toggleNavbar}/>
+
+
+                        <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
+                            <label className="btn btn-secondary active">
+                                <input type="radio" name="options" id="option1" autoComplete="off" checked/> <img  src="./rent32.ico" alt="Rent" onClick={this.toggleRentView}/>
+                            </label>
+                            <label className="btn btn-secondary">
+                                <input type="radio" name="options" id="option2" autoComplete="off"/> <img  src="./personalView32.ico" alt="Personal" onClick={this.toggleRentView}/>
+                            </label>
+                        </div>
+
                         <UncontrolledButtonDropdown>
                             <DropdownToggle>
                                 <img src="./menu32.png" alt="Menu"/>
@@ -270,11 +287,15 @@ class MainPage extends Component {
                     </Navbar>
                 </div>
 
-                <ItemTable updateTableRowsGetSet={this.updateTableRowsGetSet}
-                           toggleModalRemote={this.onChangeModalRemote}
-                           onItemChangeRemote={this.onItemChangeRemote}
-                           auth={this.props.auth}
-                />
+                {this.state.rentView?
+                    <ItemTable updateTableRowsGetSet={this.updateTableRowsGetSet}
+                               toggleModalRemote={this.onChangeModalRemote}
+                               onItemChangeRemote={this.onItemChangeRemote}
+                               auth={this.props.auth}
+                    />
+                    :
+                    ""}
+
                 <ItemModal updateDropdowns={this.updateDropdowns}
                            dropdownData={this.state.dropdownData}
                            toggleModal={this.onChangeModalGetSet}
