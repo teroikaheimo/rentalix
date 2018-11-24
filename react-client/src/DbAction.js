@@ -225,6 +225,54 @@ class DbAction { // Class to control user access to main page.
 
         });
     }
+
+    fetchUserRents(username) {
+        return new Promise((resolve, reject) => {
+            if (auth.isAuthenticated()) {
+                fetch(settings.getUserRents, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "username": username || "",
+
+                    })
+                }).then(result => result.json())
+                    .then((result) => {
+                        resolve(result);
+                    })
+                    .catch(() => {
+                        reject("Fetching user rents failed!")
+                    });
+            } else {
+                reject("Not authenticated to fetch!")
+            }
+        });
+    }
+
+    fetchAllRents() {
+        return new Promise((resolve, reject) => {
+            if (auth.isAuthenticated()) {
+                fetch(settings.getAllRents, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    }
+                }).then(result => result.json())
+                    .then((result) => {
+                        resolve(result);
+                    })
+                    .catch(() => {
+                        reject("Fetching user rents failed!")
+                    });
+            } else {
+                reject("Not authenticated to fetch!")
+            }
+        });
+    }
 }
 
 export default new DbAction();

@@ -19,13 +19,13 @@ export class ItemTableRow extends Component {
         } else{// Admin / User rents and reservations row
                 return (
                     <tr>
-                        <ColData data={this.props.rowData.this.props.type}/>
+                        <ColData data={this.props.type}/>
                         <ColData data={this.props.rowData.username}/>
                         <ColData data={this.props.rowData.serial}/>
                         <ColData data={this.props.rowData.name}/>
                         <ColData data={this.props.rowData.owner}/>
-                        <ColData data={this.props.rowData.start_date}/>
-                        <ColData data={this.props.rowData.end_date}/>
+                        <ColData data={this.props.start_date}/>
+                        <ColData data={this.props.end_date}/>
                         <ItemTableRowMenu admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
                                           toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial}/>
                     </tr>
@@ -53,13 +53,13 @@ export class ItemTableRowHeader extends Component {
         } else {
             return (
                 <tr>
+                    <ColHeaderData data={"Status"}/>
+                    <ColHeaderData data={"Username"}/>
                     <ColHeaderData data={"Serial"}/>
                     <ColHeaderData data={"Name"}/>
-                    <ColHeaderData data={"Location"}/>
                     <ColHeaderData data={"Owner"}/>
                     <ColHeaderData data={"Start Date"}/>
                     <ColHeaderData data={"End Date"}/>
-                    <ColHeaderData data={"Type"}/>
                     <ColHeaderData data={""}/>
                 </tr>
             )

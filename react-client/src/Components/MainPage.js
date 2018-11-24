@@ -131,7 +131,8 @@ class MainPage extends Component {
     }
 
     toggleRentView(){
-        this.setState({rentView:!this.state.rentView});
+        this.setState({rentView:!this.state.rentView},()=>{this.updateTableRowsRemote()});
+
     }
 
 
@@ -143,7 +144,7 @@ class MainPage extends Component {
                     <Navbar color="" dark>
                         <NavbarBrand href="/" className="mr-auto">Welcome to
                             RENTALIX {this.props.auth.username}</NavbarBrand>
-                        <img5 src="./search.png" alt="" onClick={this.toggleNavbar}/>
+                        <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
 
 
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
@@ -287,14 +288,14 @@ class MainPage extends Component {
                     </Navbar>
                 </div>
 
-                {this.state.rentView?
-                    <ItemTable updateTableRowsGetSet={this.updateTableRowsGetSet}
+
+                    <ItemTable rentView={this.state.rentView}
+                        updateTableRowsGetSet={this.updateTableRowsGetSet}
                                toggleModalRemote={this.onChangeModalRemote}
                                onItemChangeRemote={this.onItemChangeRemote}
                                auth={this.props.auth}
                     />
-                    :
-                    ""}
+
 
                 <ItemModal updateDropdowns={this.updateDropdowns}
                            dropdownData={this.state.dropdownData}

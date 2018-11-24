@@ -11,5 +11,7 @@ export default ({
     getCategories:"/items/category",
     getOwner:"/items/owner",
     getAddress:"/items/address",
-    updatePassword:"/user/modify"
+    updatePassword:"/user/modify",
+    getUserRents:"/items/rent",
+    getAllRents:"/items/rent/all"
 });
