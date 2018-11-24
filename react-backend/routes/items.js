@@ -241,4 +241,58 @@ router.post('/category', function (req, res, next) { // Search for DISTINCT cate
     }
 });
 
+
+router.post('/rent', function (req, res, next) { // Returns rent and reservations of single user.
+
+    if (req.session.login === true) {
+        if (
+            typeof req.body.username !== "undefined"){
+            db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
+            INNER JOIN item ON item.serial=reservation_rent.item_id 
+            INNER JOIN user ON user.id= reservation_rent.user_id WHERE username='${req.body.username}'
+            `)
+                .then(rows => {
+                    res.json(rows);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #1'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/rent/all', function (req, res, next) { // Returns all rents and reservations.
+
+    if (req.session.login === true && req.session.isAdmin === 1) {
+            db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
+            INNER JOIN item ON item.serial=reservation_rent.item_id 
+            INNER JOIN user ON user.id= reservation_rent.user_id
+            `)
+                .then(rows => {
+                    res.json(rows);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #1'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+});
+
 module.exports = router;

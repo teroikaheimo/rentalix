@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="736b5a34-e2b7-4b42-af5c-77d82d92aa47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/react-backend/routes/items.js" beforeDir="false" afterPath="$PROJECT_DIR$/react-backend/routes/items.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/react-client/src/Components/MainPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/react-client/src/Components/MainPage.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -27,12 +25,12 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="js" value="6069" />
+          <entry key="js" value="6238" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JavaScript" value="6069" />
+          <entry key="JavaScript" value="6238" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -49,14 +47,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/react-client/src/Components/MainPage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="213">
-              <caret line="161" lean-forward="true" selection-start-line="161" selection-end-line="161" />
+            <state relative-caret-position="-105">
+              <caret line="139" column="29" selection-start-line="139" selection-start-column="29" selection-end-line="139" selection-end-column="29" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
-                <element signature="e#236#272#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -65,8 +62,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemTable.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="34" column="54" selection-start-line="34" selection-start-column="54" selection-end-line="34" selection-end-column="54" />
+            <state relative-caret-position="441">
+              <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -75,10 +72,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/react-client/src/DbAction.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="223">
+              <caret line="204" column="49" selection-start-line="204" selection-start-column="49" selection-end-line="204" selection-end-column="49" />
+              <folding>
+                <element signature="e#0#45#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemTableRow.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="13" column="61" selection-start-line="13" selection-start-column="61" selection-end-line="13" selection-end-column="61" />
+            <state relative-caret-position="105">
+              <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
               <folding>
                 <element signature="e#0#39#0" expanded="true" />
               </folding>
@@ -98,7 +107,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemModal.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="315">
+            <state relative-caret-position="756">
               <caret line="36" column="27" lean-forward="true" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
               <folding>
                 <element signature="e#0#32#0" expanded="true" />
@@ -116,11 +125,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/react-backend/routes/items.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-378">
-              <caret line="138" column="157" selection-start-line="138" selection-start-column="157" selection-end-line="138" selection-end-column="157" />
+            <state relative-caret-position="251">
+              <caret line="275" column="66" selection-start-line="275" selection-start-column="66" selection-end-line="275" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -181,8 +190,8 @@
         <option value="$PROJECT_DIR$/react-client/src/Components/ItemTableRow.js" />
         <option value="$PROJECT_DIR$/react-client/src/Components/ItemRowMenu.js" />
         <option value="$PROJECT_DIR$/react-client/src/Components/ItemModal.js" />
-        <option value="$PROJECT_DIR$/react-backend/routes/items.js" />
         <option value="$PROJECT_DIR$/react-client/src/Components/MainPage.js" />
+        <option value="$PROJECT_DIR$/react-backend/routes/items.js" />
       </list>
     </option>
   </component>
@@ -253,13 +262,13 @@
     <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-client\public" />
-      <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-backend" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Ohjelmointi\Web ohjelmointi harjoitustyo\rentalix\react-client\public" />
       <recent name="C:\OneDrive\Koulu\2018\Web ohjelmoinnin harjoitustyo\Git\rentalix\react-client\src\Components" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-client\public" />
+      <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-backend" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -298,7 +307,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="113067000" />
+    <option name="totallyTimeSpent" value="114560000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -425,10 +434,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="14" selection-start-line="14" selection-end-line="14" />
-          <folding>
-            <element signature="e#0#39#0" expanded="true" />
-            <element signature="e#132#188#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -501,9 +506,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="315">
           <caret line="90" column="43" lean-forward="true" selection-start-line="88" selection-start-column="28" selection-end-line="91" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#32#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -517,12 +519,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemRowMenuItem.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemRowMenuItem.js" />
     <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemModal.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
+        <state relative-caret-position="756">
           <caret line="36" column="27" lean-forward="true" selection-start-line="36" selection-start-column="27" selection-end-line="36" selection-end-column="27" />
           <folding>
             <element signature="e#0#32#0" expanded="true" />
@@ -540,13 +540,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/react-backend/routes/items.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-378">
-          <caret line="138" column="157" selection-start-line="138" selection-start-column="157" selection-end-line="138" selection-end-column="157" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemRowMenu.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="504">
@@ -556,8 +549,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemTableRow.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="13" column="61" selection-start-line="13" selection-start-column="61" selection-end-line="13" selection-end-column="61" />
+        <state relative-caret-position="105">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
@@ -566,8 +559,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/react-client/src/Components/ItemTable.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="34" column="54" selection-start-line="34" selection-start-column="54" selection-end-line="34" selection-end-column="54" />
+        <state relative-caret-position="441">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
           </folding>
@@ -576,12 +569,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/react-client/src/Components/MainPage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="161" lean-forward="true" selection-start-line="161" selection-end-line="161" />
+        <state relative-caret-position="-105">
+          <caret line="139" column="29" selection-start-line="139" selection-start-column="29" selection-end-line="139" selection-end-column="29" />
           <folding>
             <element signature="e#0#39#0" expanded="true" />
-            <element signature="e#236#272#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/react-backend/routes/items.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="251">
+          <caret line="275" column="66" selection-start-line="275" selection-start-column="66" selection-end-line="275" selection-end-column="66" />
         </state>
       </provider>
     </entry>
