@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="736b5a34-e2b7-4b42-af5c-77d82d92aa47" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/react-backend/routes/items.js" beforeDir="false" afterPath="$PROJECT_DIR$/react-backend/routes/items.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -25,12 +25,14 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
+          <entry key="gitignore" value="1" />
           <entry key="js" value="6238" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="JavaScript" value="6238" />
+          <entry key="PLAIN_TEXT" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -125,11 +127,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/react-backend/routes/items.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
+            <state relative-caret-position="839">
               <caret line="275" column="66" selection-start-line="275" selection-start-column="66" selection-end-line="275" selection-end-column="66" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="252">
+              <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -174,7 +185,6 @@
         <option value="$PROJECT_DIR$/react-client/src/Components/protectedRoute.js" />
         <option value="$PROJECT_DIR$/react-backend/routes/PrivateRoute.js" />
         <option value="$PROJECT_DIR$/react-client/src/Components/PrivateRoute.js" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/react-client/src/Components/LoginRegister.js" />
         <option value="$PROJECT_DIR$/react-client/src/App.js" />
         <option value="$PROJECT_DIR$/react-backend/routes/login.js" />
@@ -192,6 +202,7 @@
         <option value="$PROJECT_DIR$/react-client/src/Components/ItemModal.js" />
         <option value="$PROJECT_DIR$/react-client/src/Components/MainPage.js" />
         <option value="$PROJECT_DIR$/react-backend/routes/items.js" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -262,13 +273,13 @@
     <property name="settings.editor.selected.configurable" value="JavaScript.Libraries" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Ohjelmointi\Web ohjelmointi harjoitustyo\rentalix\react-client\public" />
-      <recent name="C:\OneDrive\Koulu\2018\Web ohjelmoinnin harjoitustyo\Git\rentalix\react-client\src\Components" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-client\public" />
       <recent name="C:\Ohjelmointi\Koulu\Web-ohjelmoinnin harjoitustyo\git\rentalix\react-backend" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Ohjelmointi\Web ohjelmointi harjoitustyo\rentalix\react-client\public" />
+      <recent name="C:\OneDrive\Koulu\2018\Web ohjelmoinnin harjoitustyo\Git\rentalix\react-client\src\Components" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -307,7 +318,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="114560000" />
+    <option name="totallyTimeSpent" value="114563000" />
   </component>
   <component name="TodoView" selected-index="2">
     <todo-panel id="selected-file">
@@ -463,8 +474,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="6" column="7" selection-start-line="6" selection-start-column="7" selection-end-line="6" selection-end-column="7" />
+        <state relative-caret-position="252">
+          <caret line="12" column="1" selection-start-line="12" selection-start-column="1" selection-end-line="12" selection-end-column="1" />
         </state>
       </provider>
     </entry>
@@ -496,9 +507,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="609">
           <caret line="36" column="31" lean-forward="true" selection-start-line="36" selection-start-column="31" selection-end-line="36" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -579,7 +587,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/react-backend/routes/items.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
+        <state relative-caret-position="839">
           <caret line="275" column="66" selection-start-line="275" selection-start-column="66" selection-end-line="275" selection-end-column="66" />
         </state>
       </provider>

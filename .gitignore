@@ -9,6 +9,9 @@ react-client/node_modules
 # testing
 /coverage
 
+#IDE
+/.idea/
+
 # production
 /build
 
