@@ -17,37 +17,70 @@ export default class ItemTable extends Component {
     }
 
     updateRows(id, name, brand,model, info, address, owner, category) {
-        console.log(name);
-        dbActions.getItems(id, name, brand,model, info, address, owner, category)
-            .then((result) => {
-                this.setState({data: result});
-                console.log("update");
-            })
-            .catch((err) => {
-                console.log(err)
-            })
+        if(this.props.rentView){
+            dbActions.getItems(id, name, brand,model, info, address, owner, category)
+                .then((result) => {
+                    this.setState({data: result});
+                    console.log("update");
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }else{
+            if(this.props.auth.admin){  // Query ALL rents and reservations.
+
+
+            }else{ // Query reservations and rents of the user
+
+            }
+        }
+
     }
 
     render() {
 
         const result = this.state.data.map((inputRowData, index) =>
-            <ItemTableRow onItemChangeRemote={this.props.onItemChangeRemote}
+            <ItemTableRow rentView={this.props.rentView}
+                          onItemChangeRemote={this.props.onItemChangeRemote}
                           admin={this.props.auth.admin}
                           toggleModalRemote={this.props.toggleModalRemote}
                           returnHeader={false} key={index}
                           rowData={inputRowData}/>);
 
-        return (
-            <div className="ItemTable">
-                <table className="table table-responsive-sm table-striped table-dark">
-                    <thead>
-                    <ItemTableRowHeader/>
-                    </thead>
-                    <tbody>
-                    {result}
-                    </tbody>
-                </table>
-            </div>
-        )
+        if(this.props.rentView){
+            return (
+                <div className="ItemTable">
+                    <table className="table table-responsive-sm table-striped table-dark">
+                        <thead>
+                        <ItemTableRowHeader rentView={this.props.rentView}/>
+                        </thead>
+                        <tbody>
+                        {result}
+                        </tbody>
+                    </table>
+                </div>
+            )
+        }else if(typeof this.state.data[0] === "undefined"){
+            return(
+                <div>
+                    <h3>You have no reservations or rented items!</h3>
+                </div>
+            );
+        }else{
+            return(
+                <div className="ItemTable">
+                    <table className="table table-responsive-sm table-striped table-dark">
+                        <thead>
+                        <ItemTableRowHeader rentView={this.props.rentView}/>
+                        </thead>
+                        <tbody>
+                        {result}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+
+
     }
 }
