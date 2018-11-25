@@ -130,8 +130,8 @@ class MainPage extends Component {
         this.state.toggleUserModal();
     }
 
-    toggleRentView(){
-        this.setState({rentView:!this.state.rentView},()=>{this.updateTableRowsRemote()});
+    toggleRentView(value){
+        this.setState({rentView:value},()=>{this.updateTableRowsRemote()});
 
     }
 
@@ -145,14 +145,12 @@ class MainPage extends Component {
                         <NavbarBrand href="/" className="mr-auto">Welcome to
                             RENTALIX {this.props.auth.username}</NavbarBrand>
                         <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
-
-
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
                             <label className="btn btn-secondary active">
-                                <input type="radio" name="options" id="option1" autoComplete="off" checked/> <img  src="./rent32.ico" alt="Rent" onClick={this.toggleRentView}/>
+                                <input type="radio" name="options" id="option1" autoComplete="off" /> <img  src="./rent32.ico" alt="Rent" onClick={()=>{this.toggleRentView(true)}}/>
                             </label>
                             <label className="btn btn-secondary">
-                                <input type="radio" name="options" id="option2" autoComplete="off"/> <img  src="./personalView32.ico" alt="Personal" onClick={this.toggleRentView}/>
+                                <input type="radio" name="options" id="option2" autoComplete="off"/> <img  src="./personalView32.ico" alt="Personal" onClick={()=>{this.toggleRentView(false)}}/>
                             </label>
                         </div>
 
@@ -161,7 +159,6 @@ class MainPage extends Component {
                                 <img src="./menu32.png" alt="Menu"/>
                             </DropdownToggle>
                             <DropdownMenu right>
-
                                 <DropdownItem header>Menu</DropdownItem>
                                 {this.props.auth.admin?<DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>:""}
                                 <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>

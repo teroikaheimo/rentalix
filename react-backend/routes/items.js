@@ -52,11 +52,11 @@ router.post('/insert', function (req, res, next) {
     if (req.session.login === true && req.session.isAdmin === 1) {
         if (
             (typeof req.body.name !== "undefined" && req.body.name.length > 0) &&
-            typeof req.body.model !== "undefined" &&
-            typeof req.body.brand !== "undefined" &&
-            typeof req.body.itemInfo !== "undefined" &&
+            typeof req.body.model !== "undefined" ||
+            typeof req.body.brand !== "undefined" ||
+            typeof req.body.itemInfo !== "undefined" ||
             (typeof req.body.address !== "undefined" && req.body.name.length > 0) &&
-            (typeof req.body.owner !== "undefined" && req.body.name.owner > 0) &&
+            (typeof req.body.owner !== "undefined" && req.body.name.owner > 0) ||
             typeof req.body.category !== "undefined") {
             db.query(`INSERT INTO item 
         (name,model,brand,info,address,owner,category) 
@@ -139,7 +139,7 @@ router.post('/modify', function (req, res, next) {
 
 router.post('/delete', function (req, res, next) { // Marks item as REMOVED IF it has any references in rent OR reservation tables ELSE item is remove fully.
         if (req.session.login === true && req.session.isAdmin === 1 && typeof req.body.id !== "undefined") {
-            db.query(`SELECT * FROM rent WHERE item_id='${req.body.id}' LIMIT 1;`)
+            db.query(`SELECT * FROM reservation_rent WHERE item_id='${req.body.id}' LIMIT 1;`)
                 .then((rows) => {
                     if (rows.length > 0) {
                         db.query(`UPDATE item SET removed='1' WHERE serial='${req.body.id}';`)
@@ -152,7 +152,7 @@ router.post('/delete', function (req, res, next) { // Marks item as REMOVED IF i
                                 res.json({success: false, message: 'Server error'});
                             })
                     } else {
-                        db.query(`SELECT * FROM reservation WHERE item_id='${req.body.id}' LIMIT 1;`)
+                        db.query(`SELECT * FROM reservation_rent WHERE item_id='${req.body.id}' LIMIT 1;`)
                             .then((rows) => {
                                 if (rows.length > 0) {
                                     db.query(`UPDATE item SET removed='1' WHERE serial='${req.body.id}';`)

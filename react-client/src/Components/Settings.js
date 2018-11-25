@@ -54,7 +54,6 @@ export default ({
 *
 * rentReturn
 * id
-* item_id
 *
 * rentReturnReserved
 * id = reservation_rent row id

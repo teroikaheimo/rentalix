@@ -235,7 +235,7 @@ class ItemModal extends Component {
                                     <label htmlFor="inputName">Name</label>
                                     <input type="text" className="form-control" id="inputName"
                                            placeholder="Name" onChange={this.handleChange}
-                                           value={this.state.inputName} disabled={this.state.justView}  required={true} />
+                                           value={this.state.inputName} disabled={this.state.justView} />
                                 </div>
                                 <div className="form-group col-md-4">
                                     <label htmlFor="inputBrand">Brand</label>
@@ -261,7 +261,7 @@ class ItemModal extends Component {
                                 <label htmlFor="inputAddress">Add new address</label>
                                 <input value={this.state.inputAddress} type="text" className="form-control" id="inputAddress"
                                        placeholder="Address" onChange={this.handleChange}
-                                       required disabled={this.state.justView}/>
+                                        disabled={this.state.justView}/>
                             </div>
 
                             <div className="form-group">
@@ -277,7 +277,7 @@ class ItemModal extends Component {
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwner">Add new owner</label>
                                     <input value={this.state.inputOwner} type="text" className="form-control" id="inputOwner"
-                                           onChange={this.handleChange} required disabled={this.state.justView}/>
+                                           onChange={this.handleChange}  disabled={this.state.justView}/>
                                 </div>
                                 <div className="form-group col-md-2">
                                     <p>OR</p>
