@@ -9,15 +9,15 @@ router.post('/', function (req, res, next) { // Search items from database. All 
 
     if (req.session.login === true) {
         if (
-            typeof req.body.id !== "undefined" ||
-            typeof req.body.name !== "undefined" ||
-            typeof req.body.model !== "undefined" ||
-            typeof req.body.brand !== "undefined" ||
-            typeof req.body.itemInfo !== "undefined" ||
-            typeof req.body.address !== "undefined" ||
-            typeof req.body.owner !== "undefined" ||
+            typeof req.body.id !== "undefined" &&
+            typeof req.body.name !== "undefined" &&
+            typeof req.body.model !== "undefined" &&
+            typeof req.body.brand !== "undefined" &&
+            typeof req.body.itemInfo !== "undefined" &&
+            typeof req.body.address !== "undefined" &&
+            typeof req.body.owner !== "undefined" &&
             typeof req.body.category !== "undefined") {
-            db.query(`SELECT * FROM item WHERE 
+            db.query(`SELECT * FROM item WHERE serial NOT IN (SELECT item_id FROM arereserved) AND 
                 serial LIKE '%${req.body.id}%' 
                 AND name LIKE '%${req.body.name }%' 
                 AND model LIKE '%${req.body.model}%' 
@@ -25,10 +25,7 @@ router.post('/', function (req, res, next) { // Search items from database. All 
                 AND address LIKE '%${req.body.address}%' 
                 AND owner LIKE '%${req.body.owner}%' 
                 AND category LIKE '%${req.body.category}%' 
-                AND category LIKE '%${req.body.category}%'
-                AND reserved='0' 
-                AND rented='0' 
-                AND maintenance='0' 
+                AND category LIKE '%${req.body.category}%' 
                 AND removed='0'
                 LIMIT 50;`)
                 .then(rows => {
@@ -54,12 +51,12 @@ router.post('/', function (req, res, next) { // Search items from database. All 
 router.post('/insert', function (req, res, next) {
     if (req.session.login === true && req.session.isAdmin === 1) {
         if (
-            (typeof req.body.name !== "undefined" && req.body.name.length > 0) ||
-            typeof req.body.model !== "undefined" ||
-            typeof req.body.brand !== "undefined" ||
-            typeof req.body.itemInfo !== "undefined" ||
-            (typeof req.body.address !== "undefined" && req.body.name.length > 0) ||
-            (typeof req.body.owner !== "undefined" && req.body.name.owner > 0) ||
+            (typeof req.body.name !== "undefined" && req.body.name.length > 0) &&
+            typeof req.body.model !== "undefined" &&
+            typeof req.body.brand !== "undefined" &&
+            typeof req.body.itemInfo !== "undefined" &&
+            (typeof req.body.address !== "undefined" && req.body.name.length > 0) &&
+            (typeof req.body.owner !== "undefined" && req.body.name.owner > 0) &&
             typeof req.body.category !== "undefined") {
             db.query(`INSERT INTO item 
         (name,model,brand,info,address,owner,category) 
@@ -99,13 +96,13 @@ router.post('/modify', function (req, res, next) {
 
     if (req.session.login === true && req.session.isAdmin === 1) {
         console.log(req.body);
-        if (typeof req.body.id !== "undefined" ||
-            typeof req.body.name !== "undefined" ||
-            typeof req.body.model !== "undefined" ||
-            typeof req.body.brand !== "undefined" ||
-            typeof req.body.itemInfo !== "undefined" ||
-            typeof req.body.address !== "undefined" ||
-            typeof req.body.owner !== "undefined" ||
+        if (typeof req.body.id !== "undefined" &&
+            typeof req.body.name !== "undefined" &&
+            typeof req.body.model !== "undefined" &&
+            typeof req.body.brand !== "undefined" &&
+            typeof req.body.itemInfo !== "undefined" &&
+            typeof req.body.address !== "undefined" &&
+            typeof req.body.owner !== "undefined" &&
             typeof req.body.category !== "undefined") {
             db.query(`UPDATE item SET 
          serial='${req.body.id}' 
@@ -245,11 +242,121 @@ router.post('/category', function (req, res, next) { // Search for DISTINCT cate
     }
 });
 
+router.post('/reserve/insert', function (req, res, next) { // Inserts new reservation_rent row.
+    if (req.session.login === true) {
+        if (typeof req.body.item_id !== "undefined" &&
+            typeof req.body.reservation_start !== "undefined" &&
+            typeof req.body.reservation_end !== "undefined" &&
+            typeof req.body.user_id !== "undefined"
+        ) {
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.reservation_start}' <= reservation_end) AND (reservation_start <= '${req.body.reservation_end}') AND item_id='${req.body.item_id}' LIMIT 1 ;`)
+                .then((rows) => {
+                    if (rows.length > 0) {
+                        res.status(400).json({
+                            success: false,
+                            message: "Fail. There is all ready a reservation in that range!",
+                            row: rows
+                        });
+                    } else {
+                        db.query(`INSERT INTO reservation_rent (reservation_start, reservation_end,item_id,user_id) VALUES ('${req.body.reservation_start}','${req.body.reservation_end}','${req.body.item_id}','${req.body.user_id}')`)
+                            .then(() => {
+                                res.json({success: true, message: 'Item reserved!'});
+                            })
+                            .catch((err) => {
+                                res.status(503).json({success: false, message: 'Server error #1', error: err})
+                            });
+                    }
+                }).catch((err) => {
+                res.status(503).json({success: false, message: 'Server error #2', error: err})
+            });
+
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/reserve/modify', function (req, res, next) { // Modify the existing reservation row.
+    if (req.session.login === true) {
+        if (typeof req.body.id !== "undefined" &&
+            typeof req.body.item_id !== "undefined" &&
+            typeof req.body.reservation_start !== "undefined" &&
+            typeof req.body.reservation_end !== "undefined" &&
+            typeof req.body.user_id !== "undefined"
+        ) {
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.reservation_start}' <= reservation_end) AND (reservation_start <= '${req.body.reservation_end}') AND item_id='${req.body.item_id}' AND id<>'${req.body.id}' LIMIT 1 ;`)
+                .then((rows) => {
+                    if (rows.length > 0) {
+                        res.status(400).json({
+                            success: false,
+                            message: "Fail. There is all ready a reservation in that range!",
+                            row: rows
+                        });
+                    } else {
+                        db.query(`UPDATE reservation_rent SET reservation_start='${req.body.reservation_start}', reservation_end='${req.body.reservation_end}' WHERE id='${req.body.id}'`)
+                            .then(() => {
+                                res.json({success: true, message: 'Item reservation modified!'});
+                            })
+                            .catch((err) => {
+                                res.status(503).json({success: false, message: 'Server error #1', error: err})
+                            });
+                    }
+                }).catch((err) => {
+                res.status(503).json({success: false, message: 'Server error #2', error: err})
+            });
+
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/reserve/delete', function (req, res, next) { // Delete reservation_rent row IF there is no RENT from it.
+    if (req.session.login === true) {
+        if (typeof req.body.id !== "undefined") {
+
+            db.query(`SELECT * FROM reservation_rent WHERE id='${req.body.id}';`)
+                .then((rows)=>{
+                    if(rows[0].start_date === null){
+                        db.query(`DELETE FROM reservation_rent WHERE id='${req.body.id}';`)
+                            .then(() => {
+                                res.json({success: true, message: "Reservation removed!"});
+                            }).catch((err) => {res.status(503).json({success: false, message: 'Server error #1', error: err})});
+                    }else{
+                        res.status(400).json({success: false, message: 'Fail. There is all ready rent from this reservation'});
+                    }
+                })
+                .catch(()=>{
+                    res.status(503).json({success: false, message: 'Server error #1'});
+                });
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
 
 router.post('/rent', function (req, res, next) { // Returns rent and reservations of single user.
     if (req.session.login === true) {
-        if (
-            typeof req.body.username !== "undefined"){
+        if (typeof req.body.username !== "undefined") {
             db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
             INNER JOIN item ON item.serial=reservation_rent.item_id 
             INNER JOIN user ON user.id= reservation_rent.user_id WHERE username='${req.body.username}'
@@ -277,18 +384,56 @@ router.post('/rent', function (req, res, next) { // Returns rent and reservation
 router.post('/rent/all', function (req, res, next) { // Returns all rents and reservations.
 
     if (req.session.login === true && req.session.isAdmin === 1) {
-            db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
+        db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
             INNER JOIN item ON item.serial=reservation_rent.item_id 
             INNER JOIN user ON user.id= reservation_rent.user_id
-            `)
-                .then(rows => {
-                    res.json(rows);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.status(503);
-                    res.json({success: false, message: 'Server error #1'});
-                })
+            `).then(rows => {
+            res.json(rows);
+        })
+            .catch((err) => {
+                console.log(err);
+                res.status(503);
+                res.json({success: false, message: 'Server error #1'});
+            })
+    } else {
+        if (typeof req.session.isSet === "undefined") {
+            res.status(404).json({success: false, message: 'Error. Not logged in!'});
+        } else {
+            res.status(400).json({success: false, message: 'Bad request'});
+        }
+    }
+});
+
+router.post('/rent/insert', function (req, res, next) { // Modifies the reservation to be rented. reservation_end is updated for easier availability checks.
+    if (req.session.login === true && req.session.isAdmin === 1) {
+        if (typeof req.body.id !== "undefined" &&
+            typeof req.body.item_id !== "undefined" &&
+            typeof req.body.start_date !== "undefined" &&
+            typeof req.body.end_date !== "undefined") {
+
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' AND id<>'${req.body.id}' LIMIT 1 ;`)
+                .then((rows) => {
+                    if (rows.length > 0) {
+                        res.status(400).json({
+                            success: false,
+                            message: "Fail. There is all ready a reservation in that range!",
+                            row: rows
+                        });
+                    } else {
+                        db.query(`UPDATE reservation_rent SET start_date='${req.body.start_date}', end_date='${req.body.end_date}', reservation_end='${req.body.end_date}' WHERE id='${req.body.id}'`)
+                            .then(() => {
+                                res.json({success: true, message: 'Item rented!'});
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                res.status(503);
+                                res.json({success: false, message: 'Server error #1'});
+                            });
+                    }
+                }).catch((err) => {
+                res.status(503).json({success: false, message: 'Server error #2', error: err})
+            });
+
         } else {
             if (typeof req.session.isSet === "undefined") {
                 res.status(404).json({success: false, message: 'Error. Not logged in!'});
@@ -296,23 +441,60 @@ router.post('/rent/all', function (req, res, next) { // Returns all rents and re
                 res.status(400).json({success: false, message: 'Bad request'});
             }
         }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
 });
 
-router.post('/return', function (req, res, next) { // Returns item to stock.
+router.post('/rent/modify', function (req, res, next) { // Modifies the reservation to be rented. reservation_end is updated for easier availability checks.
     if (req.session.login === true && req.session.isAdmin === 1) {
-        if (typeof req.body.item_id !== "undefined" ||
-            typeof req.body.id !== "undefined"){
-            db.query(`UPDATE reservation_rent SET end_date=current_date() WHERE id='${req.body.id}'`)
-                .then(() => {
-                    db.query(`UPDATE item SET rented=b'0' WHERE serial='${req.body.item_id}'`)
-                        .then(()=>{
-                            res.json({success: true, message: 'Item returned to stock!'});
-                        })
-                        .catch((err)=>{
-                            console.log(err);
-                            res.status(503);
-                            res.json({success: false, message: 'Server error #1'});
+        if (typeof req.body.id !== "undefined" &&
+            typeof req.body.item_id !== "undefined" &&
+            typeof req.body.start_date !== "undefined" &&
+            typeof req.body.end_date !== "undefined") {
+
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' AND id<>'${req.body.id}' LIMIT 1 ;`)
+                .then((rows) => {
+                    if (rows.length > 0) {
+                        res.status(400).json({
+                            success: false,
+                            message: "Fail. There is all ready a reservation in that range!",
+                            row: rows
                         });
+                    } else {
+                        db.query(`UPDATE reservation_rent SET start_date='${req.body.start_date}', end_date='${req.body.end_date}', reservation_end='${req.body.end_date}' WHERE id='${req.body.id}'`)
+                            .then(() => {
+                                res.json({success: true, message: 'Item rented!'});
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                res.status(503);
+                                res.json({success: false, message: 'Server error #1'});
+                            });
+                    }
+                }).catch((err) => {
+                res.status(503).json({success: false, message: 'Server error #2', error: err})
+            });
+
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+
+router.post('/rent/return', function (req, res, next) { // Returns rented item to stock. Will give OK even IF item was not rented(Will not modify anything!) reservation_end is updated for easier availability checks.
+    if (req.session.login === true && req.session.isAdmin === 1) {
+        if (typeof req.body.id !== "undefined") {
+            db.query(`UPDATE reservation_rent SET end_date=NOW(),reservation_end=NOW() WHERE id='${req.body.id}' AND start_date<>null`)
+                .then(() => {
+                            res.json({success: true, message: 'Item returned to stock!'});
                 })
                 .catch((err) => {
                     console.log(err);
@@ -331,27 +513,19 @@ router.post('/return', function (req, res, next) { // Returns item to stock.
     }
 });
 
-router.post('/return/rent', function (req, res, next) { // Returns item to state reserved.
+router.post('/rent/returnreserved', function (req, res, next) { // Returns reservation_rent row to state reserved. Will give ok for not rented rows!
     if (req.session.login === true && req.session.isAdmin === 1) {
-        if (typeof req.body.item_id !== "undefined" ||
-            typeof req.body.id !== "undefined"){
-            db.query(`UPDATE item SET rented=b'0', reserved=b'1' WHERE serial='${req.body.item_id}'`)
+        if (typeof req.body.id !== "undefined") {
+            db.query(`UPDATE reservation_rent SET start_date=null, end_date=null WHERE id='${req.body.id}'`)
                 .then(() => {
-                    db.query(`UPDATE reservation_rent SET start_date=null, end_date=null WHERE id='${req.body.id}'`)
-                        .then(()=>{
-                            res.json({success: true, message: 'Item returned to reserved!'});
-                        })
-                        .catch((err)=>{
-                            console.log(err);
-                            res.status(503);
-                            res.json({success: false, message: 'Server error #1'});
-                        });
+                    res.json({success: true, message: 'Item returned to reserved!'});
                 })
                 .catch((err) => {
                     console.log(err);
                     res.status(503);
-                    res.json({success: false, message: 'Server error #2'});
-                })
+                    res.json({success: false, message: 'Server error #1'});
+                });
+
         } else {
             if (typeof req.session.isSet === "undefined") {
                 res.status(404).json({success: false, message: 'Error. Not logged in!'});
