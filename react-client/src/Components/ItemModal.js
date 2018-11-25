@@ -19,9 +19,16 @@ class ItemModal extends Component {
             inputOwnerDd: "",
             modal: false,
             backdrop: true,
-            addNew: false,
+            addMode: false,
             modalHeader:"",
-            justView:false
+            justView:false.valueOf(),
+            hideDate:false,
+            reserved:false,
+            inputReservationStartDate:'',
+            inputReservationEndDate:'',
+            inputRentStartDate:'',
+            inputRentEndDate:'',
+            rented:false
         };
         this.onChangeState();
         this.toggle = this.toggle.bind(this);
@@ -34,30 +41,41 @@ class ItemModal extends Component {
         this.props.toggleModal(this.toggle.bind(this));
     }
 
-    toggle(id, addNew,justView) {
+    toggle(obj) {
         new Promise((resolve) => {
             let header = "";
-            if(addNew){
+            if(typeof obj !== "undefined" && obj.addMode){
                 header="Add new item: ";
-            }else if(justView){
+            }else if(typeof obj !== "undefined" && obj.rentView){
+                header="Rent info for item: ";
+            }else if(typeof obj !== "undefined" && obj.reserveView){
+                header="Reserve item: ";
+            }
+            else if(typeof obj !== "undefined" && obj.justView){
                 header="Viewing item: "
-            }else{
+            }
+            else{
                 header= "Editing item: "
             }
-            this.setState({
-                id: id || "",
-                modal: !this.state.modal,
-                addNew: addNew || false,
-                justView:justView || false,
-                modalHeader:header
-            });
+            if(typeof obj !== "undefined"){
+                this.setState({
+                    id: obj.id || "",
+                    modal: !this.state.modal,
+                    addMode: (typeof obj.addMode !== "undefined") && obj.addMode || false,
+                    justView:obj.justView || false,
+                    modalHeader:header,
+                    rentView: obj.rentView || false,
+                    reserveView: obj.reserveView || false,
+                    rent_id:obj.rent_id ||""
+                });
+            }
             resolve();
         }).then(() => {
             if (this.state.modal) {
                 this.updateInfo();
             }
         }).then(() => {
-            if (!this.state.addNew && this.state.inputName.length > 0) { // Clear the form data IF item details are viewed between add sessions.
+            if (!this.state.addMode && this.state.inputName.length > 0) { // Clear the form data IF item details are viewed between add sessions.
                 this.setState({
                     inputName: "",
                     inputBrand: "",
@@ -87,7 +105,6 @@ class ItemModal extends Component {
         if (this.state.id !== "-") {
             DbAction.getItems(this.state.id)
                 .then((result) => {
-                    console.log(result[0]);
                     this.setState({
                         inputName: result[0].name || "",
                         inputBrand: result[0].brand || "",
@@ -121,7 +138,7 @@ class ItemModal extends Component {
                     inputOrDd.owner,
                     inputOrDd.category)
                     .then(() => {
-                        this.toggle(this.state.id)
+                        this.toggle({id:this.state.id})
                     })
                     .then(() => {
                         this.props.onItemChangeRemote()
@@ -130,6 +147,23 @@ class ItemModal extends Component {
                         console.log("Something failed in saveChanges()");
                     })
             });
+    }
+
+    saveChangesRentView() {
+                DbAction.rentItem(
+                    this.state.id,
+                    this.state.inputRentStartDate,
+                    this.state.inputRentEndDate)
+                    .then(() => {
+                        this.toggle({id:this.state.id})
+                    })
+                    .then(() => {
+                        this.props.onItemChangeRemote()
+                    })
+                    .catch(() => {
+                        console.log("Something failed in saveChangesRentView()");
+                    })
+
     }
 
     validateInput(){
@@ -153,13 +187,13 @@ class ItemModal extends Component {
                         inputOrDd.owner,
                         inputOrDd.category)
                         .then(() => {
-                            this.toggle(this.state.id)
+                            this.toggle({id:this.state.id})
                         })
                         .then(() => {
                             this.props.onItemChangeRemote()
                         })
-                        .catch(() => {
-                            console.log("Something failed in addItem()");
+                        .catch((err) => {
+                            console.log("Something failed in addItem() "+err);
                         })
                 });
         }
@@ -198,12 +232,19 @@ class ItemModal extends Component {
     }
 
     adminButtons() {
-        return (
-            <Button color={"success"} onClick={this.saveChanges}>Save changes</Button>
-        );
+
+        if(this.state.rentView){
+            return(
+                <Button color={"success"} onClick={this.saveChangesRentView}>Rent item</Button>
+            );
+        }else{
+            return (
+                <Button color={"success"} onClick={this.saveChanges}>Save changes</Button>
+            );
+        }
     }
 
-    addNewBtn() {
+    addModeBtn() {
         return (
             <Button color={"success"} onClick={this.addItem}>Add new</Button>
         );
@@ -215,21 +256,48 @@ class ItemModal extends Component {
         );
     }
 
-
-
-
     render() {
         return (
             <div>
                 <Modal isOpen={this.state.modal} toggle={() => {
-                    this.toggle()
+                    this.toggle({})
                 }} className={this.props.className}>
                     <ModalHeader toggle={() => {
-                        this.toggle()
+                        this.toggle({})
                     }}>{this.state.modalHeader}{this.state.id}</ModalHeader>
 
                     <ModalBody className="modal-body">
                         <form>
+                            <div className="form-row" hidden={!this.state.reserveView && !this.state.rentView}>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="inputReservationStartDate">Reservation Start Date</label>
+                                    <input type="date" className="form-control" id="inputReservationStartDate"
+                                           onChange={this.handleChange}
+                                           value={this.state.inputReservationStartDate} disabled={this.state.rented} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="inputReservationEndDate">Reservation End Date</label>
+                                    <input type="date" className="form-control" id="inputReservationEndDate"
+                                           onChange={this.handleChange}
+                                           value={this.state.inputReservationEndDate} disabled={this.state.rented}/>
+                                </div>
+                            </div>
+                            <div className="form-row" hidden={!this.state.rentView}>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="inputRentStartDate">Rent Start Date</label>
+                                    <input type="date" className="form-control" id="inputRentStartDate"
+                                           onChange={this.handleChange}
+                                           value={this.state.inputRentStartDate} disabled={ !this.props.auth.admin} />
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="inputRentEndDate">Rent End Date</label>
+                                    <input type="date" className="form-control" id="inputRentEndDate"
+                                           onChange={this.handleChange}
+                                           value={this.state.inputRentEndDate} disabled={!this.props.auth.admin}/>
+                                </div>
+                            </div>
+
+
                             <div className="form-row">
                                 <div className="form-group col-md-4">
                                     <label htmlFor="inputName">Name</label>
@@ -266,7 +334,7 @@ class ItemModal extends Component {
 
                             <div className="form-group">
                                 <label htmlFor="inputAddressDd">OR Choose address</label>
-                                <select value={!this.props.addNew&&this.state.inputAddressDd} onChange={this.handleChange}
+                                <select value={!this.props.addMode&&this.state.inputAddressDd} onChange={this.handleChange}
                                         id="inputAddressDd" className="form-control" disabled={this.state.justView}>
                                     <option value="">Address</option>
                                     {this.props.dropdownData.address}
@@ -284,7 +352,7 @@ class ItemModal extends Component {
                                 </div>
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputOwnerDd">Choose owner</label>
-                                    <select value={!this.props.addNew?this.state.inputOwnerDd:""} onChange={this.handleChange}
+                                    <select value={!this.props.addMode?this.state.inputOwnerDd:""} onChange={this.handleChange}
                                             id="inputOwnerDd" className="form-control" disabled={this.state.justView}>
                                         <option value="">Owner</option>
                                         {this.props.dropdownData.owner}
@@ -302,23 +370,25 @@ class ItemModal extends Component {
                                 </div>
                                 <div className="form-group col-md-5">
                                     <label htmlFor="inputCategoryDd">Choose category</label>
-                                    <select value={!this.props.addNew&&this.state.inputCategoryDd} onChange={this.handleChange}
+                                    <select value={!this.props.addMode&&this.state.inputCategoryDd} onChange={this.handleChange}
                                             id="inputCategoryDd" className="form-control" disabled={this.state.justView}>
                                         <option value="">Category</option>
                                         {this.props.dropdownData.category}
                                     </select>
                                 </div>
                             </div>
+                            {(this.props.auth.admin && this.state.addMode) ? this.addModeBtn() : ""}
+                            {(this.props.auth.admin && !this.state.addMode) && this.adminButtons()}
+                            {!this.props.auth.admin && this.userButtons()}
                         </form>
                     </ModalBody>
-                    {(this.props.auth.admin && this.state.addNew) ? this.addNewBtn() : ""}
-                    {(this.props.auth.admin && !this.state.addNew) && this.adminButtons()}
-                    {!this.props.auth.admin && this.userButtons()}
+
                 </Modal>
             </div>
         )
     }
 }
+
 
 
 export default ItemModal;

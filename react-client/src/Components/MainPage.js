@@ -66,8 +66,8 @@ class MainPage extends Component {
     };
 
 
-    onChangeModalRemote(id, addMode,justView) { // Passed to children that need to toggle modal.
-        this.state.toggleModalFunc(id, addMode,justView);
+    onChangeModalRemote(obj) { // Passed to children that need to toggle modal.
+        this.state.toggleModalFunc(obj);
     };
 
     onChangeModalGetSet(toggleModalFunc) { // GET/SET toggleModal function from ItemModal. Passed to modal component. Modal calls this function in its constructor and passes the Toggle func as parameter.
@@ -142,8 +142,8 @@ class MainPage extends Component {
 
                 <div>
                     <Navbar color="" dark>
-                        <NavbarBrand href="/" className="mr-auto">Welcome to
-                            RENTALIX {this.props.auth.username}</NavbarBrand>
+                        <NavbarBrand href="/" className="mr-auto">
+                            <img className={"App-logo px-1"} src="./gear64.ico" alt=""/>RENTALIX {this.props.auth.username}  </NavbarBrand>
                         <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
                             <label className="btn btn-secondary active">
@@ -160,7 +160,9 @@ class MainPage extends Component {
                             </DropdownToggle>
                             <DropdownMenu right>
                                 <DropdownItem header>Menu</DropdownItem>
-                                {this.props.auth.admin?<DropdownItem onClick={() => {this.onChangeModalRemote("-", true)}}>Add item</DropdownItem>:""}
+                                {this.props.auth.admin?<DropdownItem onClick={() => {
+                                    this.onChangeModalRemote({id:"-",addMode:true})
+                                }}>Add item</DropdownItem>:""}
                                 <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>
                                 <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
                             </DropdownMenu>

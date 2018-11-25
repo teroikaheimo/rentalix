@@ -273,6 +273,30 @@ class DbAction { // Class to control user access to main page.
             }
         });
     }
+
+    rentItem(id,rentStart,rentEnd) {
+        return new Promise((resolve, reject) => {
+                fetch(settings.rentInsert, {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "id": id,
+                        "start_date": rentStart ,
+                        "end_date": rentEnd
+                    }),
+                })
+                    .then(result => result.json())
+                    .then(result => {
+                        resolve(result);
+                    })
+                    .catch(() => {
+                        reject("Renting item failed")
+                    });
+        });
+    }
 }
 
 export default new DbAction();

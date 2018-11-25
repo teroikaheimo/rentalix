@@ -3,7 +3,7 @@ import ItemTableRowMenu from './ItemRowMenu';
 
 export class ItemTableRow extends Component {
     render() {
-        if (this.props.rentView) { // Admin and user reservation view row
+        if (this.props.rentView) { // Admin and user item view row
             return (
                 <tr>
                     <ColData data={this.props.rowData.serial}/>
@@ -26,8 +26,8 @@ export class ItemTableRow extends Component {
                         <ColData data={this.props.rowData.owner}/>
                         <ColData data={this.props.start_date}/>
                         <ColData data={this.props.end_date}/>
-                        <ItemTableRowMenu admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
-                                          toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial}/>
+                        <ItemTableRowMenu rentView={true} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
+                                          toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial} rent_id={this.props.rowData.id}/>
                     </tr>
                 )
         }
