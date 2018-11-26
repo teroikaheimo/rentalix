@@ -274,7 +274,7 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    rentItem(id,rentStart,rentEnd) {
+    rentItem(reservation_id,item_id,start_date,end_date) {
         return new Promise((resolve, reject) => {
                 fetch(settings.rentInsert, {
                     method: 'POST',
@@ -283,9 +283,10 @@ class DbAction { // Class to control user access to main page.
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        "id": id,
-                        "start_date": rentStart ,
-                        "end_date": rentEnd
+                        "id": reservation_id,
+                        "item_id":item_id,
+                        "start_date": start_date ,
+                        "end_date": end_date
                     }),
                 })
                     .then(result => result.json())
@@ -298,7 +299,7 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    reserveItem(id,rentStart,rentEnd) {
+    reserveItem(user_id,item_id,reservation_start,reservation_end) {
         return new Promise((resolve, reject) => {
             fetch(settings.reserveInsert, {
                 method: 'POST',
@@ -307,9 +308,10 @@ class DbAction { // Class to control user access to main page.
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "id": id,
-                    "start_date": rentStart ,
-                    "end_date": rentEnd
+                    "user_id": user_id,
+                    "item_id":item_id,
+                    "reservation_start": reservation_start,
+                    "reservation_end": reservation_end
                 }),
             })
                 .then(result => result.json())
@@ -317,7 +319,7 @@ class DbAction { // Class to control user access to main page.
                     resolve(result);
                 })
                 .catch(() => {
-                    reject("Renting item failed")
+                    reject("Reserving item failed")
                 });
         });
     }

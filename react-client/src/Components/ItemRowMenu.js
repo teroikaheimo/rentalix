@@ -81,11 +81,17 @@ export default class ItemsRowMenu extends Component {
                                     this.props.toggleModalRemote({
                                         id:this.props.id,
                                         addMode:false,
-                                        justView:true});
+                                        justView:true
+                                    });
                             }}>View
                             </button>
                             <button className={"dropdown-item"} type="button" onClick={() => {
-                                this.props.toggleModalRemote(this.props.id,false,true,false,true)
+                                this.props.toggleModalRemote({
+                                    id:this.props.id,
+                                    addMode:false,
+                                    justView:true,
+                                    reserveView: true
+                                });
                             }}>Reserve
                             </button>
                         </div>

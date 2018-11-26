@@ -5,6 +5,7 @@ class Auth { // Class to control user access to main page.
         this.username = "";
         this.authenticated = false;
         this.admin = false;
+        this.userId ="";
         console.log("RESET");
     }
 
@@ -77,18 +78,22 @@ class Auth { // Class to control user access to main page.
                             this.admin = (result[0].admin === 1);
                             this.authenticated = true;
                             this.username = result[0].username;
+                            this.userId = result[0].id;
 
                             sendResult.username = result[0].username;
                             sendResult.admin = (result[0].admin === 1);
+                            sendResult.id = result[0].id;
                             resolve(sendResult);
 
                         } else if (result.logged) { // IF all ready logged in
                             this.admin = (result.admin === 1);
                             this.authenticated = true;
                             this.username = result.username;
+                            this.userId = result.id;
 
                             sendResult.username = result.username;
                             sendResult.admin = (result.admin === 1);
+                            sendResult.id = result.id;
                             resolve(sendResult);
                         } else {
                             reject(false);

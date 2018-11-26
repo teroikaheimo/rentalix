@@ -70,7 +70,7 @@ export default class ItemTable extends Component {
                           returnHeader={false} key={index}
                           rowData={inputRowData}/>);
 
-        if(this.props.rentView){
+        if(typeof this.state.data[0] !== "undefined" && this.props.rentView){
             return (
                 <div className="ItemTable">
                     <table className="table table-responsive-sm table-striped table-dark">
@@ -85,8 +85,10 @@ export default class ItemTable extends Component {
             )
         }else if(typeof this.state.data[0] === "undefined"){
             return(
+                <div className="ItemTable">
                 <div>
-                    <h3>You have no reservations or rented items!</h3>
+                    <span className={"h3 text-white"}>No items found!</span>
+                </div>
                 </div>
             );
         }else{

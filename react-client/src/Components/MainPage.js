@@ -97,7 +97,7 @@ class MainPage extends Component {
     }
 
     updateTableRowsRemote(){ // Update table rows remotely, according to latest search parameters.
-        this.state.updateTableRows("", this.state.inputName, this.state.inputBrand,this.state.inputModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
+        this.state.updateTableRows(this.state.inputId, this.state.inputName, this.state.inputBrand,this.state.inputModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
     }
 
     updateDropdowns() {
@@ -143,7 +143,11 @@ class MainPage extends Component {
                 <div>
                     <Navbar color="" dark>
                         <NavbarBrand href="/" className="mr-auto">
-                            <img className={"App-logo px-1"} src="./gear64.ico" alt=""/>RENTALIX {this.props.auth.username}  </NavbarBrand>
+                            <div className={"row"}>
+                                <img className={"App-logo px-1"} src="./gear64.ico" alt=""/>
+                                <div  className="col-8 h1 font-weight-bold">RENTALIX</div>
+                            </div>
+                        </NavbarBrand>
                         <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
                             <label className="btn btn-secondary active">
@@ -176,55 +180,15 @@ class MainPage extends Component {
                                     <form>
 
                                         <div className="form-row">
-
+                                            <div className="form-group col-md-8">
+                                                <button type="button" className="form-control btn btn-secondary" id="btnClear"
+                                                        onChange={this.handleChange}>Clear</button>
+                                            </div>
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="inputId"
                                                        placeholder="Serial" onChange={this.handleChange}
                                                        value={this.state.inputId}/>
                                             </div>
-
-                                            <div className="form-group col-md-1 text-light">
-                                                <h4>Show</h4>
-                                            </div>
-                                            <div className="form-group col-md-1 text-light">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" value=""
-                                                           id="showReserved"/>
-                                                        <label className="form-check-label" htmlFor="showReserved">
-                                                            Reserved
-                                                        </label>
-                                                </div>
-                                            </div>
-                                            <div className="form-group col-md-1 text-light">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" value=""
-                                                           id="showRented"/>
-                                                    <label className="form-check-label" htmlFor="showRented">
-                                                        Rented
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div className="form-group col-md-1 text-light">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" value=""
-                                                           id="showMaintenance"/>
-                                                    <label className="form-check-label" htmlFor="showMaintenance">
-                                                        In Maintenance
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            <div className="form-group col-md-1 text-light">
-                                                <div className="form-check">
-                                                    <input className="form-check-input" type="checkbox" value=""
-                                                           id="showRemoved"/>
-                                                    <label className="form-check-label" htmlFor="showRemoved">
-                                                        Removed
-                                                    </label>
-                                                </div>
-                                            </div>
-
-
-
                                         </div>
 
                                         <div className="form-row">

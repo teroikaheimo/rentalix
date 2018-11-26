@@ -26,7 +26,7 @@ class App extends Component {
         return new Promise((resolve,reject)=>{
             Auth.login(username,password)
                 .then((result)=>{
-                    this.setState({auth:{authenticated:true,admin:result.admin,username:result.username}});
+                    this.setState({auth:{authenticated:true,userId:result.id,admin:result.admin,username:result.username}});
                 }).then(()=>resolve( ))
                 .catch((err)=>reject(console.log(err)))
         });
@@ -36,7 +36,7 @@ class App extends Component {
         return new Promise((resolve,reject)=>{
             Auth.logout()
                 .then(()=>{
-                    this.setState({auth:{authenticated:false,admin:false,username:""}});
+                    this.setState({auth:{authenticated:false,userId:"",admin:false,username:""}});
                 }).then(()=>resolve())
                 .catch((err)=>reject(console.log(err)))
         });

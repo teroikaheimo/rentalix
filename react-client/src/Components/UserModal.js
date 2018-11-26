@@ -91,7 +91,7 @@ class UserModal extends React.Component {
                         </Form>
                     </ModalBody>
                     <ModalFooter>
-                        <Button color="Success" onClick={this.submitChange}>Save changes</Button>{' '}
+                        <Button className={"btn btn-success"} color="Success" onClick={this.submitChange}>Save changes</Button>{' '}
                     </ModalFooter>
                 </Modal>
             </div>

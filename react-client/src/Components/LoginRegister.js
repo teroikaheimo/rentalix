@@ -7,8 +7,8 @@ export class LoginRegister extends Component {
         super(props);
         // TODO remove default username and password values
         this.state = {
-            inputUsernameLog: "admin",
-            inputPasswordLog: "admin",
+            inputUsernameLog: "",
+            inputPasswordLog: "",
             inputUsernameReg: "",
             inputPasswordReg: "",
             inputPasswordConfReg: "",
@@ -17,7 +17,8 @@ export class LoginRegister extends Component {
             pwdCheckedOnce: false,
             usernameAvailable: true,
             usernameLength: true,
-            authenticated:false
+            authenticated:false,
+            loginFail:false
 
         };
         this.checkPwdMatch = this.checkPwdMatch.bind(this);
@@ -26,13 +27,15 @@ export class LoginRegister extends Component {
 
     }
 
-    componentWillMount(){
-
-    }
+    _handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.tryLogin();
+        }
+    };
 
     checkPwdMatch() {
         this.setState({pwdCheckedOnce: true});
-        if (this.state.inputPassword === this.state.inputPasswordConf && this.state.inputPassword.length > 3) {
+        if (this.state.inputPasswordReg === this.state.inputPasswordConfReg && this.state.inputPasswordReg.length > 3) {
             this.setState({pwdMatch: true});
         } else {
             this.setState({pwdMatch: false});
@@ -76,32 +79,46 @@ export class LoginRegister extends Component {
         }
     }
 
+    setLoginFail(state){
+        this.setState({loginFail:state})
+    }
+
+    tryLogin(){
+        if(this.state.inputUsernameLog <1 || this.state.inputPasswordLog <1){
+            this.setLoginFail(true);
+        }
+        this.props.Login(this.state.inputUsernameLog, this.state.inputPasswordLog)
+            .then(() => {
+                this.setLoginFail(false);
+                this.props.history.push("/main");
+            })
+            .catch(() => {this.setLoginFail(true);})
+    }
+
     render() {
         return (
             <div className="Login">
                 <div className="login text-center">
-
                     <div className="loginOther">
                         <div className="form-signin ">
+                            {this.displayRegTip()}
+                            {this.state.loginFail?
+                                <div className="alert alert-danger" role="alert">
+                                Wrong username or password!
+                            </div>:""}
                             <h1>RENTALIX</h1>
                             <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
                             <label htmlFor="inputUsernameLog" className="sr-only">Username</label>
                             <input type="text" id="inputUsernameLog" onChange={this.handleChange}
-                                   className="form-control my-1 py-3" placeholder="Username"
+                                   className="form-control my-1 py-3" placeholder="Username" onKeyPress={this._handleKeyPress}
                                    required
                                    autoFocus/>
                             <label htmlFor="inputPasswordLog" className="sr-only">Password</label>
                             <input type="password" id="inputPasswordLog" onChange={this.handleChange}
-                                   className="form-control my-1 py-3" placeholder="Password"
+                                   className="form-control my-1 py-3" placeholder="Password" onKeyPress={this._handleKeyPress}
                                    required/>
                             <button className="btn btn-lg btn-primary btn-block" type="button"
-                                    onClick={() => {
-                                        this.props.Login(this.state.inputUsernameLog, this.state.inputPasswordLog)
-                                            .then(() => {
-                                                this.props.history.push("/main");
-                                            })
-                                            .catch((err) => console.log(err))
-                                    }}>Sign in
+                                    onClick={() => {this.tryLogin()}}>Sign in
                             </button>
 
                             <button type="button" className="btn btn-link" data-toggle="modal"
@@ -109,7 +126,7 @@ export class LoginRegister extends Component {
                                 Register
                             </button>
                             <br/>
-                            {this.displayRegTip()}
+
                         </div>
 
                         <div className="modal fade" id="register" tabIndex="-1" role="dialog"
@@ -155,13 +172,11 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPassword, this.state.inputPasswordConf)
+                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
                                                     .then(() => {
-                                                        this.setState({pwdChangeOk: true})
+                                                        this.setState({pwdChangeOk: true,loginFail:false})
                                                     })
-                                                    .catch(() => {
-                                                        this.setState({pwdChangeOk: false})
-                                                    })}
+                                                    .catch(() => {this.setState({pwdChangeOk: false,loginFail:false})})}
                                                 data-dismiss="modal" className="btn btn-success">Register
                                         </button>
                                     </div>

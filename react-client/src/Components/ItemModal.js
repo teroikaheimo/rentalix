@@ -1,8 +1,6 @@
-import {Component} from "react";
-import React from "react";
+import React,{Component} from "react";
 import DbAction from "../DbAction";
 import {Button, Modal, ModalHeader, ModalBody} from 'reactstrap';
-
 class ItemModal extends Component {
     constructor(props) {
         super(props);
@@ -17,6 +15,14 @@ class ItemModal extends Component {
             inputCategoryDd: "",
             inputAddressDd: "",
             inputOwnerDd: "",
+            inputReservationStartDate: "",
+            inputReservationStartTime:"",
+            inputReservationEndTime:"",
+            inputReservationEndDate: "",
+            inputRentStartDate: "",
+            inputRentStartTime:"",
+            inputRentEndDate: "",
+            inputRentEndTime:"",
             modal: false,
             backdrop: true,
             addMode: false,
@@ -24,13 +30,16 @@ class ItemModal extends Component {
             justView: false.valueOf(),
             hideDate: false,
             reserved: false,
-            inputReservationStartDate: '',
-            inputReservationEndDate: '',
-            inputRentStartDate: '',
-            inputRentEndDate: '',
-            rented: false
+            reservationId:"",
+            reservationFail:false,
+            rented: false,
+            rentFail:false,
+            startDate:"",
+            newItemFail:false
+
         };
         this.onChangeState();
+        this.reserveItem = this.reserveItem.bind(this);
         this.toggle = this.toggle.bind(this);
         this.updateInfo = this.updateInfo.bind(this);
         this.addItem = this.addItem.bind(this);
@@ -86,7 +95,8 @@ class ItemModal extends Component {
                     inputCategory: "",
                     inputAddressDd: "",
                     inputOwnerDd: "",
-                    inputCategoryDd: ""
+                    inputCategoryDd: "",
+                    newItemFail:false
                 })
             }
         }).catch((err) => {
@@ -98,6 +108,7 @@ class ItemModal extends Component {
         this.setState({
             [event.target.id]: event.target.value
         });
+        console.log(event.target.id);
     };
 
 
@@ -193,15 +204,52 @@ class ItemModal extends Component {
                         inputOrDd.owner,
                         inputOrDd.category)
                         .then(() => {
+                            this.setState({newItemFail:false});
                             this.toggle({id: this.state.id})
                         })
                         .then(() => {
                             this.props.onItemChangeRemote()
                         })
                         .catch((err) => {
+                            this.setState({newItemFail:true});
                             console.log("Something failed in addItem() " + err);
                         })
                 });
+        }else{this.setState({newItemFail:true});}
+    }
+
+    reserveItem() {
+        if (this.state.inputReservationStartDate !== "" &&  this.state.inputReservationEndDate !== "" && this.state.inputReservationStartTime !== "" &&  this.state.inputReservationEndTime !== "") {
+            console.log(this.state.inputReservationStartDate+"T"+this.state.inputReservationStartTime+":00Z"+" "+
+                this.state.inputReservationEndDate+"T"+this.state.inputReservationEndTime+":00Z");
+            DbAction.reserveItem(
+                this.props.auth.userId,
+                this.state.id,
+                this.state.inputReservationStartDate+" "+this.state.inputReservationStartTime+":00",
+                this.state.inputReservationEndDate+" "+this.state.inputReservationEndTime+":00")
+                .then(() => {
+                    this.setState({reserveFail: false});
+                    this.toggle({id: this.state.id})
+                })
+                .then(()=>{
+                    this.props.onItemChangeRemote();
+                })
+                .catch((err) => {console.log(err);})
+        } else {
+            this.setState({reservationFail: true});
+        }
+    }
+
+    rentItem(){
+        if (this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "") {
+            DbAction.rentItem(this.state.reservationId, this.state.id, this.state.inputRentStartDate, this.state.inputRentEndDate)
+                .then(() => {
+                    this.setState({rentFail: false});
+                    this.toggle({id: this.state.id})
+                })
+                .catch((err) => {console.log(err);})
+        }else{
+            this.setState({rentFail: true});
         }
     }
 
@@ -243,7 +291,7 @@ class ItemModal extends Component {
             return (
                 <div className={"form-row"}>
                     <div className={"col-md-12"}>
-                        <Button color={"success"} onClick={this.saveChangesRentView}>Rent item</Button>
+                        <Button color={"success btn-block m-0"} onClick={this.saveChangesRentView}>Rent item</Button>
                     </div>
                 </div>
             );
@@ -251,7 +299,11 @@ class ItemModal extends Component {
             return (
                 <div className={"form-row"}>
                     <div className={"col-md-12"}>
-                        <Button color={"success"} onClick={this.saveChanges}>Save changes</Button>
+                        <Button className={"btn-block m-0"} color={"warning"}
+                                onClick={this.reserveItem}>Reserve for Maintenance</Button>
+                    </div>
+                    <div className={"col-md-12"}>
+                        <Button color={"success btn-block m-0"} onClick={this.saveChanges}>Save changes</Button>
                     </div>
                 </div>
             );
@@ -262,7 +314,7 @@ class ItemModal extends Component {
         return (
             <div className={"form-row"}>
                 <div className={"col-md-12"}>
-                    <Button color={"success"} onClick={this.addItem}>Add new</Button>
+                    <Button color={"success btn-block m-0"} onClick={this.addItem}>Add new</Button>
                 </div>
             </div>
 
@@ -272,13 +324,12 @@ class ItemModal extends Component {
     userButtons() {
         if (this.state.rentView) { // USER Rent view modal buttons
 
-
-        } else { // USER Reserve view modal buttons
+        } else if(this.state.reserveView){ // USER Reserve view modal buttons
             return (
                 <div className={"form-row"}>
                     <div className={"col-md-12"}>
                         <Button className={"btn-block m-0"} color={"success"}
-                                onClick={this.saveChanges}>Reserve</Button>
+                                onClick={this.reserveItem}>Reserve</Button>
                     </div>
                 </div>
             );
@@ -297,8 +348,11 @@ class ItemModal extends Component {
                     }}>{this.state.modalHeader}{this.state.id}</ModalHeader>
 
                     <ModalBody className="modal-body">
+
+                        <WarningComponent content={"Rent failure"} hidden={!this.state.reservationFail} cn={"alert alert-danger"} />
+                        <WarningComponent content={"Item add failure"} hidden={!this.state.newItemFail} cn={"alert alert-danger"} />
                         <form>
-                            <div className="form-row" hidden={!this.state.reserveView && !this.state.rentView}>
+                            <div className="form-row" hidden={!(this.state.reserveView || this.state.rentView)}>
                                 <div className="form-group col-md-6">
                                     <label htmlFor="inputReservationStartDate">Reservation Start Date</label>
                                     <input type="date" className="form-control" id="inputReservationStartDate"
@@ -306,10 +360,24 @@ class ItemModal extends Component {
                                            value={this.state.inputReservationStartDate} disabled={this.state.rented}/>
                                 </div>
                                 <div className="form-group col-md-6">
+                                    <label htmlFor="inputReservationStartTime">Reservation Start Time</label>
+                                    <input type="time" className="form-control" id="inputReservationStartTime"
+                                           onChange={this.handleChange}
+                                           value={this.state.inputReservationStartTime} disabled={this.state.rented}/>
+                                </div>
+                            </div>
+                            <div className="form-row" hidden={!(this.state.reserveView || this.state.rentView)}>
+                                <div className="form-group col-md-6">
                                     <label htmlFor="inputReservationEndDate">Reservation End Date</label>
                                     <input type="date" className="form-control" id="inputReservationEndDate"
-                                           onChange={this.handleChange}
+                                           onChange={this.handleChange} min={this.state.inputReservationStartDate}
                                            value={this.state.inputReservationEndDate} disabled={this.state.rented}/>
+                                </div>
+                                <div className="form-group col-md-6">
+                                    <label htmlFor="inputReservationEndTime">Reservation End Time</label>
+                                    <input type="time" className="form-control" id="inputReservationEndTime"
+                                           onChange={this.handleChange} min={this.state.inputReservationStartTime}
+                                           value={this.state.inputReservationEndTime} disabled={this.state.rented}/>
                                 </div>
                             </div>
                             <div className="form-row" hidden={!this.state.rentView}>
@@ -425,6 +493,16 @@ class ItemModal extends Component {
         )
     }
 }
+
+const WarningComponent = (props)=>{
+    return(
+
+        <div hidden={props.hidden} className={props.cn} role="alert">
+            {props.content}
+        </div>
+    );
+};
+
 
 
 export default ItemModal;
