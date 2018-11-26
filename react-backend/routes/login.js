@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Database = require('../database');
+const db = require('../database');
 const con = require('../connection');
-const db = new Database(con);
 
 
 router.post('/', function(req, res, next) { // Returns username and info does this account have admin access. IF password found

@@ -1,8 +1,7 @@
 var express = require('express');
 var router = express.Router();
-const Database = require('../database');
+const db = require('../database');
 const con = require('../connection');
-const db = new Database(con);
 
 router.get('/', function(req, res, next) {
 

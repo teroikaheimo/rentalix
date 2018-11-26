@@ -1,7 +1,8 @@
 const mysql = require('mysql');
-module.exports = class Database{ // Wrapper for mysql to get promises.
-    constructor(config){
-        this.connection = mysql.createConnection(config);
+const config = require('./connection');
+class Database { // Wrapper for mysql to get promises.
+    constructor(conf){
+        this.connection = mysql.createPool(conf);
     }
     query(sql,args){
         return new Promise((resolve,reject)=>{
@@ -15,11 +16,13 @@ module.exports = class Database{ // Wrapper for mysql to get promises.
     }
     close(){
         return new Promise((resolve,reject)=>{
-            this.connection.end(err=>{
+            this.connection.releaseConnection(err=>{
                 if(err)
                     return reject(err);
                 resolve();
             })
         });
     }
-};
+}
+
+module.exports = new Database(config);

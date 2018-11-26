@@ -1,5 +1,6 @@
 // Fill out the info and rename the file to connection.js
-module.exports = {
+module.exports = { //MySQL DB pool settings
+    connectionLimit : 20,
     host: "localhost",
     user: "",
     password: "",

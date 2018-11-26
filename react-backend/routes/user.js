@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
-const Database = require('../database');
+const db = require('../database');
 const mysql = require('mysql');
 const con = require('../connection');
-const db = new Database(con);
 
 
 router.post('/modify', function(req, res, next) { //
