@@ -11,6 +11,16 @@ export default class ItemsRowMenu extends Component {
             })
     }
 
+    deleteReservation(){
+        if(typeof this.props.rowData.id !== "undefined"){
+            console.log("TRIED");
+            DbAction.reservationDelete(this.props.rowData.id)
+                .then(()=>{
+                    this.props.onItemChangeRemote()
+                })
+        }
+    }
+
     render() {
         if (this.props.admin) { // ADMIN menus
             if (this.props.rentView) {
@@ -18,6 +28,14 @@ export default class ItemsRowMenu extends Component {
                     <td className="dropleft">
                         <img src="./menu32.png" alt="Item menu" data-toggle="dropdown"/>
                         <div className="dropdown-menu">
+                            <button className={"dropdown-item"} type="button" onClick={() => {
+                                this.props.toggleModalRemote({
+                                    id:this.props.id,
+                                    addMode:false,
+                                    justView:true
+                                });
+                            }}>View
+                            </button>
                             <button className={"dropdown-item"} type="button" onClick={() => {
                                 this.props.toggleModalRemote({
                                     id:this.props.id,
@@ -40,6 +58,14 @@ export default class ItemsRowMenu extends Component {
                 return (
                     <td className="dropleft">
                         <img src="./menu32.png" alt="Item menu" data-toggle="dropdown"/>
+                        <button className={"dropdown-item"} type="button" onClick={() => {
+                            this.props.toggleModalRemote({
+                                id:this.props.id,
+                                addMode:false,
+                                justView:true
+                            });
+                        }}>View
+                        </button>
                         <div className="dropdown-menu">
                             <button className={"dropdown-item"} type="button" onClick={() => {
                                 this.props.toggleModalRemote({id:this.props.id});
@@ -62,6 +88,14 @@ export default class ItemsRowMenu extends Component {
                         <div className="dropdown-menu">
                             <button className={"dropdown-item"} type="button" onClick={() => {
                                 this.props.toggleModalRemote({
+                                    id:this.props.id,
+                                    addMode:false,
+                                    justView:true
+                                });
+                            }}>View
+                            </button>
+                            <button className={"dropdown-item"} type="button" onClick={() => {
+                                this.props.toggleModalRemote({
                                     id: this.props.id,
                                     addMode: false,
                                     justView: true,
@@ -71,6 +105,7 @@ export default class ItemsRowMenu extends Component {
                                     rent_id: this.props.rent_id})
                             }}>Change
                             </button>
+                            <button className={"dropdown-item"} type="button" onClick={() => {this.deleteReservation()}}>Delete</button>
                         </div>
                     </td>
                 );

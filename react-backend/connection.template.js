@@ -4,5 +4,6 @@ module.exports = { //MySQL DB pool settings
     host: "localhost",
     user: "",
     password: "",
-    database: "rentalix"
+    database: "rentalix",
+    timezone:"+00:00"
 };

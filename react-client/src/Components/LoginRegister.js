@@ -7,8 +7,8 @@ export class LoginRegister extends Component {
         super(props);
         // TODO remove default username and password values
         this.state = {
-            inputUsernameLog: "",
-            inputPasswordLog: "",
+            inputUsernameLog: "test",
+            inputPasswordLog: "test",
             inputUsernameReg: "",
             inputPasswordReg: "",
             inputPasswordConfReg: "",

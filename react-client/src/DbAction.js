@@ -9,7 +9,6 @@ class DbAction { // Class to control user access to main page.
 
     fetchItems(id, name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.getItems, {
                     method: 'POST',
                     headers: {
@@ -33,9 +32,6 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Fetching failed!")
                     });
-            } else {
-                reject("Not authenticated to fetch!")
-            }
         });
     }
 
@@ -54,7 +50,6 @@ class DbAction { // Class to control user access to main page.
     insertItem(name,  brand,model, info, address, owner, category) {
         console.log(name,address,owner);
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.insertItem, {
                     method: 'POST',
                     headers: {
@@ -81,15 +76,12 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject(false)
                     });
-            } else {
-                reject(false)
-            }
+
         });
     }
 
     modifyItem(id,name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.modifyItem, {
                     method: 'POST',
                     headers: {
@@ -114,15 +106,12 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Item modify failed")
                     });
-            } else {
-                reject("Not authenticated!")
-            }
+
         });
     }
 
     deleteItem(id) {
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.deleteItem, {
                     method: 'POST',
                     headers: {
@@ -143,16 +132,13 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject(false)
                     });
-            } else {
-                reject(false)
-            }
+
         });
     }
 
     getDropdownInfo(){
         const dropdownData = {};
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.getAddress, {
                     method: 'POST',
                     headers: {
@@ -195,9 +181,7 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Fetching owners failed!")
                     });
-            } else {
-                reject("Not authenticated to fetch!")
-            }
+
         });
     }
 
@@ -228,7 +212,6 @@ class DbAction { // Class to control user access to main page.
 
     fetchUserRents(username) {
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.getUserRents, {
                     method: 'POST',
                     headers: {
@@ -246,15 +229,11 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Fetching user rents failed!")
                     });
-            } else {
-                reject("Not authenticated to fetch!")
-            }
         });
     }
 
     fetchAllRents() {
         return new Promise((resolve, reject) => {
-            if (auth.isAuthenticated()) {
                 fetch(settings.getAllRents, {
                     method: 'POST',
                     headers: {
@@ -268,9 +247,6 @@ class DbAction { // Class to control user access to main page.
                     .catch(() => {
                         reject("Fetching user rents failed!")
                     });
-            } else {
-                reject("Not authenticated to fetch!")
-            }
         });
     }
 
@@ -323,7 +299,7 @@ class DbAction { // Class to control user access to main page.
                 });
         });
     }
-    reservationModify(user_id,item_id,reservation_start,reservation_end) {
+    reservationModify(id,user_id,item_id,reservation_start,reservation_end) {
         return new Promise((resolve, reject) => {
             fetch(settings.reserveModify, {
                 method: 'POST',
@@ -332,6 +308,7 @@ class DbAction { // Class to control user access to main page.
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    "id":id,
                     "user_id": user_id,
                     "item_id":item_id,
                     "reservation_start": reservation_start,
@@ -344,6 +321,28 @@ class DbAction { // Class to control user access to main page.
                 })
                 .catch(() => {
                     reject("Modifying reservation item failed")
+                });
+        });
+    }
+
+    reservationDelete(id) {
+        return new Promise((resolve, reject) => {
+            fetch(settings.reserveDelete, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id":id
+                }),
+            })
+                .then(result => result.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch(() => {
+                    reject("Deleting reservation failed")
                 });
         });
     }

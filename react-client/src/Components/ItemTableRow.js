@@ -12,7 +12,7 @@ export class ItemTableRow extends Component {
                     <ColData data={this.props.rowData.brand}/>
                     <ColData data={this.props.rowData.address}/>
                     <ColData data={this.props.rowData.owner}/>
-                    <ItemTableRowMenu rowData={{start_date:this.props.start_date,end_date:this.props.end_date}} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
+                    <ItemTableRowMenu rowData={this.props.rowData} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
                                       toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial}/>
                 </tr>
             )
@@ -26,7 +26,7 @@ export class ItemTableRow extends Component {
                         <ColData data={this.props.rowData.owner}/>
                         <ColData data={this.props.start_date}/>
                         <ColData data={this.props.end_date}/>
-                        <ItemTableRowMenu rowData={{start_date:this.props.start_date,end_date:this.props.end_date}} rentView={true} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
+                        <ItemTableRowMenu rowData={this.props.rowData} rentView={true} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
                                           toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial} rent_id={this.props.rowData.id}/>
                     </tr>
                 )

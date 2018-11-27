@@ -37,20 +37,24 @@ export default class ItemTable extends Component {
     }
 
 
-    formatDate(rowData,startDate){
+    formatDate(rowData,startDate){ // Format from 2018-11-27T18:00:00.000Z -> 27-11-2018 18:00
         let formatedDate ="";
+        let format = (str)=>{
+            return (str.slice(8,10)+str.slice(4,8)+str.slice(0,4)+" | "+str.slice(11,16))
+        };
+
         if(rowData.reservation_start !== null && typeof rowData.reservation_start !== "undefined"){
             if(startDate){
                 if( rowData.start_date !== null){
-                    formatedDate = new Date(rowData.start_date).toISOString().slice(0, 19).replace('T', ' ');
+                    formatedDate = format(rowData.start_date);
                 }else{
-                    formatedDate = new Date(rowData.reservation_start).toISOString().slice(0, 19).replace('T', ' ');
+                    formatedDate = format(rowData.reservation_start);
                 }
             } else{
                 if( rowData.end_date !== null){
-                    formatedDate = new Date(rowData.end_date).toISOString().slice(0, 19).replace('T', ' ');
+                    formatedDate = format(rowData.end_date);
                 }else{
-                    formatedDate = new Date(rowData.reservation_end).toISOString().slice(0, 19).replace('T', ' ');
+                    formatedDate = format(rowData.reservation_end);
                 }
             }
         }

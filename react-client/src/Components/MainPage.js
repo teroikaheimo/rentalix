@@ -131,7 +131,7 @@ class MainPage extends Component {
     }
 
     toggleRentView(value){
-        this.setState({rentView:value},()=>{this.updateTableRowsRemote()});
+        this.setState({rentView:value,collapsed:true},()=>{this.updateTableRowsRemote()});
 
     }
 
@@ -148,7 +148,9 @@ class MainPage extends Component {
                                 <div  className="col-8 h1 font-weight-bold">RENTALIX</div>
                             </div>
                         </NavbarBrand>
-                        <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
+                        {this.state.rentView? <img src="./search.png" alt="" onClick={this.toggleNavbar}/>:""}
+
+
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
                             <label className="btn btn-secondary active">
                                 <input type="radio" name="options" id="option1" autoComplete="off" /> <img  src="./rent32.ico" alt="Rent" onClick={()=>{this.toggleRentView(true)}}/>
