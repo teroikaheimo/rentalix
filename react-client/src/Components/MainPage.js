@@ -172,13 +172,9 @@ class MainPage extends Component {
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
                         <Collapse isOpen={!this.state.collapsed} navbar>
-
-
                             <Nav navbar>
                                 <NavItem>
-
                                     <form>
-
                                         <div className="form-row">
                                             <div className="form-group col-md-8">
                                                 <button type="button" className="form-control btn btn-secondary" id="btnClear"

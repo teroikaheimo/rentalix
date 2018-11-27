@@ -24,6 +24,7 @@ export default class ItemsRowMenu extends Component {
                                     addMode:false,
                                     justView:true,
                                     rentView:true,
+                                    rowData:this.props.rowData,
                                     rent_id:this.props.rent_id});
                             }}>Modify
                             </button>
@@ -66,8 +67,9 @@ export default class ItemsRowMenu extends Component {
                                     justView: true,
                                     rentView: true,
                                     reserveView: false,
+                                    rowData:this.props.rowData,
                                     rent_id: this.props.rent_id})
-                            }}>Rent or Change
+                            }}>Change
                             </button>
                         </div>
                     </td>

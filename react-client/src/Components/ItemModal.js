@@ -35,7 +35,8 @@ class ItemModal extends Component {
             rented: false,
             rentFail:false,
             startDate:"",
-            newItemFail:false
+            newItemFail:false,
+            rowData:{}
 
         };
         this.onChangeState();
@@ -222,7 +223,29 @@ class ItemModal extends Component {
         if (this.state.inputReservationStartDate !== "" &&  this.state.inputReservationEndDate !== "" && this.state.inputReservationStartTime !== "" &&  this.state.inputReservationEndTime !== "") {
             console.log(this.state.inputReservationStartDate+"T"+this.state.inputReservationStartTime+":00Z"+" "+
                 this.state.inputReservationEndDate+"T"+this.state.inputReservationEndTime+":00Z");
-            DbAction.reserveItem(
+            DbAction.reservationInsert(
+                this.props.auth.userId,
+                this.state.id,
+                this.state.inputReservationStartDate+" "+this.state.inputReservationStartTime+":00",
+                this.state.inputReservationEndDate+" "+this.state.inputReservationEndTime+":00")
+                .then(() => {
+                    this.setState({reserveFail: false});
+                    this.toggle({id: this.state.id})
+                })
+                .then(()=>{
+                    this.props.onItemChangeRemote();
+                })
+                .catch((err) => {console.log(err);})
+        } else {
+            this.setState({reservationFail: true});
+        }
+    }
+
+    reservationModify() {
+        if (this.state.inputReservationStartDate !== "" &&  this.state.inputReservationEndDate !== "" && this.state.inputReservationStartTime !== "" &&  this.state.inputReservationEndTime !== "") {
+            console.log(this.state.inputReservationStartDate+"T"+this.state.inputReservationStartTime+":00Z"+" "+
+                this.state.inputReservationEndDate+"T"+this.state.inputReservationEndTime+":00Z");
+            DbAction.reservationModify(
                 this.props.auth.userId,
                 this.state.id,
                 this.state.inputReservationStartDate+" "+this.state.inputReservationStartTime+":00",
@@ -310,20 +333,15 @@ class ItemModal extends Component {
         }
     }
 
-    addModeBtn() {
-        return (
-            <div className={"form-row"}>
-                <div className={"col-md-12"}>
-                    <Button color={"success btn-block m-0"} onClick={this.addItem}>Add new</Button>
-                </div>
-            </div>
-
-        );
-    }
-
     userButtons() {
         if (this.state.rentView) { // USER Rent view modal buttons
-
+            return (
+                <div className={"form-row"}>
+                    <div className={"col-md-12"}>
+                        <Button color={"success btn-block m-0"} onClick={this.reservationModify}>Save changes</Button>
+                    </div>
+                </div>
+            );
         } else if(this.state.reserveView){ // USER Reserve view modal buttons
             return (
                 <div className={"form-row"}>
@@ -335,6 +353,17 @@ class ItemModal extends Component {
             );
         }
 
+    }
+
+    addModeBtn() {
+        return (
+            <div className={"form-row"}>
+                <div className={"col-md-12"}>
+                    <Button color={"success btn-block m-0"} onClick={this.addItem}>Add new</Button>
+                </div>
+            </div>
+
+        );
     }
 
     render() {
@@ -357,7 +386,8 @@ class ItemModal extends Component {
                                     <label htmlFor="inputReservationStartDate">Reservation Start Date</label>
                                     <input type="date" className="form-control" id="inputReservationStartDate"
                                            onChange={this.handleChange}
-                                           value={this.state.inputReservationStartDate} disabled={this.state.rented}/>
+                                           value={this.state.inputReservationStartDate}
+                                           disabled={this.state.rented}/>
                                 </div>
                                 <div className="form-group col-md-6">
                                     <label htmlFor="inputReservationStartTime">Reservation Start Time</label>

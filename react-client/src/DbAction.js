@@ -299,7 +299,7 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    reserveItem(user_id,item_id,reservation_start,reservation_end) {
+    reservationInsert(user_id,item_id,reservation_start,reservation_end) {
         return new Promise((resolve, reject) => {
             fetch(settings.reserveInsert, {
                 method: 'POST',
@@ -320,6 +320,30 @@ class DbAction { // Class to control user access to main page.
                 })
                 .catch(() => {
                     reject("Reserving item failed")
+                });
+        });
+    }
+    reservationModify(user_id,item_id,reservation_start,reservation_end) {
+        return new Promise((resolve, reject) => {
+            fetch(settings.reserveModify, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "user_id": user_id,
+                    "item_id":item_id,
+                    "reservation_start": reservation_start,
+                    "reservation_end": reservation_end
+                }),
+            })
+                .then(result => result.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch(() => {
+                    reject("Modifying reservation item failed")
                 });
         });
     }
