@@ -1,0 +1,16 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.13.1
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:clean-css:20180306':
+    - jade > clean-css:
+        reason: There is no available remedy.
+        expires: '2018-12-27T08:29:27.571Z'
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:uglify-js:20150824':
+    - jade > transformers > uglify-js:
+        patched: '2018-11-27T08:27:07.763Z'
+  'npm:uglify-js:20151024':
+    - jade > transformers > uglify-js:
+        patched: '2018-11-27T08:27:07.763Z'
