@@ -19,7 +19,7 @@ export default class ItemTable extends Component {
 
     updateRows(id, name, brand,model, info, address, owner, category) {
         if(this.props.rentView){
-            dbActions.getItems(id, name, brand,model, info, address, owner, category)
+            dbActions.fetchItems(id, name, brand,model, info, address, owner, category)
                 .then((result) => {this.setState({data: result});})
                 .catch((err) => {console.log(err)})
         }else{
@@ -61,10 +61,42 @@ export default class ItemTable extends Component {
         return formatedDate;
     }
 
+    typeText(data){ // Returns STATUS badge.
+        if(data.start_date === null){
+            if(data.username === "admin"){
+                return <span className={"badge badge-info"}>Maintenance</span>;
+            }else{
+                if(this.isHistory(data.reservation_end)){
+                    return <span className={"badge badge-secondary"}>Reserved</span>;
+                }else{
+                return <span className={"badge badge-warning"}>Reserved</span>;
+                }
+            }
+        }else{
+            if(this.isHistory(data.end_date)){
+                return <span className={"badge badge-secondary"}>Rented</span>;
+
+            }else{
+                return <span className={"badge badge-success"}>Rented</span>;
+            }
+        }
+    }
+
+    isHistory(data){
+        let endDate = new Date(data);
+        endDate=endDate.setHours(endDate.getHours()+(endDate.getTimezoneOffset()/60)); // -2h
+        if(endDate < new Date(Date.now())){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
     render() {
         const result = this.state.data.map((inputRowData, index) =>
 
-            <ItemTableRow type={inputRowData.start_date === null?<p className={"text-warning"}>Reserved</p> :<p className={"text-success"}>Rented</p>}
+            <ItemTableRow type={this.typeText(inputRowData)}
                           start_date={this.formatDate(inputRowData,true)}
                           end_date={this.formatDate(inputRowData,false)}
                           rentView={this.props.rentView}

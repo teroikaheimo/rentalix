@@ -1,11 +1,9 @@
 var express = require('express');
 var router = express.Router();
 const db = require('../database');
-const con = require('../connection');
 
 
-router.post('/', function (req, res, next) { // Search items from database. All parameters optional.
-
+router.post('/', function (req, res, next) { // Search items from database for available items. All parameters optional.
     if (req.session.login === true) {
         if (
             typeof req.body.id !== "undefined" &&
@@ -16,6 +14,7 @@ router.post('/', function (req, res, next) { // Search items from database. All 
             typeof req.body.address !== "undefined" &&
             typeof req.body.owner !== "undefined" &&
             typeof req.body.category !== "undefined") {
+            console.log(req.body);
             db.query(`SELECT * FROM item WHERE serial NOT IN (SELECT item_id FROM arereserved) AND 
                 serial LIKE '%${req.body.id}%' 
                 AND name LIKE '%${req.body.name }%' 
@@ -28,6 +27,31 @@ router.post('/', function (req, res, next) { // Search items from database. All 
                 AND removed='0'
                 LIMIT 50;`)
                 .then(rows => {
+                    res.json(rows);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #1'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+    } else {
+        res.status(400).json({success: false, message: 'Bad request'});
+    }
+});
+
+router.post('/getitem', function (req, res, next) { // Return requested item info.
+    if (req.session.login === true) {
+        if (typeof req.body.id !== "undefined") {
+            db.query(`SELECT * FROM item WHERE serial='${req.body.id}' LIMIT 1;`)
+                .then(rows => {
+                    console.log(rows);
                     res.json(rows);
                 })
                 .catch((err) => {
@@ -141,7 +165,7 @@ router.post('/delete', function (req, res, next) { // Marks item as REMOVED IF i
             db.query(`SELECT * FROM reservation_rent WHERE item_id='${req.body.id}' LIMIT 1;`)
                 .then((rows) => {
                     if (rows.length > 0) {
-                        db.query(`UPDATE item SET removed='1' WHERE serial='${req.body.id}';`)
+                        db.query(`UPDATE item SET removed=b'1' WHERE serial='${req.body.id}';`)
                             .then(() => {
                                 res.json({success: true, message: "Item marked as removed!!"});
                             })
@@ -154,7 +178,7 @@ router.post('/delete', function (req, res, next) { // Marks item as REMOVED IF i
                         db.query(`SELECT * FROM reservation_rent WHERE item_id='${req.body.id}' LIMIT 1;`)
                             .then((rows) => {
                                 if (rows.length > 0) {
-                                    db.query(`UPDATE item SET removed='1' WHERE serial='${req.body.id}';`)
+                                    db.query(`UPDATE item SET removed=b'1' WHERE serial='${req.body.id}';`)
                                         .then(() => {
                                             res.json({success: true, message: "Item marked as removed!!"});
                                         })
@@ -253,7 +277,7 @@ router.post('/reserve/insert', function (req, res, next) { // Inserts new reserv
                     if (rows.length > 0) {
                         res.status(400).json({
                             success: false,
-                            message: "Fail. There is all ready a reservation in that range!",
+                            message: "There is all ready a reservation in that range!",
                             row: rows
                         });
                     } else {
@@ -294,7 +318,7 @@ router.post('/reserve/modify', function (req, res, next) { // Modify the existin
                     if (rows.length > 0) {
                         res.status(400).json({
                             success: false,
-                            message: "Fail. There is all ready a reservation in that range!",
+                            message: "There is all ready a reservation in that range!",
                             row: rows
                         });
                     } else {
@@ -327,17 +351,22 @@ router.post('/reserve/delete', function (req, res, next) { // Delete reservation
         if (typeof req.body.id !== "undefined") {
 
             db.query(`SELECT * FROM reservation_rent WHERE id='${req.body.id}';`)
-                .then((rows)=>{
-                    if(rows[0].start_date === null){
+                .then((rows) => {
+                    if (rows[0].start_date === null) {
                         db.query(`DELETE FROM reservation_rent WHERE id='${req.body.id}';`)
                             .then(() => {
                                 res.json({success: true, message: "Reservation removed!"});
-                            }).catch((err) => {res.status(503).json({success: false, message: 'Server error #1', error: err})});
-                    }else{
-                        res.status(400).json({success: false, message: 'Fail. There is all ready rent from this reservation'});
+                            }).catch((err) => {
+                            res.status(503).json({success: false, message: 'Server error #1', error: err})
+                        });
+                    } else {
+                        res.status(400).json({
+                            success: false,
+                            message: 'There is all ready rent from this reservation'
+                        });
                     }
                 })
-                .catch(()=>{
+                .catch(() => {
                     res.status(503).json({success: false, message: 'Server error #1'});
                 });
         } else {
@@ -415,7 +444,7 @@ router.post('/rent/insert', function (req, res, next) { // Modifies the reservat
                     if (rows.length > 0) {
                         res.status(400).json({
                             success: false,
-                            message: "Fail. There is all ready a reservation in that range!",
+                            message: "There is all ready a reservation in that range!",
                             row: rows
                         });
                     } else {
@@ -457,7 +486,7 @@ router.post('/rent/modify', function (req, res, next) { // Modifies the reservat
                     if (rows.length > 0) {
                         res.status(400).json({
                             success: false,
-                            message: "Fail. There is all ready a reservation in that range!",
+                            message: "There is all ready a reservation in that range!",
                             row: rows
                         });
                     } else {
@@ -491,9 +520,9 @@ router.post('/rent/modify', function (req, res, next) { // Modifies the reservat
 router.post('/rent/return', function (req, res, next) { // Returns rented item to stock. Will give OK even IF item was not rented(Will not modify anything!) reservation_end is updated for easier availability checks.
     if (req.session.login === true && req.session.isAdmin === 1) {
         if (typeof req.body.id !== "undefined") {
-            db.query(`UPDATE reservation_rent SET end_date=NOW(),reservation_end=NOW() WHERE id='${req.body.id}' AND start_date<>null`)
+            db.query(`UPDATE reservation_rent SET end_date=TIMESTAMP(NOW()),reservation_end=TIMESTAMP(NOW()) WHERE id='${req.body.id}'`)
                 .then(() => {
-                            res.json({success: true, message: 'Item returned to stock!'});
+                    res.json({success: true, message: 'Item returned to stock!'});
                 })
                 .catch((err) => {
                     console.log(err);

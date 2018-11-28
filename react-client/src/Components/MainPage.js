@@ -9,7 +9,6 @@ import {
     DropdownToggle,
     DropdownMenu,
     DropdownItem,
-    Label,Input
 } from 'reactstrap';
 // Components
 import ItemTable from './ItemTable';

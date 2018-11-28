@@ -1,6 +1,7 @@
 // Settings for API endpoint routes. Using proxy!
 export default ({
-    getItems: "/items/",
+    getAllAvaileable:'/items/',
+    getItem: "/items/getitem",
     insertItem:"/items/insert",
     modifyItem:"/items/modify",
     deleteItem:"/items/delete",

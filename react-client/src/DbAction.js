@@ -1,5 +1,4 @@
 import settings from './Components/Settings';
-import auth from './Auth';
 
 class DbAction { // Class to control user access to main page.
     constructor() {
@@ -9,7 +8,7 @@ class DbAction { // Class to control user access to main page.
 
     fetchItems(id, name, brand,model, info, address, owner, category) {
         return new Promise((resolve, reject) => {
-                fetch(settings.getItems, {
+                fetch(settings.getAllAvaileable, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -35,15 +34,24 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    getItems(id, name, brand,model, info, address, owner, category) {
+    getItem(id) {
         return new Promise((resolve, reject) => {
-            this.fetchItems(id, name, brand,model, info, address, owner, category)
+            fetch(settings.getItems, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": id
+                })
+            }).then(result => result.json())
                 .then((result) => {
-                    resolve(result)
+                    resolve(result);
                 })
-                .catch(() => {
-                    reject(false)
-                })
+                .catch((err) => {
+                    reject(err)
+                });
         });
     }
 
@@ -250,7 +258,7 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    rentItem(reservation_id,item_id,start_date,end_date) {
+    rentInsert(reservation_id,item_id,start_date,end_date) {
         return new Promise((resolve, reject) => {
                 fetch(settings.rentInsert, {
                     method: 'POST',
@@ -269,11 +277,82 @@ class DbAction { // Class to control user access to main page.
                     .then(result => {
                         resolve(result);
                     })
-                    .catch(() => {
-                        reject("Renting item failed")
+                    .catch((err) => {
+                        reject(err);
                     });
         });
     }
+
+    rentModify(reservation_id,item_id,start_date,end_date) {
+        return new Promise((resolve, reject) => {
+            fetch(settings.rentModify, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": reservation_id,
+                    "item_id":item_id,
+                    "start_date": start_date ,
+                    "end_date": end_date
+                }),
+            })
+                .then(result => result.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
+
+    rentReturn(reservation_id) {
+        return new Promise((resolve, reject) => {
+            fetch(settings.rentReturn, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": reservation_id
+                }),
+            })
+                .then(result => result.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
+    rentReturnReserved(reservation_id) {
+        return new Promise((resolve, reject) => {
+            fetch(settings.rentReturnReserved, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "id": reservation_id
+                }),
+            })
+                .then(result => result.json())
+                .then(result => {
+                    resolve(result);
+                })
+                .catch((err) => {
+                    reject(err);
+                });
+        });
+    }
+
 
     reservationInsert(user_id,item_id,reservation_start,reservation_end) {
         return new Promise((resolve, reject) => {
