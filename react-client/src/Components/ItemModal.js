@@ -651,7 +651,7 @@ class ItemModal extends Component {
                                             <input type="date" className="form-control" id="inputReservationStartDate"
                                                    onChange={this.handleChange} min={this.state.dateNow}
                                                    value={this.state.inputReservationStartDate}
-                                                   disabled={this.state.rented || (this.state.itemInputView)}/>
+                                                   disabled={this.state.rented || this.state.itemInputView || this.state.isHistory}/>
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationStartTime">Reservation Start Time</label>
@@ -659,7 +659,7 @@ class ItemModal extends Component {
                                                    onChange={this.handleChange}
                                                    min={this.state.rentInput ? "" : this.state.timeNow}
                                                    value={this.state.inputReservationStartTime}
-                                                   disabled={this.state.rented|| this.state.itemInputView}/>
+                                                   disabled={this.state.rented|| this.state.itemInputView || this.state.isHistory}/>
                                         </div>
                                     </div>
                                     <div className="form-row"
@@ -670,14 +670,14 @@ class ItemModal extends Component {
                                                    onChange={this.handleChange}
                                                    min={this.state.inputReservationStartDate}
                                                    value={this.state.inputReservationEndDate}
-                                                   disabled={this.state.rented|| this.state.itemInputView}/>
+                                                   disabled={this.state.rented|| this.state.itemInputView || this.state.isHistory}/>
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationEndTime">Reservation End Time</label>
                                             <input type="time" className="form-control" id="inputReservationEndTime"
                                                    onChange={this.handleChange}
                                                    value={this.state.inputReservationEndTime}
-                                                   disabled={this.state.rented || this.state.itemInputView}/>
+                                                   disabled={this.state.rented || this.state.itemInputView || this.state.isHistory}/>
                                         </div>
                                     </div>
                                     <hr/>
