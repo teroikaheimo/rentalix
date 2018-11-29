@@ -63,7 +63,6 @@ class ItemModal extends Component {
         this.reservationModify = this.reservationModify.bind(this);
         this.reserveItem = this.reserveItem.bind(this);
         this.toggle = this.toggle.bind(this);
-        this.updateInfo = this.updateInfo.bind(this);
         this.addItem = this.addItem.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
     }
@@ -131,7 +130,6 @@ class ItemModal extends Component {
 
 
     toggle(obj) {
-        console.log(obj);
         new Promise((resolve) => {
 
             if (typeof obj !== 'undefined') {
@@ -248,33 +246,6 @@ class ItemModal extends Component {
             [event.target.id]: event.target.value
         });
     };
-
-
-    updateInfo() {
-        if (this.state.id !== "-") {
-            console.log("Gettin item data for id: " + this.state.id);
-            DbAction.getItem(this.state.id)
-                .then((result) => {
-                    console.log(result);
-                    this.setState({
-                        inputName: result[0].name || "",
-                        inputBrand: result[0].brand || "",
-                        inputModel: result[0].model || "",
-                        inputInfo: result[0].info || "",
-                        inputAddress: "",
-                        inputOwner: "",
-                        inputCategory: "",
-                        inputAddressDd: result[0].address || "",
-                        inputOwnerDd: result[0].owner || "",
-                        inputCategoryDd: result[0].category || "",
-                    });
-                })
-                .catch((err) => {
-                    console.log("Failed to get item information for modal: " + err)
-                });
-        }
-
-    }
 
     saveChanges() {
         this.checkInput()
@@ -442,8 +413,6 @@ class ItemModal extends Component {
                                 failText: response.message
                             });
                         }
-
-                        console.log(response);
                     }
                 }).then(() => {
                 this.props.onItemChangeRemote();
@@ -480,7 +449,6 @@ class ItemModal extends Component {
                             });
                         }
 
-                        console.log(response);
                     }
                 }).then(() => {
                 this.props.onItemChangeRemote();
@@ -673,7 +641,6 @@ class ItemModal extends Component {
                         <WarningComponent content={"Item add failure"} hidden={!this.state.newItemFail}
                                           cn={"alert alert-danger"}/>
 
-                        {console.log(this.state.rented)}
                         <form>
                             <div
                                 hidden={this.state.addMode || (this.state.itemInputView && this.state.reserveView && !this.state.reservationInput)}>

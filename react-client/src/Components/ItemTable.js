@@ -18,13 +18,13 @@ export default class ItemTable extends Component {
     }
 
     updateRows(id, name, brand,model, info, address, owner, category) {
-        if(this.props.rentView){
+        if(this.props.rentView){ // Reserve view items. Filter search.
             dbActions.fetchItems(id, name, brand,model, info, address, owner, category)
                 .then((result) => {this.setState({data: result});})
                 .catch((err) => {console.log(err)})
         }else{
             if(this.props.auth.admin){  // Query ALL rents and reservations.
-                dbActions.fetchAllRents()
+                dbActions.fetchAllRents(this.props.search)
                     .then((result)=>{this.setState({data:result})})
                     .catch((err)=>{console.log(err)})
 

@@ -15,10 +15,10 @@ router.post('/', function (req, res, next) { // Search items from database for a
             typeof req.body.owner !== "undefined" &&
             typeof req.body.category !== "undefined") {
             db.query(`SELECT * FROM item WHERE serial NOT IN (SELECT item_id FROM arereserved) AND 
-                serial LIKE '%${req.body.id}%' 
-                AND name LIKE '%${req.body.name }%' 
-                AND model LIKE '%${req.body.model}%' 
-                AND brand LIKE '%${req.body.brand}%' 
+                (serial LIKE '%${req.body.id}%' 
+                OR name LIKE '%${req.body.name }%' 
+                OR model LIKE '%${req.body.model}%' 
+                OR brand LIKE '%${req.body.brand}%') 
                 AND address LIKE '%${req.body.address}%' 
                 AND owner LIKE '%${req.body.owner}%' 
                 AND category LIKE '%${req.body.category}%' 
@@ -410,17 +410,42 @@ router.post('/rent', function (req, res, next) { // Returns rent and reservation
 router.post('/rent/all', function (req, res, next) { // Returns all rents and reservations.
 
     if (req.session.login === true && req.session.isAdmin === 1) {
-        db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
+
+        if (typeof req.body.id !== "undefined" &&
+            typeof req.body.name !== "undefined" &&
+            typeof req.body.model !== "undefined" &&
+            typeof req.body.brand !== "undefined" &&
+            typeof req.body.address !== "undefined" &&
+            typeof req.body.owner !== "undefined" &&
+            typeof req.body.category !== "undefined") {
+            db.query(`SELECT reservation_rent.*,item.*,user.username FROM reservation_rent 
             INNER JOIN item ON item.serial=reservation_rent.item_id 
-            INNER JOIN user ON user.id= reservation_rent.user_id
-            `).then(rows => {
-            res.json(rows);
-        })
-            .catch((err) => {
-                console.log(err);
-                res.status(503);
-                res.json({success: false, message: 'Server error #1'});
-            })
+            INNER JOIN user ON user.id= reservation_rent.user_id WHERE 
+                (serial LIKE '%${req.body.id}%' 
+                OR name LIKE '%${req.body.name }%' 
+                OR model LIKE '%${req.body.model}%' 
+                OR brand LIKE '%${req.body.brand}%') 
+                AND address LIKE '%${req.body.address}%' 
+                AND owner LIKE '%${req.body.owner}%' 
+                AND category LIKE '%${req.body.category}%' 
+                AND removed='0'
+                LIMIT 50;`)
+                .then(rows => {
+                    res.json(rows);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    res.status(503);
+                    res.json({success: false, message: 'Server error #1'});
+                })
+        } else {
+            if (typeof req.session.isSet === "undefined") {
+                res.status(404).json({success: false, message: 'Error. Not logged in!'});
+            } else {
+                res.status(400).json({success: false, message: 'Bad request'});
+            }
+        }
+
     } else {
         if (typeof req.session.isSet === "undefined") {
             res.status(404).json({success: false, message: 'Error. Not logged in!'});

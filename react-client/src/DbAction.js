@@ -240,14 +240,24 @@ class DbAction { // Class to control user access to main page.
         });
     }
 
-    fetchAllRents() {
+    fetchAllRents(search) {
         return new Promise((resolve, reject) => {
                 fetch(settings.getAllRents, {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    body: JSON.stringify({
+                        "id": search.text || "",
+                        "name": search.text || "",
+                        "model": search.text || "",
+                        "brand": search.text || "",
+                        "address": search.address || "",
+                        "owner": search.owner || "",
+                        "category": search.category || ""
+
+                    })
                 }).then(result => result.json())
                     .then((result) => {
                         resolve(result);

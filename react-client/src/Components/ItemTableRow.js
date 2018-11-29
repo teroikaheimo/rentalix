@@ -8,8 +8,8 @@ export class ItemTableRow extends Component {
                 <tr>
                     <ColData data={this.props.rowData.serial}/>
                     <ColData data={this.props.rowData.name}/>
-                    <ColData data={this.props.rowData.model}/>
                     <ColData data={this.props.rowData.brand}/>
+                    <ColData data={this.props.rowData.model}/>
                     <ColData data={this.props.rowData.address}/>
                     <ColData data={this.props.rowData.owner}/>
                     <ItemTableRowMenu rowData={this.props.rowData} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
@@ -43,8 +43,8 @@ export class ItemTableRowHeader extends Component {
                 <tr>
                     <ColHeaderData data={"Serial"}/>
                     <ColHeaderData data={"Name"}/>
-                    <ColHeaderData data={"Model"}/>
                     <ColHeaderData data={"Brand"}/>
+                    <ColHeaderData data={"Model"}/>
                     <ColHeaderData data={"Location"}/>
                     <ColHeaderData data={"Owner"}/>
                     <ColHeaderData data={""}/>

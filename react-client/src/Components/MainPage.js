@@ -28,10 +28,6 @@ class MainPage extends Component {
             isOpen: false,
             collapsed: true,
             inputIdNameBrandModel:"",
-            inputId:"",
-            inputName: "",
-            inputBrand: "",
-            inputModel: "",
             inputAddressDd:"",
             inputOwnerDd:"",
             inputCategoryDd:"",
@@ -62,7 +58,7 @@ class MainPage extends Component {
     handleChange = event => { // Writes changes in the input elements to corresponding state.
         this.setState( { // Callback version. Fixes normal setState "lag" that is's basic behaviour!
             [event.target.id]: event.target.value
-        },()=>{this.updateTableRowsRemote()});
+        },()=>{this.updateTableRowsRemoteSearch()});
     };
 
     onChangeModalRemote(obj) { // Passed to children that need to toggle modal.
@@ -87,18 +83,25 @@ class MainPage extends Component {
 
     toggleNavbar() {
         this.setState({
-            collapsed: !this.state.collapsed
-        });
+            collapsed: !this.state.collapsed,
+            inputIdNameBrandModel:"",
+            inputAddressDd:"",
+            inputOwnerDd:"",
+            inputCategoryDd:""
+        },()=>{this.updateTableRowsRemote()});
     }
 
     updateTableRowsGetSet(updateTableRowsFunc){ // GET/SET updateTableRowsRemote from ItemTable
        this.setState({updateTableRows:updateTableRowsFunc});
     }
 
-    updateTableRowsRemote(){ // Update table rows remotely, according to latest search parameters.
-        this.state.updateTableRows(this.state.inputId, this.state.inputName, this.state.inputBrand,this.state.inputModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
+    updateTableRowsRemote(){ // Update table rows remotely.
+        this.state.updateTableRows("", "", "","", "", "", "", "");
     }
 
+    updateTableRowsRemoteSearch(){ // Update table rows remotely, according to latest search parameters.
+        this.state.updateTableRows(this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel,this.state.inputIdNameBrandModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
+    }
 
     updateDropdowns() {
         const savedResult = {};
@@ -131,7 +134,14 @@ class MainPage extends Component {
     }
 
     toggleRentView(value){
-        this.setState({rentView:value,collapsed:true},()=>{this.updateTableRowsRemote()});
+        this.setState({
+            inputIdNameBrandModel:"",
+            inputAddressDd:"",
+            inputOwnerDd:"",
+            inputCategoryDd:"",
+            rentView:value,
+            collapsed:true
+        },()=>{this.updateTableRowsRemote()});
 
     }
 
@@ -148,7 +158,7 @@ class MainPage extends Component {
                                 <div  className="col-8 h1 font-weight-bold">RENTALIX</div>
                             </div>
                         </NavbarBrand>
-                        {this.state.rentView? <img src="./search.png" alt="" onClick={this.toggleNavbar}/>:""}
+                        <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
 
 
                         <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
@@ -178,38 +188,13 @@ class MainPage extends Component {
                                 <NavItem>
                                     <form>
                                         <div className="form-row">
-                                            <div className="form-group col-md-8">
+                                            <div className="form-group col-md-12">
                                                 <input type="text" className="form-control" id="inputIdNameBrandModel"
-                                                       placeholder="Serial" onChange={this.handleChange}
+                                                       placeholder="Search by serial, name, model, brand." onChange={this.handleChange}
                                                        value={this.state.inputIdNameBrandModel}/>
                                             </div>
-                                            <div className="form-group col-md-4">
-                                                <input type="text" className="form-control" id="inputId"
-                                                       placeholder="Serial" onChange={this.handleChange}
-                                                       value={this.state.inputId}/>
-                                            </div>
                                         </div>
 
-                                        <div className="form-row">
-
-                                            <div className="form-group col-md-4">
-                                                <input type="text" className="form-control" id="inputName"
-                                                       placeholder="Name" onChange={this.handleChange}
-                                                       value={this.state.inputName} required/>
-                                            </div>
-
-                                            <div className="form-group col-md-4">
-                                                <input type="text" className="form-control" id="inputBrand"
-                                                       placeholder="Brand" onChange={this.handleChange}
-                                                       value={this.state.inputBrand}/>
-                                            </div>
-
-                                            <div className="form-group col-md-4">
-                                                <input type="text" className="form-control" id="inputModel"
-                                                       placeholder="Model" onChange={this.handleChange}
-                                                       value={this.state.inputModel}/>
-                                            </div>
-                                        </div>
 
                                         <div className="form-row">
                                             <div className="form-group col-md-4">
@@ -251,7 +236,13 @@ class MainPage extends Component {
                 </div>
 
 
-                    <ItemTable rentView={this.state.rentView}
+                    <ItemTable search={{
+                        text:this.state.inputIdNameBrandModel,
+                        address:this.state.inputAddressDd,
+                        owner:this.state.inputOwnerDd,
+                        category:this.state.inputCategoryDd
+                    }}
+                        rentView={this.state.rentView}
                         updateTableRowsGetSet={this.updateTableRowsGetSet}
                                toggleModalRemote={this.onChangeModalRemote}
                                onItemChangeRemote={this.onItemChangeRemote}
