@@ -117,7 +117,8 @@ export default class ItemsRowMenu extends Component {
                                     id: this.props.id,
                                     addMode: false,
                                     justView: true,
-                                    reserveView: true
+                                    reserveView: true,
+                                    rowData: this.props.rowData
                                 });
                             }}>View
                             </button>
@@ -149,7 +150,7 @@ export default class ItemsRowMenu extends Component {
                                         id: this.props.id,
                                         rentView: true,
                                         rowData: this.props.rowData,
-                                        rent_id: this.props.rent_id
+                                        rent_id: this.props.rent_id,
                                     });
                                 }}>View
                                 </button>
@@ -181,13 +182,15 @@ export default class ItemsRowMenu extends Component {
                                 this.props.toggleModalRemote({
                                     id: this.props.id,
                                     justView: true,
+                                    rowData: this.props.rowData
                                 });
                             }}>View
                             </button>
                             <button className={"dropdown-item"} type="button" onClick={() => {
                                 this.props.toggleModalRemote({
                                     id: this.props.id,
-                                    reserveView: true
+                                    reserveView: true,
+                                    rowData: this.props.rowData
                                 });
                             }}>Reserve
                             </button>

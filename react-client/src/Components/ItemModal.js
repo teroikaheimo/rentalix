@@ -7,9 +7,11 @@ class ItemModal extends Component {
         super(props);
         this.state = {
             id: "",
+            rent_id: "",
             inputName: "",
             inputBrand: "",
             inputModel: "",
+            inputInfo:"",
             inputAddress: "",
             inputCategory: "",
             inputOwner: "",
@@ -29,6 +31,8 @@ class ItemModal extends Component {
             addMode: false,
             modalHeader: "",
             justView: false,
+            rentView: false,
+            reserveView: false,
             hideDate: false,
             reserved: false,
             failText: "",
@@ -42,7 +46,8 @@ class ItemModal extends Component {
             newItemFail: false,
             rowData: {},
             dateNow: this.dateNow(),
-            timeNow: this.timeNow()
+            timeNow: this.timeNow(),
+            isHistory: false
 
         };
 
@@ -67,9 +72,11 @@ class ItemModal extends Component {
     resetModal() {
         this.setState({
             id: "",
+            rent_id: "",
             inputName: "",
             inputBrand: "",
             inputModel: "",
+            inputInfo:"",
             inputAddress: "",
             inputCategory: "",
             inputOwner: "",
@@ -84,23 +91,28 @@ class ItemModal extends Component {
             inputRentStartTime: "",
             inputRentEndDate: "",
             inputRentEndTime: "",
-            modal: false,
+            modal: !this.state.modal,
             backdrop: true,
             addMode: false,
             modalHeader: "",
             justView: false,
+            rentView: false,
+            reserveView: false,
             hideDate: false,
             reserved: false,
+            failText: "",
             reservationId: "",
             reservationFail: false,
-            rentFail: false,
+            reservationModifyFail: false,
             reservationDeleteFail: false,
             rented: false,
+            rentFail: false,
             startDate: "",
             newItemFail: false,
             rowData: {},
+            dateNow: this.dateNow(),
+            timeNow: this.timeNow(),
             isHistory: false
-
         });
     }
 
@@ -112,94 +124,96 @@ class ItemModal extends Component {
         }
     }
 
+
     toggle(obj) {
         console.log(obj);
         new Promise((resolve) => {
-            let header = "";
-            if (typeof obj !== "undefined") {
-                if (obj.addMode) {
+
+            if (typeof obj !== 'undefined') {
+                console.log(obj);
+                let header = "";
+
+
+                if (typeof obj.addMode !== 'undefined' && obj.addMode !== null) { // SET modal header
                     header = "Add new item: ";
-                } else if (obj.rentView) {
+                } else if (typeof obj.rentView !== 'undefined' && obj.rentView !== null) {
                     header = "Rent / Reservation info for serial: ";
-                } else if (obj.reserveView) {
+                } else if (typeof obj.reserveView !== 'undefined' && obj.reserveView !== null) {
                     header = "Reserve item: ";
                 }
-                else if (obj.justView) {
+                else if (typeof obj.justView !== 'undefined' && obj.justView !== null) {
                     header = "Viewing item: "
                 }
                 else {
                     header = "Editing item: "
                 }
-            }
 
-            if (typeof obj.rowData !== "undefined") {
-                if (obj.rowData.start_date !== null) {
-                    let endDate = new Date(obj.rowData.end_date);
-                    endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
-                    this.setState({
-                        isHistory: new Date(Date.now()) > endDate && true,
-                        rented: true,
-                        inputRentStartDate: obj.rowData.start_date.split('T')[0],
-                        inputRentEndDate: obj.rowData.end_date.split('T')[0],
-                        inputRentStartTime: obj.rowData.start_date.split('T')[1].split('.')[0].slice(0, 5),
-                        inputRentEndTime: obj.rowData.end_date.split('T')[1].split('.')[0].slice(0, 5),
-                        inputReservationStartDate: this.dateOrTime("date", obj.rowData.reservation_start),
-                        inputReservationEndDate: this.dateOrTime("date", obj.rowData.reservation_end),
-                        inputReservationStartTime: this.dateOrTime("", obj.rowData.reservation_start),
-                        inputReservationEndTime: this.dateOrTime("", obj.rowData.reservation_end)
-                    },()=>{this.updateInfo()})
-                }else{
-                    let endDate = new Date(obj.rowData.reservation_end);
-                    endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
-                    this.setState({
-                        isHistory: new Date(Date.now()) > endDate && true,
-                        inputReservationStartDate: this.dateOrTime("date", obj.rowData.reservation_start),
-                        inputReservationEndDate: this.dateOrTime("date", obj.rowData.reservation_end),
-                        inputReservationStartTime: this.dateOrTime("", obj.rowData.reservation_start),
-                        inputReservationEndTime: this.dateOrTime("", obj.rowData.reservation_end)
-                    },()=>{this.updateInfo()})
+
+                let endDate;
+                let isHistory = false;
+                let rented = false;
+                console.log(typeof obj.rowData !== 'undefined');
+                if (typeof obj.rowData !== 'undefined') { // SET rented and isHistory status.
+                    if (obj.rowData.start_date !== null) {
+                        rented = true;
+                        endDate = new Date(obj.rowData.end_date);
+                        endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
+
+                    } else {
+                        rented = false;
+                        endDate = new Date(obj.rowData.reservation_end);
+                        endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
+                    }
+                    if (typeof endDate !== 'undefined') {
+                        isHistory = new Date(Date.now()) > endDate && true;
+                    }
                 }
 
-
-                console.log(obj.rowData);
-            } else {
+                let isset = typeof obj.rowData !== 'undefined';
                 this.setState({
-                    isHistory: false,
-                    rented: false,
-                    inputReservationStartDate: "",
-                    inputReservationEndDate: "",
-                    inputReservationStartTime: "",
-                    inputReservationEndTime: "",
-                    inputRentStartDate: "",
-                    inputRentStartTime: "",
-                    inputRentEndDate: "",
-                    inputRentEndTime: "",
-                    failText: "",
-                    reservationFail: false,
-                    reservationDeleteFail: false,
-                    newItemFail: false,
-                    rentFail: false,
-                },()=>{this.updateInfo()});
-            }
-
-            if (typeof obj !== "undefined") {
-                console.log(obj.id);
-                this.setState({
-                    id: obj.id || "-",
+                    id: isset &&typeof obj.rowData.id !== 'undefined' ? obj.id : "",
+                    rent_id: isset &&typeof obj.rowData.rent_id !== 'undefined' ? obj.rent_id : "",
+                    inputName: isset &&typeof obj.rowData.name !== 'undefined' ? obj.rowData.name : "",
+                    inputBrand: isset &&typeof obj.rowData.brand !== 'undefined' ? obj.rowData.brand : "",
+                    inputModel: isset &&typeof obj.rowData.model !== 'undefined' ? obj.rowData.model : "",
+                    inputInfo:isset &&typeof obj.rowData.info !== 'undefined' ?obj.rowData.info:"",
+                    inputAddressDd: isset &&typeof obj.rowData.address !== 'undefined' ? obj.rowData.address : "",
+                    inputCategoryDd: isset &&typeof obj.rowData.category !== 'undefined' ? obj.rowData.category : "",
+                    inputOwnerDd:isset && typeof obj.rowData.owner !== 'undefined' ? obj.rowData.owner : "",
+                    inputReservationStartDate: isset && typeof obj.rowData.reservation_start !== 'undefined' && obj.rowData.reservation_start !== null ? this.dateOrTime("date", obj.rowData.reservation_start) : "",
+                    inputReservationEndDate: isset && typeof obj.rowData.reservation_end !== 'undefined' && obj.rowData.reservation_end !== null ? this.dateOrTime("date", obj.rowData.reservation_end) : "",
+                    inputReservationStartTime: isset && typeof obj.rowData.reservation_start !== 'undefined' && obj.rowData.reservation_start !== null ? this.dateOrTime("", obj.rowData.reservation_start) : "",
+                    inputReservationEndTime: isset && typeof obj.rowData.reservation_end !== 'undefined' && obj.rowData.reservation_end !== null ? this.dateOrTime("", obj.rowData.reservation_end) : "",
+                    inputRentStartDate: isset && typeof obj.rowData.start_date !== 'undefined' && obj.rowData.start_date !== null ? obj.rowData.start_date.split('T')[0] : "",
+                    inputRentEndDate: isset && typeof obj.rowData.end_date !== 'undefined' && obj.rowData.end_date !== null ? obj.rowData.end_date.split('T')[0] : "",
+                    inputRentStartTime: isset && typeof obj.rowData.start_date !== 'undefined' && obj.rowData.start_date !== null ? obj.rowData.start_date.split('T')[1].split('.')[0].slice(0, 5) : "",
+                    inputRentEndTime: isset && typeof obj.rowData.end_date !== 'undefined' && obj.rowData.end_date !== null ? obj.rowData.end_date.split('T')[1].split('.')[0].slice(0, 5) : "",
                     modal: !this.state.modal,
-                    addMode: (typeof obj.addMode !== "undefined") && obj.addMode || false,
-                    justView: obj.justView || false,
+                    backdrop: true,
+                    addMode: typeof obj.addMode !== 'undefined' ? obj.addMode : false,
                     modalHeader: header,
-                    rentView: obj.rentView || false,
-                    reserveView: obj.reserveView || false,
-                    rent_id: obj.rent_id || "",
-                    rowData: obj.rowData || {},
-                    dateNow: this.dateNow()
-
-
-                },()=>{this.updateInfo()});
+                    justView: typeof obj.justView !== 'undefined' ? obj.justView : false,
+                    rentView: typeof obj.rentView !== 'undefined' ? obj.rentView : false,
+                    reserveView: typeof obj.reserveView !== 'undefined' ? obj.reserveView : false,
+                    hideDate: false,
+                    reserved: false,
+                    failText: "",
+                    reservationId: "",
+                    reservationFail: false,
+                    reservationModifyFail: false,
+                    reservationDeleteFail: false,
+                    rented: rented,
+                    rentFail: false,
+                    startDate: "",
+                    newItemFail: false,
+                    rowData: typeof obj.rowData !== 'undefined' ? obj.rowData : {},
+                    dateNow: this.dateNow(),
+                    timeNow: this.timeNow(),
+                    isHistory: isHistory
+                });
+            } else {
+                this.resetModal()
             }
-            resolve();
         }).then(() => {
             if (!this.state.addMode && this.state.inputName.length > 0) { // Clear the form data IF item details are viewed between add sessions.
                 this.setState({
@@ -214,7 +228,7 @@ class ItemModal extends Component {
                     inputOwnerDd: "",
                     inputCategoryDd: "",
                     newItemFail: false
-                })
+                });
             }
         }).catch((err) => {
             console.log(err)
@@ -230,7 +244,7 @@ class ItemModal extends Component {
 
     updateInfo() {
         if (this.state.id !== "-") {
-            console.log("Gettin item data for id: "+this.state.id);
+            console.log("Gettin item data for id: " + this.state.id);
             DbAction.getItem(this.state.id)
                 .then((result) => {
                     console.log(result);
@@ -248,8 +262,8 @@ class ItemModal extends Component {
                     });
                 })
                 .catch((err) => {
-                console.log("Failed to get item information for modal: "+err)
-            });
+                    console.log("Failed to get item information for modal: " + err)
+                });
         }
 
     }
@@ -350,7 +364,7 @@ class ItemModal extends Component {
                         this.setState({reservationFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== "undefined") {
+                        if (typeof response.row[0] !== 'undefined') {
                             this.setState({
                                 reservationFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -375,7 +389,7 @@ class ItemModal extends Component {
     }
 
     reservationModify() {
-        if (typeof this.state.rowData.id !== "undefined" && this.state.inputReservationStartDate !== "" && this.state.inputReservationEndDate !== "" && this.state.inputReservationStartTime !== "" && this.state.inputReservationEndTime !== "" && this.compareDate(this.state.inputReservationStartDate, this.state.inputReservationEndDate, this.state.inputReservationStartTime, this.state.inputReservationEndTime) > -1) {
+        if (typeof this.state.rowData.id !== 'undefined' && this.state.inputReservationStartDate !== "" && this.state.inputReservationEndDate !== "" && this.state.inputReservationStartTime !== "" && this.state.inputReservationEndTime !== "" && this.compareDate(this.state.inputReservationStartDate, this.state.inputReservationEndDate, this.state.inputReservationStartTime, this.state.inputReservationEndTime) > -1) {
             DbAction.reservationModify(
                 this.state.rowData.id,
                 this.props.auth.userId,
@@ -387,7 +401,7 @@ class ItemModal extends Component {
                         this.setState({reservationFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== "undefined") {
+                        if (typeof response.row[0] !== 'undefined') {
                             this.setState({
                                 reservationFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -414,7 +428,7 @@ class ItemModal extends Component {
 
 
     rentItem() {
-        if (typeof this.state.rowData.id !== "undefined" && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
+        if (typeof this.state.rowData.id !== 'undefined' && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
             DbAction.rentInsert(
                 this.state.rowData.id,
                 this.state.id,
@@ -425,7 +439,7 @@ class ItemModal extends Component {
                         this.setState({rentFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== "undefined") {
+                        if (typeof response.row[0] !== 'undefined') {
                             this.setState({
                                 rentFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -519,9 +533,9 @@ class ItemModal extends Component {
     }
 
     adminButtons() {
-        if(this.state.justView){
+        if (this.state.justView) {
             return null
-        }else {
+        } else {
             if (this.state.rentView) { // ADMIN Rent view modal buttons
                 return (
                     <div>
@@ -557,14 +571,15 @@ class ItemModal extends Component {
     }
 
     userButtons() {
-        if(this.state.justView && !this.state.reserveView){
+        if (this.state.justView && !this.state.reserveView) {
             return null;
-        }else{
+        } else {
             if (this.state.rentView) { // USER Rent view modal buttons
                 return (
                     <div className={"form-row"}>
                         <div className={"col-md-12"}>
-                            <Button color={"success btn-block m-0"} onClick={this.reservationModify}>Save changes</Button>
+                            <Button color={"success btn-block m-0"} onClick={this.reservationModify}>Save
+                                changes</Button>
                         </div>
                     </div>
                 );
@@ -592,10 +607,10 @@ class ItemModal extends Component {
         );
     }
 
-    disableItemInput(){
-        if(this.state.justView || this.props.auth.admin !== '0'){
+    disableItemInput() {
+        if (this.state.justView || this.props.auth.admin !== '0') {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -605,9 +620,9 @@ class ItemModal extends Component {
 
             <div>
                 <Modal isOpen={this.state.modal} toggle={() => {
-                    this.toggle({})
+                    this.toggle()
                 }} className={this.props.className}>
-                    <ModalHeader toggle={() => {
+                    <ModalHeader toggle={({}) => {
                         this.toggle({})
                     }}>{this.state.modalHeader}{this.state.id}</ModalHeader>
 
@@ -631,7 +646,7 @@ class ItemModal extends Component {
 
                         <form>
                             <div hidden={this.state.addMode || (this.state.justView && !this.state.reserveView)}>
-                                <div >
+                                <div>
                                     <div className="form-row"
                                          hidden={!(this.state.reserveView || this.state.rentView)}>
                                         <div className="form-group col-md-6">
@@ -671,14 +686,15 @@ class ItemModal extends Component {
                                     <hr/>
                                 </div>
 
-                                <div hidden={(this.state.inputRentStartDate === "" && !this.props.auth.admin) || this.state.addMode || this.state.reserveView}>
+                                <div
+                                    hidden={(this.state.inputRentStartDate === "" && !this.props.auth.admin) || this.state.addMode || this.state.reserveView}>
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputRentStartDate">Rent Start Date</label>
                                             <input type="date" className="form-control" id="inputRentStartDate"
                                                    onChange={this.handleChange} min={this.state.dateNow}
                                                    value={this.state.inputRentStartDate}
-                                                   disabled={this.state.rented ||(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={this.state.rented || (this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -686,7 +702,7 @@ class ItemModal extends Component {
                                             <input type="time" className="form-control" id="inputRentStartTime"
                                                    onChange={this.handleChange} min={this.state.timeNow}
                                                    value={this.state.inputRentStartTime}
-                                                   disabled={this.state.rented ||(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={this.state.rented || (this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
                                         </div>
                                     </div>
                                     <div className="form-row">
@@ -695,7 +711,7 @@ class ItemModal extends Component {
                                             <input type="date" className="form-control" id="inputRentEndDate"
                                                    onChange={this.handleChange} min={this.state.inputRentStartDate}
                                                    value={this.state.inputRentEndDate}
-                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory  || this.state.justView}/>
+                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -751,7 +767,8 @@ class ItemModal extends Component {
                                     <label htmlFor="inputAddressDd">OR Choose address</label>
                                     <select value={!this.props.addMode && this.state.inputAddressDd}
                                             onChange={this.handleChange}
-                                            id="inputAddressDd" className="form-control" disabled={this.disableItemInput()}>
+                                            id="inputAddressDd" className="form-control"
+                                            disabled={this.disableItemInput()}>
                                         <option value="">Address</option>
                                         {this.props.dropdownData.address}
                                     </select>
