@@ -11,7 +11,7 @@ class ItemModal extends Component {
             inputName: "",
             inputBrand: "",
             inputModel: "",
-            inputInfo:"",
+            inputInfo: "",
             inputAddress: "",
             inputCategory: "",
             inputOwner: "",
@@ -30,11 +30,13 @@ class ItemModal extends Component {
             backdrop: true,
             addMode: false,
             modalHeader: "",
-            justView: false,
-            rentView: false,
             reserveView: false,
+            rentView: false,
+            itemInputView: false,
+            itemInput: false,
+            reservationInput: false,
+            rentInput: false,
             hideDate: false,
-            reserved: false,
             failText: "",
             reservationId: "",
             reservationFail: false,
@@ -56,6 +58,7 @@ class ItemModal extends Component {
         this.dateNow = this.dateNow.bind(this);
         this.timeNow = this.timeNow.bind(this);
         this.rentItem = this.rentItem.bind(this);
+        this.rentModify = this.rentModify.bind(this);
 
         this.reservationModify = this.reservationModify.bind(this);
         this.reserveItem = this.reserveItem.bind(this);
@@ -76,7 +79,7 @@ class ItemModal extends Component {
             inputName: "",
             inputBrand: "",
             inputModel: "",
-            inputInfo:"",
+            inputInfo: "",
             inputAddress: "",
             inputCategory: "",
             inputOwner: "",
@@ -95,11 +98,13 @@ class ItemModal extends Component {
             backdrop: true,
             addMode: false,
             modalHeader: "",
-            justView: false,
-            rentView: false,
             reserveView: false,
+            rentView: false,
+            itemInputView: false,
+            itemInput: false,
+            reservationInput: false,
+            rentInput: false,
             hideDate: false,
-            reserved: false,
             failText: "",
             reservationId: "",
             reservationFail: false,
@@ -130,18 +135,17 @@ class ItemModal extends Component {
         new Promise((resolve) => {
 
             if (typeof obj !== 'undefined') {
-                console.log(obj);
                 let header = "";
 
 
                 if (typeof obj.addMode !== 'undefined' && obj.addMode !== null) { // SET modal header
                     header = "Add new item: ";
-                } else if (typeof obj.rentView !== 'undefined' && obj.rentView !== null) {
+                } else if (typeof obj.rentInput !== 'undefined' && obj.rentInput !== null) {
                     header = "Rent / Reservation info for serial: ";
-                } else if (typeof obj.reserveView !== 'undefined' && obj.reserveView !== null) {
+                } else if (typeof obj.reservationInput !== 'undefined' && obj.reservationInput !== null) {
                     header = "Reserve item: ";
                 }
-                else if (typeof obj.justView !== 'undefined' && obj.justView !== null) {
+                else if (typeof obj.itemInputView !== 'undefined' && obj.itemInputView !== null) {
                     header = "Viewing item: "
                 }
                 else {
@@ -152,9 +156,8 @@ class ItemModal extends Component {
                 let endDate;
                 let isHistory = false;
                 let rented = false;
-                console.log(typeof obj.rowData !== 'undefined');
                 if (typeof obj.rowData !== 'undefined') { // SET rented and isHistory status.
-                    if (obj.rowData.start_date !== null) {
+                    if (typeof obj.rowData.start_date !== 'undefined' && obj.rowData.start_date !== null) {
                         rented = true;
                         endDate = new Date(obj.rowData.end_date);
                         endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
@@ -171,15 +174,18 @@ class ItemModal extends Component {
 
                 let isset = typeof obj.rowData !== 'undefined';
                 this.setState({
-                    id: isset &&typeof obj.rowData.id !== 'undefined' ? obj.id : "",
-                    rent_id: isset &&typeof obj.rowData.rent_id !== 'undefined' ? obj.rent_id : "",
-                    inputName: isset &&typeof obj.rowData.name !== 'undefined' ? obj.rowData.name : "",
-                    inputBrand: isset &&typeof obj.rowData.brand !== 'undefined' ? obj.rowData.brand : "",
-                    inputModel: isset &&typeof obj.rowData.model !== 'undefined' ? obj.rowData.model : "",
-                    inputInfo:isset &&typeof obj.rowData.info !== 'undefined' ?obj.rowData.info:"",
-                    inputAddressDd: isset &&typeof obj.rowData.address !== 'undefined' ? obj.rowData.address : "",
-                    inputCategoryDd: isset &&typeof obj.rowData.category !== 'undefined' ? obj.rowData.category : "",
-                    inputOwnerDd:isset && typeof obj.rowData.owner !== 'undefined' ? obj.rowData.owner : "",
+                    id: typeof obj.id !== 'undefined' ? obj.id : "",
+                    rent_id: isset && typeof obj.rowData.rent_id !== 'undefined' ? obj.rent_id : "",
+                    inputName: isset && typeof obj.rowData.name !== 'undefined' ? obj.rowData.name : "",
+                    inputBrand: isset && typeof obj.rowData.brand !== 'undefined' ? obj.rowData.brand : "",
+                    inputModel: isset && typeof obj.rowData.model !== 'undefined' ? obj.rowData.model : "",
+                    inputInfo: isset && typeof obj.rowData.info !== 'undefined' ? obj.rowData.info : "",
+                    inputAddress:"",
+                    inputCategory:"",
+                    inputOwner:"",
+                    inputAddressDd: isset && typeof obj.rowData.address !== 'undefined' ? obj.rowData.address : "",
+                    inputCategoryDd: isset && typeof obj.rowData.category !== 'undefined' ? obj.rowData.category : "",
+                    inputOwnerDd: isset && typeof obj.rowData.owner !== 'undefined' ? obj.rowData.owner : "",
                     inputReservationStartDate: isset && typeof obj.rowData.reservation_start !== 'undefined' && obj.rowData.reservation_start !== null ? this.dateOrTime("date", obj.rowData.reservation_start) : "",
                     inputReservationEndDate: isset && typeof obj.rowData.reservation_end !== 'undefined' && obj.rowData.reservation_end !== null ? this.dateOrTime("date", obj.rowData.reservation_end) : "",
                     inputReservationStartTime: isset && typeof obj.rowData.reservation_start !== 'undefined' && obj.rowData.reservation_start !== null ? this.dateOrTime("", obj.rowData.reservation_start) : "",
@@ -192,11 +198,13 @@ class ItemModal extends Component {
                     backdrop: true,
                     addMode: typeof obj.addMode !== 'undefined' ? obj.addMode : false,
                     modalHeader: header,
-                    justView: typeof obj.justView !== 'undefined' ? obj.justView : false,
-                    rentView: typeof obj.rentView !== 'undefined' ? obj.rentView : false,
+                    itemInputView: typeof obj.itemInputView !== 'undefined' ? obj.itemInputView : false,
+                    rentInput: typeof obj.rentInput !== 'undefined' ? obj.rentInput : false,
+                    reservationInput: typeof obj.reservationInput !== 'undefined' ? obj.reservationInput : false,
                     reserveView: typeof obj.reserveView !== 'undefined' ? obj.reserveView : false,
+                    rentView: typeof obj.rentView !== 'undefined' ? obj.rentView : false,
+                    itemInput: typeof obj.itemInput !== 'undefined' ? obj.itemInput : false,
                     hideDate: false,
-                    reserved: false,
                     failText: "",
                     reservationId: "",
                     reservationFail: false,
@@ -292,22 +300,6 @@ class ItemModal extends Component {
             });
     }
 
-    saveChangesRentView() {
-        DbAction.rentItem(
-            this.state.id,
-            this.state.inputRentStartDate,
-            this.state.inputRentEndDate)
-            .then(() => {
-                this.toggle({})
-            })
-            .then(() => {
-                this.props.onItemChangeRemote()
-            })
-            .catch(() => {
-                console.log("Something failed in saveChangesRentView()");
-            })
-
-    }
 
     validateInput() {
         let noErrors = true;
@@ -364,7 +356,7 @@ class ItemModal extends Component {
                         this.setState({reservationFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== 'undefined') {
+                        if (typeof response.row !== 'undefined') {
                             this.setState({
                                 reservationFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -401,7 +393,7 @@ class ItemModal extends Component {
                         this.setState({reservationFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== 'undefined') {
+                        if (typeof response !== 'undefined') {
                             this.setState({
                                 reservationFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -439,7 +431,44 @@ class ItemModal extends Component {
                         this.setState({rentFail: false});
                         this.toggle({})
                     } else {
-                        if (typeof response.row[0] !== 'undefined') {
+                        if (typeof response !== 'undefined') {
+                            this.setState({
+                                rentFail: true,
+                                failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
+                            });
+                        } else {
+                            this.setState({
+                                rentFail: true,
+                                failText: response.message
+                            });
+                        }
+
+                        console.log(response);
+                    }
+                }).then(() => {
+                this.props.onItemChangeRemote();
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+        } else {
+            this.setState({rentFail: true});
+        }
+    }
+
+    rentModify() {
+        if (typeof this.state.rowData.id !== 'undefined' && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
+            DbAction.rentModify(
+                this.state.rowData.id,
+                this.state.id,
+                this.state.inputRentStartDate + " " + this.state.inputRentStartTime + ":00",
+                this.state.inputRentEndDate + " " + this.state.inputRentEndTime + ":00")
+                .then((response) => {
+                    if (response.success) {
+                        this.setState({rentFail: false});
+                        this.toggle({})
+                    } else {
+                        if (typeof response !== 'undefined') {
                             this.setState({
                                 rentFail: true,
                                 failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
@@ -533,22 +562,22 @@ class ItemModal extends Component {
     }
 
     adminButtons() {
-        if (this.state.justView) {
+        if (this.state.itemInputView) {
             return null
         } else {
             if (this.state.rentView) { // ADMIN Rent view modal buttons
                 return (
                     <div>
-                        <div className={"form-row"}>
+                        <div className={"form-row"} hidden={this.state.rented}>
                             <div className={"col-md-12"}>
-                                <Button color={"warning btn-block m-0"} onClick={this.reservationModify}>Save
-                                    reservation
-                                    changes</Button>
+                                <Button color={"warning btn-block m-0"} onClick={this.reservationModify}>
+                                    {this.state.rowData.username === "admin"?'Save maintenance changes':'Save reservation changes'}
+                                </Button>
                             </div>
                         </div>
-                        <div className={"form-row"}>
+                        <div className={"form-row"} hidden={this.state.rowData.username === "admin"}>
                             <div className={"col-md-12"}>
-                                <Button color={"success btn-block m-0"} onClick={this.rentItem}>Rent item</Button>
+                                <Button color={"success btn-block m-0"} onClick={this.state.rented? this.rentModify:this.rentItem}>{this.state.rented?'Change Rent':'Rent Item'}</Button>
                             </div>
                         </div>
                     </div>
@@ -571,10 +600,10 @@ class ItemModal extends Component {
     }
 
     userButtons() {
-        if (this.state.justView && !this.state.reserveView) {
+        if (this.state.itemInputView && !this.state.reservationInput) {
             return null;
         } else {
-            if (this.state.rentView) { // USER Rent view modal buttons
+            if (this.state.reservationInput && this.state.rentView) { // USER Rent view modal buttons
                 return (
                     <div className={"form-row"}>
                         <div className={"col-md-12"}>
@@ -608,7 +637,7 @@ class ItemModal extends Component {
     }
 
     disableItemInput() {
-        if (this.state.justView || this.props.auth.admin !== '0') {
+        if (this.state.itemInputView || !this.props.auth.admin || this.state.rentInput) {
             return true;
         } else {
             return false;
@@ -644,57 +673,58 @@ class ItemModal extends Component {
                         <WarningComponent content={"Item add failure"} hidden={!this.state.newItemFail}
                                           cn={"alert alert-danger"}/>
 
+                        {console.log(this.state.rented)}
                         <form>
-                            <div hidden={this.state.addMode || (this.state.justView && !this.state.reserveView)}>
+                            <div
+                                hidden={this.state.addMode || (this.state.itemInputView && this.state.reserveView && !this.state.reservationInput)}>
                                 <div>
-                                    <div className="form-row"
-                                         hidden={!(this.state.reserveView || this.state.rentView)}>
+                                    <div className="form-row">
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationStartDate">Reservation Start Date</label>
                                             <input type="date" className="form-control" id="inputReservationStartDate"
                                                    onChange={this.handleChange} min={this.state.dateNow}
                                                    value={this.state.inputReservationStartDate}
-                                                   disabled={this.state.rented || this.state.dateNow > this.state.rowData.reservation_start || this.state.justView}/>
+                                                   disabled={this.state.rented || (this.state.itemInputView)}/>
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationStartTime">Reservation Start Time</label>
                                             <input type="time" className="form-control" id="inputReservationStartTime"
                                                    onChange={this.handleChange}
-                                                   min={this.state.rentView ? "" : this.state.timeNow}
+                                                   min={this.state.rentInput ? "" : this.state.timeNow}
                                                    value={this.state.inputReservationStartTime}
-                                                   disabled={this.state.rented || this.state.dateNow > this.state.rowData.reservation_start || this.state.justView}/>
+                                                   disabled={this.state.rented|| this.state.itemInputView}/>
                                         </div>
                                     </div>
                                     <div className="form-row"
-                                         hidden={!(this.state.reserveView || this.state.rentView)}>
+                                         hidden={!(this.state.reservationInput || this.state.rentInput)}>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationEndDate">Reservation End Date</label>
                                             <input type="date" className="form-control" id="inputReservationEndDate"
                                                    onChange={this.handleChange}
                                                    min={this.state.inputReservationStartDate}
                                                    value={this.state.inputReservationEndDate}
-                                                   disabled={this.state.rented || this.state.dateNow > this.state.rowData.reservation_end || this.state.justView}/>
+                                                   disabled={this.state.rented|| this.state.itemInputView}/>
                                         </div>
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputReservationEndTime">Reservation End Time</label>
                                             <input type="time" className="form-control" id="inputReservationEndTime"
                                                    onChange={this.handleChange}
                                                    value={this.state.inputReservationEndTime}
-                                                   disabled={this.state.rented || this.state.dateNow > this.state.rowData.reservation_end || this.state.justView}/>
+                                                   disabled={this.state.rented || this.state.itemInputView}/>
                                         </div>
                                     </div>
                                     <hr/>
                                 </div>
 
                                 <div
-                                    hidden={(this.state.inputRentStartDate === "" && !this.props.auth.admin) || this.state.addMode || this.state.reserveView}>
+                                    hidden={this.state.rowData.username === "admin" ||(this.state.inputRentStartDate === "" && !this.props.auth.admin) || (this.state.inputRentStartDate === "" && this.props.auth.admin && this.state.itemInputView) || this.state.reserveView || (this.state.reservationInput && !this.props.auth.admin)}>
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputRentStartDate">Rent Start Date</label>
                                             <input type="date" className="form-control" id="inputRentStartDate"
                                                    onChange={this.handleChange} min={this.state.dateNow}
                                                    value={this.state.inputRentStartDate}
-                                                   disabled={this.state.rented || (this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={this.state.rented || !this.props.auth.admin || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -702,7 +732,7 @@ class ItemModal extends Component {
                                             <input type="time" className="form-control" id="inputRentStartTime"
                                                    onChange={this.handleChange} min={this.state.timeNow}
                                                    value={this.state.inputRentStartTime}
-                                                   disabled={this.state.rented || (this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={this.state.rented || !this.props.auth.admin || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
                                     </div>
                                     <div className="form-row">
@@ -711,7 +741,7 @@ class ItemModal extends Component {
                                             <input type="date" className="form-control" id="inputRentEndDate"
                                                    onChange={this.handleChange} min={this.state.inputRentStartDate}
                                                    value={this.state.inputRentEndDate}
-                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
 
                                         <div className="form-group col-md-6">
@@ -719,13 +749,12 @@ class ItemModal extends Component {
                                             <input type="time" className="form-control" id="inputRentEndTime"
                                                    onChange={this.handleChange}
                                                    value={this.state.inputRentEndTime}
-                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.justView}/>
+                                                   disabled={(this.state.rented && !this.props.auth.admin) || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
 
                                     </div>
                                 </div>
                             </div>
-
 
                             <div>
                                 <div className="form-row">

@@ -27,6 +27,7 @@ class MainPage extends Component {
             },
             isOpen: false,
             collapsed: true,
+            inputIdNameBrandModel:"",
             inputId:"",
             inputName: "",
             inputBrand: "",
@@ -64,7 +65,6 @@ class MainPage extends Component {
         },()=>{this.updateTableRowsRemote()});
     };
 
-
     onChangeModalRemote(obj) { // Passed to children that need to toggle modal.
         this.state.toggleModalFunc(obj);
     };
@@ -98,6 +98,7 @@ class MainPage extends Component {
     updateTableRowsRemote(){ // Update table rows remotely, according to latest search parameters.
         this.state.updateTableRows(this.state.inputId, this.state.inputName, this.state.inputBrand,this.state.inputModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
     }
+
 
     updateDropdowns() {
         const savedResult = {};
@@ -178,8 +179,9 @@ class MainPage extends Component {
                                     <form>
                                         <div className="form-row">
                                             <div className="form-group col-md-8">
-                                                <button type="button" className="form-control btn btn-secondary" id="btnClear"
-                                                        onChange={this.handleChange}>Clear</button>
+                                                <input type="text" className="form-control" id="inputIdNameBrandModel"
+                                                       placeholder="Serial" onChange={this.handleChange}
+                                                       value={this.state.inputIdNameBrandModel}/>
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <input type="text" className="form-control" id="inputId"

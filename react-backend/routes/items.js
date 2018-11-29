@@ -14,7 +14,6 @@ router.post('/', function (req, res, next) { // Search items from database for a
             typeof req.body.address !== "undefined" &&
             typeof req.body.owner !== "undefined" &&
             typeof req.body.category !== "undefined") {
-            console.log(req.body);
             db.query(`SELECT * FROM item WHERE serial NOT IN (SELECT item_id FROM arereserved) AND 
                 serial LIKE '%${req.body.id}%' 
                 AND name LIKE '%${req.body.name }%' 
@@ -22,7 +21,6 @@ router.post('/', function (req, res, next) { // Search items from database for a
                 AND brand LIKE '%${req.body.brand}%' 
                 AND address LIKE '%${req.body.address}%' 
                 AND owner LIKE '%${req.body.owner}%' 
-                AND category LIKE '%${req.body.category}%' 
                 AND category LIKE '%${req.body.category}%' 
                 AND removed='0'
                 LIMIT 50;`)
@@ -51,7 +49,6 @@ router.post('/getitem', function (req, res, next) { // Return requested item inf
         if (typeof req.body.id !== "undefined") {
             db.query(`SELECT * FROM item WHERE serial='${req.body.id}' LIMIT 1;`)
                 .then(rows => {
-                    console.log(rows);
                     res.json(rows);
                 })
                 .catch((err) => {
@@ -118,7 +115,6 @@ router.post('/insert', function (req, res, next) {
 router.post('/modify', function (req, res, next) {
 
     if (req.session.login === true && req.session.isAdmin === 1) {
-        console.log(req.body);
         if (typeof req.body.id !== "undefined" &&
             typeof req.body.name !== "undefined" &&
             typeof req.body.model !== "undefined" &&
@@ -306,6 +302,8 @@ router.post('/reserve/insert', function (req, res, next) { // Inserts new reserv
 });
 
 router.post('/reserve/modify', function (req, res, next) { // Modify the existing reservation row.
+    console.log(req.body);
+
     if (req.session.login === true) {
         if (typeof req.body.id !== "undefined" &&
             typeof req.body.item_id !== "undefined" &&
@@ -439,7 +437,7 @@ router.post('/rent/insert', function (req, res, next) { // Modifies the reservat
             typeof req.body.start_date !== "undefined" &&
             typeof req.body.end_date !== "undefined") {
 
-            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' AND id<>'${req.body.id}' LIMIT 1 ;`)
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' LIMIT 1 ;`)
                 .then((rows) => {
                     if (rows.length > 0) {
                         res.status(400).json({
