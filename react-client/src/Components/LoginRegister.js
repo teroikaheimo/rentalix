@@ -5,10 +5,9 @@ import Auth from '../Auth';
 export class LoginRegister extends Component {
     constructor(props) {
         super(props);
-        // TODO remove default username and password values
         this.state = {
-            inputUsernameLog: "admin",
-            inputPasswordLog: "admin",
+            inputUsernameLog: "",
+            inputPasswordLog: "",
             inputUsernameReg: "",
             inputPasswordReg: "",
             inputPasswordConfReg: "",
@@ -24,6 +23,7 @@ export class LoginRegister extends Component {
         this.checkPwdMatch = this.checkPwdMatch.bind(this);
         this.checkUsername = this.checkUsername.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.registerUser =this.registerUser.bind(this);
 
     }
 
@@ -93,6 +93,26 @@ export class LoginRegister extends Component {
                 this.props.history.push("/main");
             })
             .catch(() => {this.setLoginFail(true);})
+    }
+
+    registerUser(){
+        if(this.state.inputPasswordReg === this.state.inputPasswordConfReg && this.state.inputPasswordReg.length >3){
+            Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
+                .then(() => {
+                    this.setState({pwdChangeOk: true,
+                        loginFail:false,
+                        inputUsernameLog: "",
+                        inputPasswordLog: "",
+                        inputUsernameReg: "",
+                        inputPasswordReg: "",
+                        inputPasswordConfReg: "",
+                    })
+                })
+                .catch(() => {this.setState({pwdChangeOk: false,loginFail:false})})
+        }else{
+            this.setState({pwdChangeOk: false, loginFail:false,
+            })
+        }
     }
 
     render() {
@@ -172,11 +192,7 @@ export class LoginRegister extends Component {
                                                 data-dismiss="modal">Close
                                         </button>
                                         <button type="button"
-                                                onClick={() => Auth.register(this.state.inputUsernameReg, this.state.inputPasswordReg, this.state.inputPasswordConfReg)
-                                                    .then(() => {
-                                                        this.setState({pwdChangeOk: true,loginFail:false})
-                                                    })
-                                                    .catch(() => {this.setState({pwdChangeOk: false,loginFail:false})})}
+                                                onClick={this.registerUser}
                                                 data-dismiss="modal" className="btn btn-success">Register
                                         </button>
                                     </div>

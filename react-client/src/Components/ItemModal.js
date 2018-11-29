@@ -391,7 +391,10 @@ class ItemModal extends Component {
 
 
     rentItem() {
-        if(this.state.dateNow >= this.state.inputReservationStartDate){
+        console.log(this.dateNow());
+        console.log(this.state.inputReservationStartDate);
+        console.log(this.dateNow() >= this.state.inputReservationStartDate);
+        if(this.dateNow() >= this.state.inputReservationStartDate){
             if (typeof this.state.rowData.id !== 'undefined' && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
                 DbAction.rentInsert(
                     this.state.rowData.id,
@@ -427,7 +430,7 @@ class ItemModal extends Component {
         }else{
             this.setState({
                 rentFail: true,
-                failText: "Reservation start date is in the future! Ask user to change reservation to be able to rent this item!"
+                failText: "Reservation start date is in the future! Change reservation start date to be able to rent this item!"
             });
         }
 
@@ -478,7 +481,11 @@ class ItemModal extends Component {
     }
 
     dateNow() {
-        return new Date(Date.now()).toISOString().slice(0, 10);
+        Date.prototype.addTimeOffset = function () { // UTC + Difference
+            this.setHours(this.getHours() + (new Date().getTimezoneOffset() / 60 * -1));
+            return this;
+        };
+        return new Date(Date.now()).addTimeOffset().toISOString().slice(0, 10);
     }
 
     timeNow() { //
