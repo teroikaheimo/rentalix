@@ -462,7 +462,7 @@ router.post('/rent/insert', function (req, res, next) { // Modifies the reservat
             typeof req.body.start_date !== "undefined" &&
             typeof req.body.end_date !== "undefined") {
 
-            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' LIMIT 1 ;`)
+            db.query(`SELECT * FROM reservation_rent WHERE ('${req.body.start_date}' <= reservation_end) AND (reservation_start <= '${req.body.end_date}') AND item_id='${req.body.item_id}' AND id<>'${req.body.id}' LIMIT 1 ;`)
                 .then((rows) => {
                     if (rows.length > 0) {
                         res.status(400).json({

@@ -391,38 +391,46 @@ class ItemModal extends Component {
 
 
     rentItem() {
-        if (typeof this.state.rowData.id !== 'undefined' && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
-            DbAction.rentInsert(
-                this.state.rowData.id,
-                this.state.id,
-                this.state.inputRentStartDate + " " + this.state.inputRentStartTime + ":00",
-                this.state.inputRentEndDate + " " + this.state.inputRentEndTime + ":00")
-                .then((response) => {
-                    if (response.success) {
-                        this.setState({rentFail: false});
-                        this.toggle({})
-                    } else {
-                        if (typeof response !== 'undefined') {
-                            this.setState({
-                                rentFail: true,
-                                failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
-                            });
+        if(this.state.dateNow >= this.state.inputReservationStartDate){
+            if (typeof this.state.rowData.id !== 'undefined' && this.state.inputRentStartDate !== "" && this.state.inputRentEndDate !== "" && this.state.inputRentStartTime !== "" && this.state.inputRentEndTime !== "" && this.compareDate(this.state.inputRentStartDate, this.state.inputRentEndDate, this.state.inputRentStartTime, this.state.inputRentEndTime) > -1) {
+                DbAction.rentInsert(
+                    this.state.rowData.id,
+                    this.state.id,
+                    this.state.inputRentStartDate + " " + this.state.inputRentStartTime + ":00",
+                    this.state.inputRentEndDate + " " + this.state.inputRentEndTime + ":00")
+                    .then((response) => {
+                        if (response.success) {
+                            this.setState({rentFail: false});
+                            this.toggle({})
                         } else {
-                            this.setState({
-                                rentFail: true,
-                                failText: response.message
-                            });
+                            if (typeof response !== 'undefined') {
+                                this.setState({
+                                    rentFail: true,
+                                    failText: response.message + "          " + this.formatDate(response.row[0].reservation_start) + " <-> " + this.formatDate(response.row[0].reservation_end)
+                                });
+                            } else {
+                                this.setState({
+                                    rentFail: true,
+                                    failText: response.message
+                                });
+                            }
                         }
-                    }
-                }).then(() => {
-                this.props.onItemChangeRemote();
-            })
-                .catch((err) => {
-                    console.log(err);
+                    }).then(() => {
+                    this.props.onItemChangeRemote();
                 })
-        } else {
-            this.setState({rentFail: true});
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            } else {
+                this.setState({rentFail: true});
+            }
+        }else{
+            this.setState({
+                rentFail: true,
+                failText: "Reservation start date is in the future! Ask user to change reservation to be able to rent this item!"
+            });
         }
+
     }
 
     rentModify() {
@@ -689,7 +697,7 @@ class ItemModal extends Component {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputRentStartDate">Rent Start Date</label>
                                             <input type="date" className="form-control" id="inputRentStartDate"
-                                                   onChange={this.handleChange} min={this.state.dateNow}
+                                                   onChange={this.handleChange} min={this.state.inputReservationStartDate}
                                                    value={this.state.inputRentStartDate}
                                                    disabled={this.state.rented || !this.props.auth.admin || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
@@ -697,7 +705,7 @@ class ItemModal extends Component {
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputRentStartTime">Rent Start Time</label>
                                             <input type="time" className="form-control" id="inputRentStartTime"
-                                                   onChange={this.handleChange} min={this.state.timeNow}
+                                                   onChange={this.handleChange} min={this.state.inputReservationStartTime}
                                                    value={this.state.inputRentStartTime}
                                                    disabled={this.state.rented || !this.props.auth.admin || this.state.isHistory || this.state.itemInputView}/>
                                         </div>
