@@ -27,14 +27,16 @@ class MainPage extends Component {
             },
             isOpen: false,
             collapsed: true,
-            inputIdNameBrandModel:"",
-            inputAddressDd:"",
-            inputOwnerDd:"",
-            inputCategoryDd:"",
+            inputIdNameBrandModel: "",
+            inputAddressDd: "",
+            inputOwnerDd: "",
+            inputCategoryDd: "",
             dropdownData: {},
-            updateTableRows:()=>{},
-            toggleUserModal:()=>{},
-            rentView:true
+            updateTableRows: () => {
+            },
+            toggleUserModal: () => {
+            },
+            rentView: true
         };
 
         this.toggleNavbar = this.toggleNavbar.bind(this);
@@ -56,9 +58,11 @@ class MainPage extends Component {
     }
 
     handleChange = event => { // Writes changes in the input elements to corresponding state.
-        this.setState( { // Callback version. Fixes normal setState "lag" that is's basic behaviour!
+        this.setState({ // Callback version. Fixes normal setState "lag" that is's basic behaviour!
             [event.target.id]: event.target.value
-        },()=>{this.updateTableRowsRemoteSearch()});
+        }, () => {
+            this.updateTableRowsRemoteSearch()
+        });
     };
 
     onChangeModalRemote(obj) { // Passed to children that need to toggle modal.
@@ -84,23 +88,25 @@ class MainPage extends Component {
     toggleNavbar() {
         this.setState({
             collapsed: !this.state.collapsed,
-            inputIdNameBrandModel:"",
-            inputAddressDd:"",
-            inputOwnerDd:"",
-            inputCategoryDd:""
-        },()=>{this.updateTableRowsRemote()});
+            inputIdNameBrandModel: "",
+            inputAddressDd: "",
+            inputOwnerDd: "",
+            inputCategoryDd: ""
+        }, () => {
+            this.updateTableRowsRemote()
+        });
     }
 
-    updateTableRowsGetSet(updateTableRowsFunc){ // GET/SET updateTableRowsRemote from ItemTable
-       this.setState({updateTableRows:updateTableRowsFunc});
+    updateTableRowsGetSet(updateTableRowsFunc) { // GET/SET updateTableRowsRemote from ItemTable
+        this.setState({updateTableRows: updateTableRowsFunc});
     }
 
-    updateTableRowsRemote(){ // Update table rows remotely.
-        this.state.updateTableRows("", "", "","", "", "", "", "");
+    updateTableRowsRemote() { // Update table rows remotely.
+        this.state.updateTableRows("", "", "", "", "", "", "", "");
     }
 
-    updateTableRowsRemoteSearch(){ // Update table rows remotely, according to latest search parameters.
-        this.state.updateTableRows(this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel,this.state.inputIdNameBrandModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
+    updateTableRowsRemoteSearch() { // Update table rows remotely, according to latest search parameters.
+        this.state.updateTableRows(this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel, this.state.inputIdNameBrandModel, "", this.state.inputAddressDd, this.state.inputOwnerDd, this.state.inputCategoryDd);
     }
 
     updateDropdowns() {
@@ -115,33 +121,35 @@ class MainPage extends Component {
 
                 savedResult.category = result.category.map((inputRowData, index) =>
                     <OptionRow key={index} rowData={inputRowData.category}/>);
-            }).then(()=>{
-                this.setState({
-                    dropdownData: savedResult
-                })
+            }).then(() => {
+            this.setState({
+                dropdownData: savedResult
+            })
         })
             .catch();
     }
 
-    toggleUserModalGetSet(func){
+    toggleUserModalGetSet(func) {
         this.setState({
-            toggleUserModal:func
+            toggleUserModal: func
         });
     }
 
-    toggleUserModalRemote(){
+    toggleUserModalRemote() {
         this.state.toggleUserModal();
     }
 
-    toggleRentView(value){
+    toggleRentView(value) {
         this.setState({
-            inputIdNameBrandModel:"",
-            inputAddressDd:"",
-            inputOwnerDd:"",
-            inputCategoryDd:"",
-            rentView:value,
-            collapsed:true
-        },()=>{this.updateTableRowsRemote()});
+            inputIdNameBrandModel: "",
+            inputAddressDd: "",
+            inputOwnerDd: "",
+            inputCategoryDd: "",
+            rentView: value,
+            collapsed: true
+        }, () => {
+            this.updateTableRowsRemote()
+        });
 
     }
 
@@ -151,38 +159,43 @@ class MainPage extends Component {
             <div className="MainPage">
 
                 <div>
-                    <Navbar color="" dark>
-                        <NavbarBrand href="/" className="mr-auto">
-                            <div className={"row"}>
-                                <img className={"App-logo px-1"} src="./gear64.ico" alt=""/>
-                                <div  className="col-8 h1 font-weight-bold">RENTALIX</div>
+                    <Navbar color="" dark className={"m-0 p-0"}>
+                            <div className={"row container-fluid mx-auto"}>
+                                <span className="h1 font-weight-bold text-white float-md-left"><img className={"App-logo mx-0 p-0"}
+                                                                                      src="./gear64.ico" alt=""/>RENTALIX</span>
+                                <div className={" menuItems"}>
+                                    <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
+                                    <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
+                                        <label className="btn btn-secondary active">
+                                            <input type="radio" name="options" id="option1" autoComplete="off"/> <img
+                                            src="./rent32.ico" alt="Rent" onClick={() => {
+                                            this.toggleRentView(true)
+                                        }}/>
+                                        </label>
+                                        <label className="btn btn-secondary">
+                                            <input type="radio" name="options" id="option2" autoComplete="off"/> <img
+                                            src="./personalView32.ico" alt="Personal" onClick={() => {
+                                            this.toggleRentView(false)
+                                        }}/>
+                                        </label>
+                                    </div>
+
+                                    <UncontrolledButtonDropdown>
+                                        <DropdownToggle>
+                                            <img src="./menu32.png" alt="Menu"/>
+                                        </DropdownToggle>
+                                        <DropdownMenu right>
+                                            <DropdownItem header>Menu</DropdownItem>
+                                            {this.props.auth.admin ? <DropdownItem onClick={() => {
+                                                this.onChangeModalRemote({id: "-", addMode: true})
+                                            }}>Add item</DropdownItem> : ""}
+                                            <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>
+                                            <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
+                                        </DropdownMenu>
+                                    </UncontrolledButtonDropdown>
+                                </div>
                             </div>
-                        </NavbarBrand>
-                        <img src="./search.png" alt="" onClick={this.toggleNavbar}/>
 
-
-                        <div className="btn-group btn-group-toggle px-1" data-toggle="buttons">
-                            <label className="btn btn-secondary active">
-                                <input type="radio" name="options" id="option1" autoComplete="off" /> <img  src="./rent32.ico" alt="Rent" onClick={()=>{this.toggleRentView(true)}}/>
-                            </label>
-                            <label className="btn btn-secondary">
-                                <input type="radio" name="options" id="option2" autoComplete="off"/> <img  src="./personalView32.ico" alt="Personal" onClick={()=>{this.toggleRentView(false)}}/>
-                            </label>
-                        </div>
-
-                        <UncontrolledButtonDropdown>
-                            <DropdownToggle>
-                                <img src="./menu32.png" alt="Menu"/>
-                            </DropdownToggle>
-                            <DropdownMenu right>
-                                <DropdownItem header>Menu</DropdownItem>
-                                {this.props.auth.admin?<DropdownItem onClick={() => {
-                                    this.onChangeModalRemote({id:"-",addMode:true})
-                                }}>Add item</DropdownItem>:""}
-                                <DropdownItem onClick={this.toggleUserModalRemote}>Settings</DropdownItem>
-                                <DropdownItem onClick={() => this.logout()}>Logout</DropdownItem>
-                            </DropdownMenu>
-                        </UncontrolledButtonDropdown>
                         <Collapse isOpen={!this.state.collapsed} navbar>
                             <Nav navbar>
                                 <NavItem>
@@ -190,7 +203,8 @@ class MainPage extends Component {
                                         <div className="form-row">
                                             <div className="form-group col-md-12">
                                                 <input type="text" className="form-control" id="inputIdNameBrandModel"
-                                                       placeholder="Search by serial, name, model, brand." onChange={this.handleChange}
+                                                       placeholder="Search by serial, name, model, brand."
+                                                       onChange={this.handleChange}
                                                        value={this.state.inputIdNameBrandModel}/>
                                             </div>
                                         </div>
@@ -236,18 +250,18 @@ class MainPage extends Component {
                 </div>
 
 
-                    <ItemTable search={{
-                        text:this.state.inputIdNameBrandModel,
-                        address:this.state.inputAddressDd,
-                        owner:this.state.inputOwnerDd,
-                        category:this.state.inputCategoryDd
-                    }}
-                        rentView={this.state.rentView}
-                        updateTableRowsGetSet={this.updateTableRowsGetSet}
-                               toggleModalRemote={this.onChangeModalRemote}
-                               onItemChangeRemote={this.onItemChangeRemote}
-                               auth={this.props.auth}
-                    />
+                <ItemTable search={{
+                    text: this.state.inputIdNameBrandModel,
+                    address: this.state.inputAddressDd,
+                    owner: this.state.inputOwnerDd,
+                    category: this.state.inputCategoryDd
+                }}
+                           rentView={this.state.rentView}
+                           updateTableRowsGetSet={this.updateTableRowsGetSet}
+                           toggleModalRemote={this.onChangeModalRemote}
+                           onItemChangeRemote={this.onItemChangeRemote}
+                           auth={this.props.auth}
+                />
 
 
                 <ItemModal updateDropdowns={this.updateDropdowns}

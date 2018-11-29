@@ -1,4 +1,19 @@
+.App{
+    background-color: rgb(29, 29, 29);
+}
 
+.menuItems{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 500px) {
+  .menuItems{
+    margin-left: 0;
+    margin-right: 0;
+    justify-self: right;
+  }
+}
 
 .App {
   text-align: center;

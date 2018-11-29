@@ -3,11 +3,11 @@ html,body{
     overflow: auto;
     margin: 0;
     padding: 0;
+    background-color: rgba(21, 21, 21, 0.93);
 }
 
 .container-fluid{
     padding:0;
-    background: rgba(17,17,17,0.92);
 }
 
 .loginOther {
