@@ -684,7 +684,7 @@ class ItemModal extends Component {
                                 </div>
 
                                 <div
-                                    hidden={this.state.rowData.username === "admin" ||(this.state.inputRentStartDate === "" && !this.props.auth.admin) || (this.state.inputRentStartDate === "" && this.props.auth.admin && this.state.itemInputView) || this.state.reserveView || (this.state.reservationInput && !this.props.auth.admin)}>
+                                    hidden={this.state.rowData.username === "admin" ||(this.state.inputRentStartDate === "" && !this.props.auth.admin) || (this.state.inputRentStartDate === "" && this.props.auth.admin && this.state.itemInputView) || this.state.reserveView}>
                                     <div className="form-row">
                                         <div className="form-group col-md-6">
                                             <label htmlFor="inputRentStartDate">Rent Start Date</label>

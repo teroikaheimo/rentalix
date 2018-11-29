@@ -40,22 +40,12 @@ export default class ItemsRowMenu extends Component {
 
     isInHistory(data) {
         let endDate;
-        if (data.end_date === null) {
-            endDate = new Date(data.reservation_end);
-            endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
-            if (endDate < new Date(Date.now())) {
-                return true;
-            } else {
-                return false;
-            }
+        endDate = new Date(data.reservation_end);
+        endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
+        if (endDate < new Date(Date.now())) {
+            return true;
         } else {
-            endDate = new Date(data.end_date);
-            endDate = endDate.setHours(endDate.getHours() + (endDate.getTimezoneOffset() / 60)); // -2h
-            if (endDate < new Date(Date.now())) {
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
@@ -149,50 +139,49 @@ export default class ItemsRowMenu extends Component {
                     </td>
                 );
             }
-        } else { // USER menus
+        } else { // USER RENT VIEW MENU
             if (this.props.rentView) {
                 return (
                     <td className="dropleft">
                         <img src="./menu32.png" alt="Item menu" data-toggle="dropdown"/>
                         <div className="dropdown-menu">
+                            <button id={"View"}
+                                hidden={this.props.rowData.end_date === null && !this.isInHistory(this.props.rowData) } className={"dropdown-item"}
+                                    type="button" onClick={() => {
+                                this.props.toggleModalRemote({
+                                    id: this.props.id,
+                                    rentInputView: true,
+                                    reservationInput: true,
+                                    rowData: this.props.rowData,
+                                    rent_id: this.props.rent_id,
+                                    rentView: true
+                                });
+                            }}>View
+                            </button>
+                            <button id={"Change"}
+                                hidden={typeof this.props.rowData.start_date !== 'undefined' && this.props.rowData.start_date !== null || this.isInHistory(this.props.rowData)}
+                                className={"dropdown-item"} type="button" onClick={() => {
+                                this.props.toggleModalRemote({
+                                    id: this.props.id,
+                                    rentInputView: true,
+                                    reservationInput: true,
+                                    rowData: this.props.rowData,
+                                    rent_id: this.props.rent_id,
+                                    rentView: true
+                                })
+                            }}>Change
+                            </button>
 
-                                <button className={"dropdown-item"} type="button" onClick={() => {
-                                    this.props.toggleModalRemote({
-                                        id: this.props.id,
-                                        rentInputView: true,
-                                        reservationInput: true,
-                                        rowData: this.props.rowData,
-                                        rent_id: this.props.rent_id,
-                                        rentView: true
-                                    });
-                                }}>View
-                                </button>
-                            <div hidden={!this.isInHistory(this.props.rowData)}>
-                                <div hidden={this.isInHistory(this.props.rowData)}>
-                                    <button className={"dropdown-item"} type="button" onClick={() => {
-                                        this.props.toggleModalRemote({
-                                            id: this.props.id,
-                                            rentInputView: true,
-                                            reservationInput: true,
-                                            rowData: this.props.rowData,
-                                            rent_id: this.props.rent_id,
-                                            rentView: true
-                                        })
-                                    }}>Change
-                                    </button>
-
-                                    <button
-                                        hidden={typeof this.props.rowData.start_date !== 'undefined' && this.props.rowData.start_date !== null}
-                                        className={"dropdown-item"} type="button" onClick={() => {
-                                        this.deleteReservation()
-                                    }}>Remove Reservation
-                                    </button>
-                                </div>
-                            </div>
+                            <button id={"deleteReservation"}
+                                hidden={typeof this.props.rowData.start_date !== 'undefined' && this.props.rowData.start_date !== null || this.isInHistory(this.props.rowData)}
+                                className={"dropdown-item"} type="button" onClick={() => {
+                                this.deleteReservation()
+                            }}>Remove Reservation
+                            </button>
                         </div>
                     </td>
                 );
-            } else {
+            } else { // USER RESERVATION VIEW MENU
                 return (
                     <td className="dropleft">
                         <img src="./menu32.png" alt="Item menu" data-toggle="dropdown"/>

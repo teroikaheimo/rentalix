@@ -26,7 +26,7 @@ export class ItemTableRow extends Component {
                         <ColData data={this.props.rowData.owner}/>
                         <ColData data={this.props.start_date}/>
                         <ColData data={this.props.end_date}/>
-                        <ItemTableRowMenu rowData={this.props.rowData} rentView={true} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
+                        <ItemTableRowMenu type={this.props.type} rowData={this.props.rowData} rentView={true} admin={this.props.admin} onItemChangeRemote={this.props.onItemChangeRemote}
                                           toggleModalRemote={this.props.toggleModalRemote} id={this.props.rowData.serial} rent_id={this.props.rowData.id}/>
                     </tr>
                 )
