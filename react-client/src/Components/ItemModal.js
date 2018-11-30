@@ -347,7 +347,7 @@ class ItemModal extends Component {
                     console.log(err);
                 })
         } else {
-            this.setState({reservationFail: true});
+            this.setState({reservationFail: true,failText:"Error! Check what you inserted is right!"});
         }
     }
 
@@ -385,7 +385,7 @@ class ItemModal extends Component {
                     console.log(err);
                 })
         } else {
-            this.setState({reservationFail: true});
+            this.setState({reservationFail: true,failText:"Error! Check what you inserted is right!"});
         }
     }
 
