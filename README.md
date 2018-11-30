@@ -9,4 +9,4 @@ Second year school project. Objective is to make a fullstack application for fic
 5. In react-backend folder use the connection.template.js to create connection.js file with login data for the DB.
 6. Now that the MySQL DB is running. Start the expressJS server by -> ```npm start```
 7. Go to your browser and navigate to localhost:3210
-Done.
+#### Done.
