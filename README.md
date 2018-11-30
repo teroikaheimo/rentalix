@@ -10,3 +10,5 @@ Second year school project. Objective is to make a fullstack application for fic
 6. Now that the MySQL DB is running. Start the expressJS server by -> ```npm start```
 7. Go to your browser and navigate to localhost:3210
 #### Done.
+
+[Demo Video on Youtube](https://youtu.be/dvGa-8Un6Gk)
