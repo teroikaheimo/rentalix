@@ -22,7 +22,7 @@ Interface appearance was not included in grading!
 [Demo Video on Youtube](https://youtu.be/dvGa-8Un6Gk)
 
 
-## After thougt
+## Afterthought
 If i had the time as other studies require attention... 
 1. I would clean up the code and re-sructure it. 
 2. Cleanup the dependencies. 
