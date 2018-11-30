@@ -1,5 +1,5 @@
 # RENTALIX
-Second year school project. Objective is to make a fullstack application for fictional equipment rental company. I chose NodeJS, ExpressJS and MySQL DB as my backend and React handles the frontend. Bootstrap deals with the responsive layout. This is my first time using NodeJS and React in an application so it won't be pretty and concice but a great learning experience!
+Second year school project. Objective was to make a fullstack application for fictional equipment rental company. I chose NodeJS, ExpressJS and MySQL DB as my backend and React handles the frontend. Bootstrap deals with the responsive layout. This is my first time using NodeJS and React in an application so it won't be pretty and concice but a great learning experience!
 
 
 ## Grading
