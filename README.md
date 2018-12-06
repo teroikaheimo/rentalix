@@ -3,18 +3,20 @@ Second year school project. Objective was to make a fullstack application for fi
 
 
 ## Grading
+In order of importance
 1. Functioning code that fulfills the minimum spec.
-2. Ease of use. If REALLY bad, it influences the grade.
+2. Interface responsiveness.
+3. Ease of use. If REALLY bad, it influences the grade.
 
 Interface appearance was not included in grading!
 
 
 ## Installation
-1. Clone the git repo.
-2. Navigate to react-backend folder in console. Run -> ```npm install```
+1. Navigate to a folder where you want to clone the repo and run -> ```git clone https://github.com/teroikaheimo/rentalix.git```
+2. Navigate to react-backend folder in console and run -> ```npm install```
 3. Use scripts from Database folder to create MySQL schema and import the dummy data if needed.
-4. Create needed accounts and assign needed permission.
-5. In react-backend folder use the connection.template.js to create connection.js file with login data for the DB.
+4. Create the user account for the database and assign needed permission(All Object Rights)
+5. In react-backend folder use the connection.template.js to create connection.js file with user account login data for the DB.
 6. Now that the MySQL DB is running. Start the expressJS server by -> ```npm start```
 7. Go to your browser and navigate to localhost:3210
 #### Done.
