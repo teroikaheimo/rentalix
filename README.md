@@ -38,6 +38,6 @@ Looking back the code always looks like it could use some improvement and unifyi
 - In React the structure is REALLY important, and it would help to make some preliminary planning for this. I did some planning of course, but not knowing React i couldn't take that to account.
 - Now i know A LOT more about asycn code and how to make it work. It feels pretty natural now compared to the time i started this project.
 - React-router V4 was really a pain in the ass to a novice like me. Passing down properties on routes was really badly documented(NOT IN THE BASIC CASE) and required a lot of trial and error until i found the solution. This also was party my fault because Javascript is a bit of an unfamiliar language to me.
-- ExpressJS really a blast to work with. Really easy to use and well documented!
+- ExpressJS is really a blast to work with. Really easy to use and well documented!
 - MySQL views and queries in general are now more familiar than before. It was nice to notice that this was really one of the easy parts of this project.
 
