@@ -4,7 +4,7 @@ Second year school project. Objective was to make a full stack application for f
 
 ## Grading
 In order of importance
-1. Functioning code that fulfils the minimum spec.
+1. Functioning code that fulfills the minimum spec.
 2. Interface responsiveness.
 3. Ease of use. If REALLY bad, it influences the grade.
 
